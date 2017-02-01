@@ -7,21 +7,11 @@ public class Player : MonoBehaviour {
     public float yMovement;
     public Collider2D forge;
     public Forge forgescript;
-    public Sprite walk0;
-    public Sprite walk1;
-    public Sprite walk2;
-    public Sprite walk3;
-    public Sprite walk4;
-    public Sprite walk5;
-    public Sprite walk6;
-    public Sprite walk7;
-    public Sprite walk8;
-    public Sprite run9;
-    public Sprite run10;
-    public Sprite run11;
-    public Sprite run12;
     public SpriteRenderer spriteRenderer;
-    List<Sprite> Anim;
+    public List<Sprite> Anim;
+    public List<GameObject> itemsingame;
+    public List<GameObject> displayitems;
+    public List<GameObject> playeritems;
     bool facingRight;
     bool canmove;
     bool moving;
@@ -31,19 +21,6 @@ public class Player : MonoBehaviour {
     Vector2 position;
     // Use this for initialization
     void Start () {
-        Anim = new List<Sprite>();
-        Anim.Add(walk0);
-        Anim.Add(walk2);
-        Anim.Add(walk3);
-        Anim.Add(walk4);
-        Anim.Add(walk5);
-        Anim.Add(walk6);
-        Anim.Add(walk7);
-        Anim.Add(walk8);
-        Anim.Add(run9);
-        Anim.Add(run10);
-        Anim.Add(run11);
-        Anim.Add(run12);
         facingRight = true;
         moving = false;
         canmove = true;
@@ -56,27 +33,46 @@ public class Player : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+        canmove = true;
+        if (forgescript.isRunning)
+        {
+            canmove = false;
+        }
         moving = false;
         position = new Vector2(transform.position.x, transform.position.y);
         if (canmove)
         {
             DealWithMovement();
         }
-        if (Input.GetKey(KeyCode.E))
+        if (Input.GetKeyDown(KeyCode.E))
         {
             if (forge.OverlapPoint(position))
             {
-                forgescript.isRunning = true;
-                canmove = false;
+                forgescript.OpenForge();
             }
+            DealWithItemPickUp();
         }
 
+    }
+    void DealWithItemPickUp()
+    {
+        int i = 0;
+        while (i < itemsingame.Count)
+        {
+            Collider2D collider = itemsingame[i].GetComponent<Collider2D>();
+            if (collider.OverlapPoint(position))
+            {
+                itemsingame[i].GetComponent<Item>().displayitem = displayitems[playeritems.Count + 1];
+                playeritems.Add(itemsingame[i]);
+            }
+            i++;
+        }
     }
     void DealWithMovement()
     {
         if (Input.GetKey(KeyCode.LeftShift))
         {
-            speed = 3.0f;
+            speed = 4.0f;
             running = true;
         }
         else
@@ -84,9 +80,11 @@ public class Player : MonoBehaviour {
             speed = 1.0f;
             running = false;
         }
+        int xdirection = 0;
+        int ydirection = 0;
         if (Input.GetKey(KeyCode.D))
         {
-            transform.position += new Vector3(xMovement*speed, 0, 0);
+            xdirection = 1;
             moving = true;
             if (!facingRight)
             {
@@ -95,7 +93,7 @@ public class Player : MonoBehaviour {
         }
         else if (Input.GetKey(KeyCode.A))
         {
-            transform.position += new Vector3(-xMovement * speed, 0, 0);
+            xdirection = -1;
             moving = true;
             if (facingRight)
             {
@@ -104,13 +102,20 @@ public class Player : MonoBehaviour {
         }
         if (Input.GetKey(KeyCode.W))
         {
-            transform.position += new Vector3(0, yMovement * speed, 0);
+            ydirection = 1;
             moving = true;
         }
         else if (Input.GetKey(KeyCode.S))
         {
-            transform.position += new Vector3(0, -yMovement * speed, 0);
+            ydirection = -1;
             moving = true;
+        }
+        if (moving)
+        {
+            //xmovement
+            transform.position += new Vector3(Time.deltaTime*xMovement * speed * xdirection, 0, 0);
+            //ymovement
+            transform.position += new Vector3(0, Time.deltaTime*yMovement * speed * ydirection, 0);
         }
         if (facingRight)
         {

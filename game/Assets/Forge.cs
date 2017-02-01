@@ -1,12 +1,21 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Forge : MonoBehaviour {
     public bool isRunning;
+    public GameObject panel;
     public int tempdecay;
     public int blowerincrease;
-    int temp;
+    public Text displayTemp;
+    public Slider display;
+    public Player player;
+    public List<GameObject> displayitems;
+    public List<GameObject> forgeitems;
+    float bronzemintemp = 40;
+    float bronzemaxtemp = 60;
+    float temp;
     int amountofcoal;
     int amountoftimespentatrighttemp;
     bool blowerposition; //false is down, true is up
@@ -27,14 +36,18 @@ public class Forge : MonoBehaviour {
             {
                 Debug.Log(temp);
             }
-            temp -= tempdecay;
-            if (temp <= 0)
-            {
-                temp = 0;
-            }
+            displayTemp.text = temp.ToString();
+            display.value = temp;
+            DisplayItems();
+            CheckBar();
+        }
+        temp -= tempdecay;
+        if (temp <= 0)
+        {
+            temp = 0;
         }
 
-	}
+    }
     void RunBlower()
     {
         if (blowerposition)//blower is up
@@ -53,4 +66,70 @@ public class Forge : MonoBehaviour {
             }
         }
     }
+    void CheckBar()
+    {
+        int i = 0;
+        while (i < forgeitems.Count)
+        {
+            if (bronzemintemp < temp && temp < bronzemaxtemp)
+            {
+                forgeitems[i].GetComponent<Item>().forgeprogress++;
+            }
+            i++;
+        }
+    }
+    public void GetTemperature()
+    {
+        Debug.Log(temp);
+    }
+    public void OpenForge()
+    {
+        isRunning = true;
+        panel.active = true;
+    }
+    public void CloseForge()
+    {
+        isRunning = false;
+        panel.active = false;
+    }
+    void DisplayItems()
+    {
+        if (player.playeritems.Count != 0)
+        {
+            int j = 0;
+            while (j < player.displayitems.Count)
+            {
+                player.displayitems[j].SetActive(false);
+                j++;
+            }
+            int i = 0;
+            while (i < player.playeritems.Count)
+            {
+                player.displayitems[i].SetActive(true);
+                SpriteRenderer spriterenderer = player.displayitems[i].GetComponent<SpriteRenderer>();
+                Sprite newsprite = player.playeritems[i].GetComponent<SpriteRenderer>().sprite;
+                spriterenderer.sprite = newsprite;
+                i++;
+            }
+        }
+        if (forgeitems.Count != 0)
+        {
+            int j = 0;
+            while (j < displayitems.Count)
+            {
+                displayitems[j].SetActive(false);
+                j++;
+            }
+            int i = 0;
+            while (i < forgeitems.Count)
+            {
+                displayitems[i].SetActive(true);
+                SpriteRenderer spriterenderer = displayitems[i].GetComponent<SpriteRenderer>();
+                Sprite newsprite = forgeitems[i].GetComponent<SpriteRenderer>().sprite;
+                spriterenderer.sprite = newsprite;
+                i++;
+            }
+        }
+    }
+
 }
