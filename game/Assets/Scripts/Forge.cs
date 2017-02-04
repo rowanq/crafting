@@ -6,15 +6,13 @@ using UnityEngine.UI;
 public class Forge : MonoBehaviour {
     public bool isRunning;
     public GameObject panel;
-    public int tempdecay;
-    public int blowerincrease;
+    public float tempdecay;
+    public float blowerincrease;
     public Text displayTemp;
     public Slider display;
     public Player player;
     public List<GameObject> displayitems;
     public List<GameObject> forgeitems;
-    float bronzemintemp = 40;
-    float bronzemaxtemp = 60;
     float temp;
     int amountofcoal;
     int amountoftimespentatrighttemp;
@@ -28,7 +26,7 @@ public class Forge : MonoBehaviour {
 	}
 	
 	// Update is called once per frame
-	void Update () {
+	void FixedUpdate () {
 		if (isRunning)
         {
             RunBlower();
@@ -71,7 +69,7 @@ public class Forge : MonoBehaviour {
         int i = 0;
         while (i < forgeitems.Count)
         {
-            if (bronzemintemp < temp && temp < bronzemaxtemp)
+            if (forgeitems[i].GetComponent<Item>().forgemintemp < temp && temp < forgeitems[i].GetComponent<Item>().forgemaxtemp)
             {
                 forgeitems[i].GetComponent<Item>().forgeprogress++;
             }
@@ -97,16 +95,16 @@ public class Forge : MonoBehaviour {
         if (player.playeritems.Count != 0)
         {
             int j = 0;
-            while (j < player.displayitems.Count)
+            while (j < player.forgedisplayitems.Count)
             {
-                player.displayitems[j].SetActive(false);
+                player.forgedisplayitems[j].SetActive(false);
                 j++;
             }
             int i = 0;
             while (i < player.playeritems.Count)
             {
-                player.displayitems[i].SetActive(true);
-                SpriteRenderer spriterenderer = player.displayitems[i].GetComponent<SpriteRenderer>();
+                player.forgedisplayitems[i].SetActive(true);
+                SpriteRenderer spriterenderer = player.forgedisplayitems[i].GetComponent<SpriteRenderer>();
                 Sprite newsprite = player.playeritems[i].GetComponent<SpriteRenderer>().sprite;
                 spriterenderer.sprite = newsprite;
                 i++;

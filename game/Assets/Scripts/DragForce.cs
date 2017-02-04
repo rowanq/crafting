@@ -2,17 +2,18 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Drag : MonoBehaviour {
+public class DragForce : MonoBehaviour
+{
     public GameObject self;
     public Collider2D targetlocation;
     public Collider2D playerlocation;
     public Player player;
     public Forge forge;
     Vector2 startposition;
-	// Use this for initialization
+    // Use this for initialization
     void Start()
     {
-       startposition = transform.position;
+        startposition = transform.position;
     }
     void OnMouseDrag()
     {
@@ -27,13 +28,13 @@ public class Drag : MonoBehaviour {
         {
             //do something related to the thing
             Debug.Log("Forge");
-            GameObject newdisplayitem = player.displayitems.Find(myitem => myitem.Equals(self));
+            GameObject newdisplayitem = player.forgedisplayitems.Find(myitem => myitem.Equals(self));
             int i = 0;
             bool found = false;
             GameObject newitem = new GameObject();
             while (i < player.playeritems.Count || found == false)
             {
-                if(player.playeritems[i].GetComponent<Item>().displayitem = newdisplayitem)
+                if (player.playeritems[i].GetComponent<Item>().displayitem = newdisplayitem)
                 {
                     newitem = player.playeritems[i];
                     player.playeritems.Remove(newitem);
@@ -58,11 +59,11 @@ public class Drag : MonoBehaviour {
                 if (forge.forgeitems[i].GetComponent<Item>().displayitem = newdisplayitem)
                 {
                     newitem = forge.forgeitems[i];
+                    forge.forgeitems.Remove(newitem);
+                    player.playeritems.Add(newitem);
                 }
                 i++;
             }
-            forge.forgeitems.Remove(newitem);
-            player.playeritems.Add(newitem);
             transform.position = startposition;
             self.SetActive(false);
         }

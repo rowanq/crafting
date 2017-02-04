@@ -7,10 +7,13 @@ public class Player : MonoBehaviour {
     public float yMovement;
     public Collider2D forge;
     public Forge forgescript;
+    public Collider2D storage;
+    public Storage storagescript;
     public SpriteRenderer spriteRenderer;
     public List<Sprite> Anim;
     public List<GameObject> itemsingame;
-    public List<GameObject> displayitems;
+    public List<GameObject> forgedisplayitems;
+    public List<GameObject> storagedisplayitems;
     public List<GameObject> playeritems;
     bool facingRight;
     bool canmove;
@@ -50,23 +53,12 @@ public class Player : MonoBehaviour {
             {
                 forgescript.OpenForge();
             }
-            DealWithItemPickUp();
+            if (storage.OverlapPoint(position))
+            {
+                storagescript.OpenStorage();
+            }
         }
 
-    }
-    void DealWithItemPickUp()
-    {
-        int i = 0;
-        while (i < itemsingame.Count)
-        {
-            Collider2D collider = itemsingame[i].GetComponent<Collider2D>();
-            if (collider.OverlapPoint(position))
-            {
-                itemsingame[i].GetComponent<Item>().displayitem = displayitems[playeritems.Count + 1];
-                playeritems.Add(itemsingame[i]);
-            }
-            i++;
-        }
     }
     void DealWithMovement()
     {

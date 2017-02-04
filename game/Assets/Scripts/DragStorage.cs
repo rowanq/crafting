@@ -2,13 +2,13 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class DragForce : MonoBehaviour
+public class DragStorage : MonoBehaviour
 {
     public GameObject self;
     public Collider2D targetlocation;
     public Collider2D playerlocation;
     public Player player;
-    public Forge forge;
+    public Storage storage;
     Vector2 startposition;
     // Use this for initialization
     void Start()
@@ -27,8 +27,8 @@ public class DragForce : MonoBehaviour
         if (targetlocation.OverlapPoint(mouseposition))//is it in the target place?
         {
             //do something related to the thing
-            Debug.Log("Forge");
-            GameObject newdisplayitem = player.displayitems.Find(myitem => myitem.Equals(self));
+            Debug.Log("Storage");
+            GameObject newdisplayitem = player.storagedisplayitems.Find(myitem => myitem.Equals(self));
             int i = 0;
             bool found = false;
             GameObject newitem = new GameObject();
@@ -38,7 +38,7 @@ public class DragForce : MonoBehaviour
                 {
                     newitem = player.playeritems[i];
                     player.playeritems.Remove(newitem);
-                    forge.forgeitems.Add(newitem);
+                    storage.storageitems.Add(newitem);
                     found = true;
                 }
                 i++;
@@ -51,19 +51,19 @@ public class DragForce : MonoBehaviour
         {
             //do something related to the thing
             Debug.Log("Player");
-            GameObject newdisplayitem = forge.displayitems.Find(myitem => myitem.Equals(self));
+            GameObject newdisplayitem = storage.displayitems.Find(myitem => myitem.Equals(self));
             int i = 0;
             GameObject newitem = new GameObject();
-            while (i < forge.forgeitems.Count)
+            while (i < storage.storageitems.Count)
             {
-                if (forge.forgeitems[i].GetComponent<Item>().displayitem = newdisplayitem)
+                if (storage.storageitems[i].GetComponent<Item>().displayitem = newdisplayitem)
                 {
-                    newitem = forge.forgeitems[i];
+                    newitem = storage.storageitems[i];
+                    storage.storageitems.Remove(newitem);
+                    player.playeritems.Add(newitem);
                 }
                 i++;
             }
-            forge.forgeitems.Remove(newitem);
-            player.playeritems.Add(newitem);
             transform.position = startposition;
             self.SetActive(false);
         }
