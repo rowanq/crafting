@@ -46,6 +46,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+     <Compile Include="Assets\Anvil.cs" />
+     <Compile Include="Assets\Detailing.cs" />
      <Compile Include="Assets\Scripts\DragForce.cs" />
      <Compile Include="Assets\Scripts\DragStorage.cs" />
      <Compile Include="Assets\Scripts\Forge.cs" />

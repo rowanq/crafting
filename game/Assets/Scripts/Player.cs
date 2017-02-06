@@ -9,6 +9,10 @@ public class Player : MonoBehaviour {
     public Forge forgescript;
     public Collider2D storage;
     public Storage storagescript;
+    public Collider2D anvil;
+    public Anvil anvilscript;
+    public Collider2D detailing;
+    public Detailing detailingscript;
     public SpriteRenderer spriteRenderer;
     public List<Sprite> Anim;
     public List<GameObject> itemsingame;
@@ -56,6 +60,14 @@ public class Player : MonoBehaviour {
             if (storage.OverlapPoint(position))
             {
                 storagescript.OpenStorage();
+            }
+            if (anvil.OverlapPoint(position))
+            {
+                anvilscript.OpenAnvil();
+            }
+            if (detailing.OverlapPoint(position))
+            {
+                detailingscript.OpenDetailing();
             }
         }
 
