@@ -13,6 +13,7 @@ public class Forge : MonoBehaviour {
     public Player player;
     public List<GameObject> displayitems;
     public List<GameObject> forgeitems;
+    public int forgeinventorycount = 0;
     float temp;
     int amountofcoal;
     int amountoftimespentatrighttemp;
@@ -123,7 +124,7 @@ public class Forge : MonoBehaviour {
             {
                 displayitems[i].SetActive(true);
                 SpriteRenderer spriterenderer = displayitems[i].GetComponent<SpriteRenderer>();
-                Sprite newsprite = forgeitems[i].GetComponent<SpriteRenderer>().sprite;
+                Sprite newsprite = displayitems[i].GetComponent<DragForce>().item.GetComponent<SpriteRenderer>().sprite;
                 spriterenderer.sprite = newsprite;
                 i++;
             }

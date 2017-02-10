@@ -5,6 +5,7 @@ using UnityEngine;
 public class DragForce : MonoBehaviour
 {
     public GameObject self;
+    public GameObject item;
     public Collider2D targetlocation;
     public Collider2D playerlocation;
     public Player player;
@@ -27,45 +28,46 @@ public class DragForce : MonoBehaviour
         if (targetlocation.OverlapPoint(mouseposition))//is it in the target place?
         {
             //do something related to the thing
-            Debug.Log("Forge");
-            GameObject newdisplayitem = player.forgedisplayitems.Find(myitem => myitem.Equals(self));
-            int i = 0;
-            bool found = false;
-            GameObject newitem = new GameObject();
-            while (i < player.playeritems.Count || found == false)
+            forge.displayitems[forge.forgeinventorycount].GetComponent<DragForce>().item = item;
+            player.playeritems.Remove(item);
+            forge.forgeitems.Add(item);
+            //deal with the game object you left behind in old menu
+            if ((player.playerinventorycount - 1) <= player.playeritems.Count)
             {
-                if (player.playeritems[i].GetComponent<Item>().displayitem = newdisplayitem)
-                {
-                    newitem = player.playeritems[i];
-                    player.playeritems.Remove(newitem);
-                    forge.forgeitems.Add(newitem);
-                    found = true;
-                }
-                i++;
+                item = player.forgedisplayitems[player.playerinventorycount - 1].GetComponent<DragForce>().item;
             }
+            else
+            {
+                item = null;
+            }
+            player.playerinventorycount--;
+            forge.forgeinventorycount++;
             transform.position = startposition;
             self.SetActive(false);
-
+            Debug.Log(player.playerinventorycount);
         }
         if (playerlocation.OverlapPoint(mouseposition))//is it in the player's inventory?
         {
             //do something related to the thing
-            Debug.Log("Player");
-            GameObject newdisplayitem = forge.displayitems.Find(myitem => myitem.Equals(self));
-            int i = 0;
-            GameObject newitem = new GameObject();
-            while (i < forge.forgeitems.Count)
+            //set the newitem to display that item
+            player.forgedisplayitems[player.playerinventorycount].GetComponent<DragForce>().item = item;
+            forge.forgeitems.Remove(item);
+            player.playeritems.Add(item);
+            //deal with old game object
+            if ((player.playerinventorycount + 1) <= forge.forgeitems.Count)
             {
-                if (forge.forgeitems[i].GetComponent<Item>().displayitem = newdisplayitem)
-                {
-                    newitem = forge.forgeitems[i];
-                    forge.forgeitems.Remove(newitem);
-                    player.playeritems.Add(newitem);
-                }
-                i++;
+                item = forge.displayitems[player.playerinventorycount + 1].GetComponent<DragForce>().item;
             }
+            else
+            {
+                item = null;
+            }
+            player.playerinventorycount++;
+            forge.forgeinventorycount--;
             transform.position = startposition;
             self.SetActive(false);
         }
+        transform.position = startposition;
+        self.SetActive(false);
     }
 }

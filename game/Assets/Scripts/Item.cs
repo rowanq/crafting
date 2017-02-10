@@ -6,12 +6,14 @@ public class Item : MonoBehaviour {
     public Player player;
     public Sprite image;
     public Sprite hotimage;
+    public Sprite anvilimage;
     public SpriteRenderer spriterenderer;
     public GameObject displayitem;
     public float forgeprogress;
     public string name;
     public float forgemintemp;
     public float forgemaxtemp;
+    public bool anvildone = false;
     float forgeprocessneeded;
     float typeOfItem;
     float itemID;
@@ -40,6 +42,10 @@ public class Item : MonoBehaviour {
         if (forgeprogress >= forgeprocessneeded)
         {
             spriterenderer.sprite = hotimage;
+        }
+        if (anvildone)
+        {
+            Debug.Log("SUCKFUCKINGCESS!!");
         }
 	}
 }

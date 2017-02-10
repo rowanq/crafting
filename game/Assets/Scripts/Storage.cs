@@ -9,9 +9,11 @@ public class Storage : MonoBehaviour {
     public Player player;
     public List<GameObject> displayitems;
     public List<GameObject> storageitems;
+    public int storageinventorycount = 2;
 	// Use this for initialization
 	void Start () {
         isRunning = false;
+        storageinventorycount = 2;
 	}
 	
 	// Update is called once per frame
@@ -64,7 +66,7 @@ public class Storage : MonoBehaviour {
             {
                 displayitems[i].SetActive(true);
                 SpriteRenderer spriterenderer = displayitems[i].GetComponent<SpriteRenderer>();
-                Sprite newsprite = storageitems[i].GetComponent<SpriteRenderer>().sprite;
+                Sprite newsprite = displayitems[i].GetComponent<DragStorage>().item.GetComponent<SpriteRenderer>().sprite;
                 spriterenderer.sprite = newsprite;
                 i++;
             }

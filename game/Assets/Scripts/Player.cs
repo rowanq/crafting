@@ -18,7 +18,9 @@ public class Player : MonoBehaviour {
     public List<GameObject> itemsingame;
     public List<GameObject> forgedisplayitems;
     public List<GameObject> storagedisplayitems;
+    public List<GameObject> anvildisplayitems;
     public List<GameObject> playeritems;
+    public int playerinventorycount = 0;
     bool facingRight;
     bool canmove;
     bool moving;
@@ -41,6 +43,7 @@ public class Player : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
         canmove = true;
+        DealWithItems();
         if (forgescript.isRunning)
         {
             canmove = false;
@@ -160,5 +163,17 @@ public class Player : MonoBehaviour {
             curSprite = 0;
         }
         spriteRenderer.sprite = Anim[curSprite];
+    }
+    void DealWithItems()
+    {
+        int i = 0;
+        while (i < playerinventorycount)
+        {
+            //storage
+            storagedisplayitems[i].GetComponent<DragStorage>().item = playeritems[i];
+            forgedisplayitems[i].GetComponent<DragForce>().item = playeritems[i];
+            anvildisplayitems[i].GetComponent<DragAnvil>().item = playeritems[i];
+            i++;
+        }
     }
 }
