@@ -22,8 +22,9 @@ public class DragStorage : MonoBehaviour
         Vector2 objposition = Camera.main.ScreenToWorldPoint(mouseposition);
         transform.position = objposition;
     }
-    void OnMouseUpAsButton()
+    void OnMouseUp()
     {
+        //Debug.Log("a"+transform.name);
         Vector2 mouseposition = new Vector2(transform.position.x, transform.position.y);
         if (targetlocation.OverlapPoint(mouseposition))//is it in the target place?
         {
@@ -35,6 +36,7 @@ public class DragStorage : MonoBehaviour
             if ((player.playerinventorycount - 1) <= player.playeritems.Count)
             {
                 item = player.storagedisplayitems[player.playerinventorycount - 1].GetComponent<DragStorage>().item;
+                //Debug.Log("x" + player.storagedisplayitems[player.playerinventorycount - 1].transform.name);
             }
             else
             {
@@ -42,9 +44,6 @@ public class DragStorage : MonoBehaviour
             }
             player.playerinventorycount--;
             storage.storageinventorycount++;
-            transform.position = startposition;
-            self.SetActive(false);
-            Debug.Log(player.playerinventorycount);
         }
         if (playerlocation.OverlapPoint(mouseposition))//is it in the player's inventory?
         {
@@ -57,6 +56,7 @@ public class DragStorage : MonoBehaviour
             if ((player.playerinventorycount + 1) <= storage.storageitems.Count)
             {
                 item = storage.displayitems[player.playerinventorycount + 1].GetComponent<DragStorage>().item;
+                //Debug.Log("y" + storage.displayitems[player.playerinventorycount + 1].transform.name);
             }
             else
             {
@@ -64,8 +64,6 @@ public class DragStorage : MonoBehaviour
             }
             player.playerinventorycount++;
             storage.storageinventorycount--;
-            transform.position = startposition;
-            self.SetActive(false);
         }
         transform.position = startposition;
         self.SetActive(false);

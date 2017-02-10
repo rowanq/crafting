@@ -7,6 +7,7 @@ public class Anvil : MonoBehaviour {
     public GameObject panel;
     public Player player;
     public bool hammer;
+    public GameObject realhammer;
     public List<GameObject> displayitems;
     public List<GameObject> anvilitems;
     public List<GameObject> targets;
@@ -18,6 +19,8 @@ public class Anvil : MonoBehaviour {
     string product;
     public List<Collider2D> placestohit;
     public List<bool> placeshit;
+    bool clicked = false;
+    int framesclicked = 0;
 	// Use this for initialization
 	void Start () {
         isRunning = false;
@@ -30,13 +33,43 @@ public class Anvil : MonoBehaviour {
             DisplayItems();
             if (hammer)
             {
+                AnimateHammer();
                 if (Input.GetMouseButtonDown(0))
                 {
-                    CheckHit();
+                    clicked = true;
+                    if (anvilinventorycount> 0)
+                    {
+                        CheckHit();
+                    }
                 }
             }
         }
 	}
+    void AnimateHammer()
+    {
+        Vector2 mouseposition = new Vector2(Input.mousePosition.x, Input.mousePosition.y);
+        Vector2 objposition = Camera.main.ScreenToWorldPoint(mouseposition);
+        realhammer.transform.position = objposition;
+        if (clicked)
+        {
+            framesclicked++;
+            if (framesclicked < 6)
+            {
+                Debug.Log("a"+framesclicked);
+                realhammer.transform.Rotate(0, 0, 18);
+            }
+            else if (framesclicked < 11)
+            {
+                Debug.Log("b" + framesclicked);
+                realhammer.transform.Rotate(0, 0, -18);
+            }
+            else
+            {
+                clicked = false;
+                framesclicked = 0;
+            }
+        }
+    }
     public void OpenAnvil()
     {
         isRunning = true;
@@ -69,6 +102,15 @@ public class Anvil : MonoBehaviour {
         }
         CheckProduct();
         CheckPlacement();
+    }
+    public void UnReadyAnvil()
+    {
+        int i = 0;
+        while (i < displayitems.Count)
+        {
+            displayitems[i].GetComponent<DragAnvil>().ready = false;
+            i++;
+        }
     }
     public void GetHammer()
     {
@@ -147,6 +189,7 @@ public class Anvil : MonoBehaviour {
             if (done)
             {
                 anvilitems[0].GetComponent<Item>().anvildone = true;
+                anvilitems[0].GetComponent<Item>().product = "Dagger";
             }
         }
     }
@@ -165,7 +208,7 @@ public class Anvil : MonoBehaviour {
             {
                 player.anvildisplayitems[i].SetActive(true);
                 SpriteRenderer spriterenderer = player.anvildisplayitems[i].GetComponent<SpriteRenderer>();
-                Sprite newsprite = player.playeritems[i].GetComponent<SpriteRenderer>().sprite;
+                Sprite newsprite = player.playeritems[i].GetComponent<Item>().image;
                 spriterenderer.sprite = newsprite;
                 i++;
             }
@@ -179,7 +222,7 @@ public class Anvil : MonoBehaviour {
                 j++;
             }
             int i = 0;
-            while (i < anvilitems.Count)
+            while (i < anvilinventorycount)
             {
                 Debug.Log(i);
                 displayitems[i].SetActive(true);

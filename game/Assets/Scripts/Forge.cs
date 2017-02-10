@@ -106,7 +106,7 @@ public class Forge : MonoBehaviour {
             {
                 player.forgedisplayitems[i].SetActive(true);
                 SpriteRenderer spriterenderer = player.forgedisplayitems[i].GetComponent<SpriteRenderer>();
-                Sprite newsprite = player.playeritems[i].GetComponent<SpriteRenderer>().sprite;
+                Sprite newsprite = player.playeritems[i].GetComponent<Item>().image;
                 spriterenderer.sprite = newsprite;
                 i++;
             }
@@ -120,11 +120,11 @@ public class Forge : MonoBehaviour {
                 j++;
             }
             int i = 0;
-            while (i < forgeitems.Count)
+            while (i < forgeinventorycount)
             {
                 displayitems[i].SetActive(true);
                 SpriteRenderer spriterenderer = displayitems[i].GetComponent<SpriteRenderer>();
-                Sprite newsprite = displayitems[i].GetComponent<DragForce>().item.GetComponent<SpriteRenderer>().sprite;
+                Sprite newsprite = displayitems[i].GetComponent<DragForce>().item.GetComponent<Item>().image;
                 spriterenderer.sprite = newsprite;
                 i++;
             }

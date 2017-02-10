@@ -22,7 +22,7 @@ public class DragForce : MonoBehaviour
         Vector2 objposition = Camera.main.ScreenToWorldPoint(mouseposition);
         transform.position = objposition;
     }
-    void OnMouseUpAsButton()
+    void OnMouseUp()
     {
         Vector2 mouseposition = new Vector2(transform.position.x, transform.position.y);
         if (targetlocation.OverlapPoint(mouseposition))//is it in the target place?

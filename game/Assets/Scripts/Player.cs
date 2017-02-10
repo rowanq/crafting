@@ -19,6 +19,7 @@ public class Player : MonoBehaviour {
     public List<GameObject> forgedisplayitems;
     public List<GameObject> storagedisplayitems;
     public List<GameObject> anvildisplayitems;
+    public List<GameObject> detailingdisplayitems;
     public List<GameObject> playeritems;
     public int playerinventorycount = 0;
     bool facingRight;
@@ -173,6 +174,7 @@ public class Player : MonoBehaviour {
             storagedisplayitems[i].GetComponent<DragStorage>().item = playeritems[i];
             forgedisplayitems[i].GetComponent<DragForce>().item = playeritems[i];
             anvildisplayitems[i].GetComponent<DragAnvil>().item = playeritems[i];
+            detailingdisplayitems[i].GetComponent<DragDetailing>().item = playeritems[i];
             i++;
         }
     }

@@ -20,9 +20,8 @@ public class DragAnvil : MonoBehaviour {
     }
     void OnMouseDrag()
     {
-        if (ready == false)
+        if (ready)
         {
-            Debug.Log("yup");
             Vector2 mouseposition = new Vector2(Input.mousePosition.x, Input.mousePosition.y);
             Vector2 objposition = Camera.main.ScreenToWorldPoint(mouseposition);
             transform.position = objposition;
@@ -41,10 +40,10 @@ public class DragAnvil : MonoBehaviour {
             }
         }
     }
-    void OnMouseUpAsButton()
+    void OnMouseUp()
     {
         Vector2 mouseposition = new Vector2(transform.position.x, transform.position.y);
-        if (targetlocation.OverlapPoint(mouseposition))//is it in the target place?
+        if (targetlocation.OverlapPoint(mouseposition) && start != false && ready == false)//is it in the target place?
         {
             //do something related to the thing
             anvil.displayitems[anvil.anvilinventorycount].GetComponent<DragAnvil>().item = item;
@@ -64,7 +63,7 @@ public class DragAnvil : MonoBehaviour {
             transform.position = startposition;
             self.SetActive(false);
         }
-        if (playerlocation.OverlapPoint(mouseposition))//is it in the player's inventory?
+        if (playerlocation.OverlapPoint(mouseposition) && start != true && ready == false)//is it in the player's inventory?
         {
             //do something related to the thing
             //set the newitem to display that item
@@ -85,7 +84,10 @@ public class DragAnvil : MonoBehaviour {
             transform.position = startposition;
             self.SetActive(false);
         }
-        transform.position = startposition;
-        self.SetActive(false);
+        if (ready == false)
+        {
+            transform.position = startposition;
+            self.SetActive(false);
+        }
     }
 }
