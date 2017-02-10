@@ -12,7 +12,7 @@ public class DragAnvil : MonoBehaviour {
     public bool start; //true is player, false is whatever
     public bool ready = false;
     public int rotated = 0;
-    Vector2 startposition;
+    public Vector2 startposition;
     // Use this for initialization
     void Start()
     {
@@ -20,8 +20,9 @@ public class DragAnvil : MonoBehaviour {
     }
     void OnMouseDrag()
     {
-        if (ready)
+        if (ready == false)
         {
+            Debug.Log("why god");
             Vector2 mouseposition = new Vector2(Input.mousePosition.x, Input.mousePosition.y);
             Vector2 objposition = Camera.main.ScreenToWorldPoint(mouseposition);
             transform.position = objposition;

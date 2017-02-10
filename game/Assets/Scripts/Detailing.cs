@@ -76,7 +76,7 @@ public class Detailing : MonoBehaviour
     }
     void CheckProduct()
     {
-        if (product == "Dagger")
+        if (product == "Dagger" || product == "Sword")
         {
             int i = 0;
             while (i < detailinginventorycount)

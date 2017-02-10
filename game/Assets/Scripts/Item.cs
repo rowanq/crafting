@@ -14,6 +14,8 @@ public class Item : MonoBehaviour {
     public string product;
     public float forgemintemp;
     public float forgemaxtemp;
+    public bool forgedone = false;
+    public bool welddone = false;
     public bool anvildone = false;
     public bool detailingdone = false;
     public List<Sprite> imagesprites;
@@ -33,8 +35,8 @@ public class Item : MonoBehaviour {
             image = imagesprites[0];
             hotimage = imagesprites[1];
             anvilimage = imagesprites[2];
-            forgemintemp = 80;
-            forgemaxtemp = 100;
+            forgemintemp = 40;
+            forgemaxtemp = 60;
             forgeprocessneeded = 80;
         }
         else if (name == "Iron")
@@ -42,8 +44,8 @@ public class Item : MonoBehaviour {
             image = imagesprites[9];
             hotimage = imagesprites[1];
             anvilimage = imagesprites[2];
-            forgemintemp = 120;
-            forgemaxtemp = 140;
+            forgemintemp = 100;
+            forgemaxtemp = 120;
             forgeprocessneeded = 160;
         }
         else if (name == "Handle")
@@ -52,7 +54,15 @@ public class Item : MonoBehaviour {
             anvilimage = imagesprites[8];
             forgemintemp = 1000;
             forgemaxtemp = 1010;
-            forgeprocessneeded = 0;
+            forgeprocessneeded = 100;
+        }
+        else if (name == "Handle_Long")
+        {
+            image = imagesprites[14];
+            anvilimage = imagesprites[15];
+            forgemintemp = 1000;
+            forgemaxtemp = 1010;
+            forgeprocessneeded = 100;
         }
     }
 	// Update is called once per frame
@@ -60,18 +70,45 @@ public class Item : MonoBehaviour {
         typeOfItem++;
         if (forgeprogress >= forgeprocessneeded)
         {
-            spriterenderer.sprite = hotimage;
+            forgedone = true;
         }
         if (anvildone)
         {
+            if (product == "Dagger")
+            {
+                anvilimage = imagesprites[5];
+                image = imagesprites[3];
+            }
+            else if (product == "Hammer")
+            {
+                anvilimage = imagesprites[12];
+                image = imagesprites[10];
+            }
+            else if (product == "Sword")
+            {
+                anvilimage = imagesprites[18];
+                image = imagesprites[16];
+            }
             Debug.Log("SUCKFUCKINGCESS!!");
-            anvilimage = imagesprites[5];
-            image = imagesprites[3];
         }
         if (detailingdone)
         {
-            anvilimage = imagesprites[6];
-            image = imagesprites[4];
+            if (product == "Dagger")
+            {
+                anvilimage = imagesprites[6];
+                image = imagesprites[4];
+            }
+            else if (product == "Hammer")
+            {
+                anvilimage = imagesprites[13];
+                image = imagesprites[11];
+            }
+            else if (product == "Sword")
+            {
+                anvilimage = imagesprites[19];
+                image = imagesprites[17];
+            }
+            Debug.Log("SUCKFUCKINGCESS!!");
         }
 	}
 }
