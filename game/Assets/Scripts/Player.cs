@@ -13,6 +13,11 @@ public class Player : MonoBehaviour {
     public Anvil anvilscript;
     public Collider2D detailing;
     public Detailing detailingscript;
+    public Collider2D library;
+    public Library libraryscript;
+    public Collider2D desk;
+    public Desk deskscript;
+    public List<string> orders;
     public SpriteRenderer spriteRenderer;
     public List<Sprite> Anim;
     public List<GameObject> itemsingame;
@@ -23,7 +28,7 @@ public class Player : MonoBehaviour {
     public List<GameObject> playeritems;
     public int playerinventorycount = 0;
     bool facingRight;
-    bool canmove;
+    public bool canmove;
     bool moving;
     bool running;
     int curSprite;
@@ -45,7 +50,7 @@ public class Player : MonoBehaviour {
 	void Update () {
         canmove = true;
         DealWithItems();
-        if (forgescript.isRunning)
+        if (forgescript.isRunning || storagescript.isRunning || anvilscript.isRunning || libraryscript.isRunning || detailingscript.isRunning)
         {
             canmove = false;
         }
@@ -72,6 +77,14 @@ public class Player : MonoBehaviour {
             if (detailing.OverlapPoint(position))
             {
                 detailingscript.OpenDetailing();
+            }
+            if (library.OverlapPoint(position))
+            {
+                libraryscript.OpenLibrary();
+            }
+            if (desk.OverlapPoint(position))
+            {
+                deskscript.CheckforOrder();
             }
         }
 
