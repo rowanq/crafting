@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Player : MonoBehaviour {
     public float xMovement;
@@ -18,6 +19,7 @@ public class Player : MonoBehaviour {
     public Collider2D desk;
     public Desk deskscript;
     public List<string> orders;
+    public List<GameObject> orderdisplays;
     public SpriteRenderer spriteRenderer;
     public List<Sprite> Anim;
     public List<GameObject> itemsingame;
@@ -59,6 +61,7 @@ public class Player : MonoBehaviour {
         if (canmove)
         {
             DealWithMovement();
+            //DisplayOrders();
         }
         if (Input.GetKeyDown(KeyCode.E))
         {
@@ -189,6 +192,22 @@ public class Player : MonoBehaviour {
             anvildisplayitems[i].GetComponent<DragAnvil>().item = playeritems[i];
             detailingdisplayitems[i].GetComponent<DragDetailing>().item = playeritems[i];
             i++;
+        }
+    }
+    void DisplayOrders()
+    {
+        int i = 0;
+        while (i< orderdisplays.Count)
+        {
+            orderdisplays[i].SetActive(false);
+            i++;
+        }
+        int j = 0;
+        while (j < orders.Count)
+        {
+            orderdisplays[j].SetActive(true);
+            orderdisplays[j].GetComponent<Text>().text = orders[j];
+            j++;
         }
     }
 }

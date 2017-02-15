@@ -257,6 +257,7 @@ public class Anvil : MonoBehaviour {
     {
         Vector2 mouseposition = new Vector2(Input.mousePosition.x, Input.mousePosition.y);
         Vector2 mouse = Camera.main.ScreenToWorldPoint(mouseposition);
+        Vector2 mouses = mouse -  new Vector2(150, 0);
         if (product == "Dagger" || product == "Hammer" || product == "Sword")
         {
             int i = 0;

@@ -43,11 +43,11 @@ public class Storage : MonoBehaviour {
                 j++;
             }
             int i = 0;
-            while (i < player.playeritems.Count)
+            while (i < player.playerinventorycount)
             {
                 player.storagedisplayitems[i].SetActive(true);
                 SpriteRenderer spriterenderer = player.storagedisplayitems[i].GetComponent<SpriteRenderer>();
-                Sprite newsprite = player.playeritems[i].GetComponent<Item>().image;
+                Sprite newsprite = player.storagedisplayitems[i].GetComponent<DragStorage>().item.GetComponent<Item>().image;
                 spriterenderer.sprite = newsprite;
                 i++;
             }

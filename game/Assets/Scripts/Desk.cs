@@ -56,7 +56,7 @@ public class Desk : MonoBehaviour {
     void GenerateOrder()
     {
         string order = "";
-        int ordern = Random.Range(0, 3);
+        int ordern = Random.Range(0, 2);
         if(ordern == 0)
         {
             order = "Dagger";
@@ -67,7 +67,10 @@ public class Desk : MonoBehaviour {
         {
             order = "Sword";
         }
-        player.orders.Add(order);
+        if (player.orders.Count < 3)
+        {
+            player.orders.Add(order);
+        }
         string speak = "";
         int speakn = Random.Range(0, 3);
         if (speakn == 0)
@@ -81,6 +84,10 @@ public class Desk : MonoBehaviour {
         else if (speakn == 2)
         {
             speak = "Oh god! Someone please make a ";
+        }
+        else if (speakn == 3)
+        {
+            speak = "";
         }
         thesaying = speak + order;
         DisplayOrder();
@@ -105,7 +112,7 @@ public class Desk : MonoBehaviour {
                     player.playeritems.Remove(player.playeritems[j]);
                     player.playerinventorycount--;
                     thesaying = "Thank you oh so much for " + player.orders[i];
-                    timeitsbeenup = 30;
+                    timeitsbeenup = 120;
                     DisplayOrder();
                     player.orders.Remove(player.orders[i]);
                     Debug.Log(thesaying);

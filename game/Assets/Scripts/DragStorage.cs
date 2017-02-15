@@ -6,6 +6,7 @@ public class DragStorage : MonoBehaviour
 {
     public GameObject self;
     public GameObject item;
+    public bool isplayeritem;
     public Collider2D targetlocation;
     public Collider2D playerlocation;
     public Player player;
@@ -16,56 +17,81 @@ public class DragStorage : MonoBehaviour
     {
         startposition = transform.position;
     }
-    void OnMouseDrag()
+    void OnMouseDown()
     {
-        Vector2 mouseposition = new Vector2(Input.mousePosition.x, Input.mousePosition.y);
-        Vector2 objposition = Camera.main.ScreenToWorldPoint(mouseposition);
-        transform.position = objposition;
-    }
-    void OnMouseUp()
-    {
-        //Debug.Log("a"+transform.name);
-        Vector2 mouseposition = new Vector2(transform.position.x, transform.position.y);
-        if (targetlocation.OverlapPoint(mouseposition))//is it in the target place?
+        Debug.Log(self.name);
+        if (isplayeritem)//goes to storage
         {
-            //do something related to the thing
+            //find gameobject item needs to go to
             storage.displayitems[storage.storageinventorycount].GetComponent<DragStorage>().item = item;
+            //give this item to it
             player.playeritems.Remove(item);
             storage.storageitems.Add(item);
-            //deal with the game object you left behind in old menu
-            if ((player.playerinventorycount - 1) <= player.playeritems.Count)
+            //check if GAMEOBJECT SELf is last in list
+            int i = 0;
+            int placeinline = -1;
+            while (i < player.playerinventorycount)
             {
-                item = player.storagedisplayitems[player.playerinventorycount - 1].GetComponent<DragStorage>().item;
-                //Debug.Log("x" + player.storagedisplayitems[player.playerinventorycount - 1].transform.name);
+                if (self == player.storagedisplayitems[i])//i now equals the place in order
+                {
+                    if (i != (player.playerinventorycount - 1))//it is not last in the order
+                    {
+                        placeinline = i;
+                    }
+                    else //is last
+                    {
+                        Debug.Log("last!");
+                        self.SetActive(false);
+                    }
+                }
+                i++;
             }
-            else
+            if (placeinline != -1)//its not last and you need to do something
             {
-                item = null;
+                while ((placeinline + 1) < player.playerinventorycount)
+                {
+                    GameObject curplace = player.storagedisplayitems[placeinline];
+                    GameObject nextplace = player.storagedisplayitems[placeinline + 1];
+                    curplace.GetComponent<DragStorage>().item = nextplace.GetComponent<DragStorage>().item;
+                    placeinline++;
+                }
             }
             player.playerinventorycount--;
             storage.storageinventorycount++;
         }
-        if (playerlocation.OverlapPoint(mouseposition))//is it in the player's inventory?
+        else if(player.playerinventorycount < 4)//goes to player
         {
-            //do something related to the thing
-            //set the newitem to display that item
+            //find gameobject item needs to go to
             player.storagedisplayitems[player.playerinventorycount].GetComponent<DragStorage>().item = item;
-            storage.storageitems.Remove(item);
             player.playeritems.Add(item);
-            //deal with old game object
-            if ((player.playerinventorycount + 1) <= storage.storageitems.Count)
+            storage.storageitems.Remove(item);
+            //check if GAMEOBJECT SELf is last in list
+            int i = 0;
+            int placeinline = -1;
+            while (i < storage.storageinventorycount)
             {
-                item = storage.displayitems[player.playerinventorycount + 1].GetComponent<DragStorage>().item;
-                //Debug.Log("y" + storage.displayitems[player.playerinventorycount + 1].transform.name);
+                if (self == storage.displayitems[i])//i now equals the place in order
+                {
+                    if (i != (storage.storageinventorycount - 1))//it is not last in the order
+                    {
+                        placeinline = i;
+                    }
+                }
+                i++;
             }
-            else
+            if (placeinline != -1)//its not last and you need to do something
             {
-                item = null;
+                while ((placeinline + 1) < storage.storageinventorycount)
+                {
+                    Debug.Log("FAAAAA");
+                    GameObject curplace = storage.displayitems[placeinline];
+                    GameObject nextplace = storage.displayitems[placeinline + 1];
+                    curplace.GetComponent<DragStorage>().item = nextplace.GetComponent<DragStorage>().item;
+                    placeinline++;
+                }
             }
             player.playerinventorycount++;
             storage.storageinventorycount--;
         }
-        transform.position = startposition;
-        self.SetActive(false);
     }
 }
