@@ -97,27 +97,46 @@ public class Anvil : MonoBehaviour {
     public void ReadyAnvil()
     {
         int i = 0;
-        while (i < displayitems.Count)
+        bool nothot = false;
+        while (i < anvilinventorycount && nothot == false)
         {
-            displayitems[i].GetComponent<DragAnvil>().ready = true;
-            if (displayitems[i].active)
+            if (displayitems[i].GetComponent<DragAnvil>().item.GetComponent<Item>().forgedone)
             {
-                numberofbarsused++;
-                Debug.Log(displayitems[i].GetComponent<DragAnvil>().rotated);
-                Debug.Log(displayitems[i].GetComponent<DragAnvil>().rotated % 2);
-                if (displayitems[i].GetComponent<DragAnvil>().rotated%2 != 0) //odd and therefore rotated
+                displayitems[i].GetComponent<DragAnvil>().ready = true;
+                if (displayitems[i].active)
                 {
-                    rotated = true;
+                    numberofbarsused++;
+                    if (displayitems[i].GetComponent<DragAnvil>().rotated % 2 != 0) //odd and therefore rotated
+                    {
+                        rotated = true;
+                    }
+                    else //even and therefore not rotated
+                    {
+                        rotated = false;
+                    }
                 }
-                else //even and therefore not rotated
-                {
-                    rotated = false;
-                }
+            }
+            else //item isn't hot enough, FUCK YOU!!
+            {
+                nothot = true;
             }
             i++;
         }
-        CheckProduct();
-        CheckPlacement();
+        if (nothot)
+        {
+            i = 0;
+            while(i < displayitems.Count)
+            {
+                displayitems[i].GetComponent<DragAnvil>().ready = false;
+                numberofbarsused = -1;
+                i++;
+            }
+            Debug.Log("You cna't fuckin use thees");
+        }else
+        {
+            CheckProduct();
+            CheckPlacement();
+        }
     }
     public void UnReadyAnvil()
     {
@@ -125,6 +144,23 @@ public class Anvil : MonoBehaviour {
         while (i < displayitems.Count)
         {
             displayitems[i].GetComponent<DragAnvil>().ready = false;
+            displayitems[i].transform.position = displayitems[i].GetComponent<DragAnvil>().startposition;
+            i++;
+        }
+        numberofbarsused = 0;
+        i = 0;
+        while (i < placeshit.Count)
+        {
+            placestohit.Remove(placestohit[i]);
+            placeshit.Remove(placeshit[i]);
+            i++;
+        }
+        i = 0;
+        while (i < placeswelt.Count)
+        {
+            placestoweld.Remove(placestoweld[i]);
+            placestoweldto.Remove(placestoweldto[i]);
+            placeswelt.Remove(placeswelt[i]);
             i++;
         }
     }
@@ -240,7 +276,6 @@ public class Anvil : MonoBehaviour {
                     }
                     j++;
                 }
-                Debug.Log(placestohit.Count);
 
             }
         }
@@ -279,7 +314,6 @@ public class Anvil : MonoBehaviour {
                 }
                 j++;
             }
-            Debug.Log(done+"  "+ anvilitems[0].GetComponent<Item>().anvildone);
             if (done && anvilitems[0].GetComponent<Item>().anvildone == false)
             {
                 anvilitems[0].GetComponent<Item>().anvildone = true;
@@ -357,6 +391,10 @@ public class Anvil : MonoBehaviour {
                 player.anvildisplayitems[i].SetActive(true);
                 SpriteRenderer spriterenderer = player.anvildisplayitems[i].GetComponent<SpriteRenderer>();
                 Sprite newsprite = player.anvildisplayitems[i].GetComponent<DragAnvil>().item.GetComponent<Item>().image;
+                if (player.playeritems[i].GetComponent<Item>().forgedone && player.playeritems[i].GetComponent<Item>().anvildone == false)
+                {
+                    newsprite = player.forgedisplayitems[i].GetComponent<DragForce>().item.GetComponent<Item>().hotimage;
+                }
                 spriterenderer.sprite = newsprite;
                 i++;
             }

@@ -107,7 +107,7 @@ public class Forge : MonoBehaviour {
                 player.forgedisplayitems[i].SetActive(true);
                 SpriteRenderer spriterenderer = player.forgedisplayitems[i].GetComponent<SpriteRenderer>();
                 Sprite newsprite = player.forgedisplayitems[i].GetComponent<DragForce>().item.GetComponent<Item>().image;
-                if (player.playeritems[i].GetComponent<Item>().forgedone)
+                if (player.playeritems[i].GetComponent<Item>().forgedone && player.playeritems[i].GetComponent<Item>().anvildone == false)
                 {
                     newsprite = player.forgedisplayitems[i].GetComponent<DragForce>().item.GetComponent<Item>().hotimage;
                 }

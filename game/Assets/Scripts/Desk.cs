@@ -6,6 +6,8 @@ using UnityEngine.UI;
 public class Desk : MonoBehaviour {
     public Player player;
     public GameObject speaking;
+    public GameObject orders;
+    public int maxplayerorders = 3;
     bool isRunning;
     string thesaying;
     int timeitsbeenup;
@@ -20,11 +22,27 @@ public class Desk : MonoBehaviour {
         if (timeitsbeenup <= 0)
         {
             speaking.SetActive(false);
-            if (timetillnextorder <= 0)
+            if (timetillnextorder <= 0 && player.orders.Count < maxplayerorders)
             {
                 GenerateOrder();
                 WhenIsNextOrder();
                 timeitsbeenup = 60 * 4;
+            }
+        }
+        int i = 0;
+        while (i < orders.transform.childCount)
+        {
+            orders.transform.GetChild(i).gameObject.SetActive(false);
+            i++;
+        }
+        if (player.canmove)
+        {
+            i = 0;
+            while (i < player.orders.Count)
+            {
+                orders.transform.GetChild(i).gameObject.SetActive(true);
+                orders.transform.GetChild(i).gameObject.GetComponent<Text>().text = player.orders[i];
+                i++;
             }
         }
 	}
@@ -67,7 +85,7 @@ public class Desk : MonoBehaviour {
         {
             order = "Sword";
         }
-        if (player.orders.Count < 3)
+        if (player.orders.Count < maxplayerorders)
         {
             player.orders.Add(order);
         }

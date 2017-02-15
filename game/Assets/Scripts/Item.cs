@@ -89,7 +89,6 @@ public class Item : MonoBehaviour {
                 anvilimage = imagesprites[18];
                 image = imagesprites[16];
             }
-            Debug.Log("SUCKFUCKINGCESS!!");
         }
         if (detailingdone)
         {

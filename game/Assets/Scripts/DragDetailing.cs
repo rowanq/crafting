@@ -11,14 +11,36 @@ public class DragDetailing : MonoBehaviour
     public Collider2D playerlocation;
     public Player player;
     public Detailing detailing;
-    public bool start; //true is player, false is whatever
     public bool ready = false;
     public int rotated = 0;
-    Vector2 startposition;
+    public Vector2 startposition;
     // Use this for initialization
     void Start()
     {
         startposition = transform.position;
+    }
+    void OnMouseDrag()
+    {
+        if (isplayeritem == false)
+        {
+            if (ready && Input.GetKey(KeyCode.LeftShift))
+            {
+                Debug.Log("u");
+                Vector2 mouseposition = new Vector2(Input.mousePosition.x, Input.mousePosition.y);
+                Vector2 objposition = Camera.main.ScreenToWorldPoint(mouseposition);
+                transform.position = objposition;
+                if (Input.GetKeyDown(KeyCode.LeftArrow) || Input.GetKeyDown(KeyCode.A))
+                {
+                    transform.Rotate(0, 0, 90);
+                    rotated--;
+                }
+                if (Input.GetKeyDown(KeyCode.RightArrow) || Input.GetKeyDown(KeyCode.D))
+                {
+                    transform.Rotate(0, 0, -90);
+                    rotated++;
+                }
+            }
+        }
     }
     void OnMouseDown()
     {
@@ -60,7 +82,7 @@ public class DragDetailing : MonoBehaviour
             player.playerinventorycount--;
             detailing.detailinginventorycount++;
         }
-        else if (player.playerinventorycount < 4)//goes to player
+        else if (player.playerinventorycount < 4 && ready == false)//goes to player
         {
             //find gameobject item needs to go to
             player.detailingdisplayitems[player.playerinventorycount].GetComponent<DragDetailing>().item = item;

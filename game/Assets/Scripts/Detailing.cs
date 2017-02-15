@@ -12,9 +12,12 @@ public class Detailing : MonoBehaviour
     public int detailinginventorycount;
     bool rotated;
     string product;
+    int product_i;
     public List<Collider2D> connection1;
     public List<Collider2D> connection2;
     public List<bool> connectionmade;
+    bool notrotatedproperly = false;
+    bool rotationsame; //if true, rotations need to be the same, if not the opposite
     // Use this for initialization
     void Start()
     {
@@ -58,6 +61,7 @@ public class Detailing : MonoBehaviour
                 if (displayitems[i].GetComponent<DragDetailing>().item.GetComponent<Item>().product != "None")
                 {
                     product = displayitems[i].GetComponent<DragDetailing>().item.GetComponent<Item>().product;
+                    product_i = i;
                 }
             }
             i++;
@@ -66,11 +70,29 @@ public class Detailing : MonoBehaviour
     }
     public void UnReadyDetailing()
     {
-        CheckPlacement();
+        CheckRotation();
+        if (notrotatedproperly == false)
+        {
+            Debug.Log("yay");
+            CheckPlacement();
+        }
+        else
+        {
+            Debug.Log("boo");
+        }
         int i = 0;
         while (i < displayitems.Count)
         {
             displayitems[i].GetComponent<DragDetailing>().ready = false;
+            displayitems[i].transform.position = displayitems[i].GetComponent<DragDetailing>().startposition;
+            i++;
+        }
+        i = 0;
+        while (i < connectionmade.Count)
+        {
+            connection1.Remove(connection1[i]);
+            connection2.Remove(connection2[i]);
+            connectionmade.Remove(connectionmade[i]);
             i++;
         }
     }
@@ -78,36 +100,102 @@ public class Detailing : MonoBehaviour
     {
         if (product == "Dagger" || product == "Sword")
         {
+            rotationsame = true;
             int i = 0;
             while (i < detailinginventorycount)
             {
-                if (displayitems[i].GetComponent<DragDetailing>().item.GetComponent<Item>().product == "Dagger")
+                if (displayitems[i].GetComponent<DragDetailing>().item.GetComponent<Item>().product != "None")
                 {
-                    int j = displayitems[i].transform.childCount - 1;
-                    while (j > -1)
+                    int j = 0;
+                    while (j < displayitems[i].transform.childCount)
                     {
-                        if (displayitems[0].transform.GetChild(i).name == "Bottom")
+                        if (displayitems[i].transform.GetChild(j).name == "Bottom")
                         {
-                            connection1.Add(displayitems[i].transform.GetChild(i).gameObject.GetComponent<Collider2D>());
+                            connection1.Add(displayitems[i].transform.GetChild(j).gameObject.GetComponent<Collider2D>());
                             connectionmade.Add(false);
                         }
-                        j--;
+                        j++;
                     }
                 }
                 if (displayitems[i].GetComponent<DragDetailing>().item.GetComponent<Item>().product == "None")
                 {
-                    int j = displayitems[i].transform.childCount - 1;
-                    while (j > -1)
+                    int j = 0;
+                    while (j < displayitems[i].transform.childCount)
                     {
-                        if (displayitems[0].transform.GetChild(i).name == "Small_Handle_Top")
+                        if (displayitems[i].transform.GetChild(j).name == "Small_Handle_Top")
                         {
-                            connection2.Add(displayitems[i].transform.GetChild(i).gameObject.GetComponent<Collider2D>());
+                            connection2.Add(displayitems[i].transform.GetChild(j).gameObject.GetComponent<Collider2D>());
                         }
-                        j--;
+                        j++;
                     }
                 }
                 i++;
             }
+        }
+        else if(product == "Hammer")
+        {
+            rotationsame = false;
+            int i = 0;
+            while (i < detailinginventorycount)
+            {
+                if (displayitems[i].GetComponent<DragDetailing>().item.GetComponent<Item>().product != "None")
+                {
+                    int j = 0;
+                    while (j < displayitems[i].transform.childCount)
+                    {
+                        if (displayitems[i].transform.GetChild(j).name == "Through_Middle")
+                        {
+                            connection1.Add(displayitems[i].transform.GetChild(j).gameObject.GetComponent<Collider2D>());
+                            connectionmade.Add(false);
+                        }
+                        j++;
+                    }
+                }
+                if (displayitems[i].GetComponent<DragDetailing>().item.GetComponent<Item>().product == "None")
+                {
+                    int j = 0;
+                    while (j < displayitems[i].transform.childCount)
+                    {
+                        if (displayitems[i].transform.GetChild(j).name == "Middle")
+                        {
+                            connection2.Add(displayitems[i].transform.GetChild(j).gameObject.GetComponent<Collider2D>());
+                        }
+                        j++;
+                    }
+                }
+                i++;
+            }
+        }
+    }
+    void CheckRotation()
+    {
+        int i = 0;
+        int oldr = 1000;
+        while (i < detailinginventorycount)
+        {
+            int r = displayitems[i].GetComponent<DragDetailing>().rotated % 4;
+            Debug.Log(i + " is " + r);
+            if (i != 0) //not first time
+            {
+                if (rotationsame)//supposed to be the same
+                {
+                    if(r != oldr)
+                    {
+                        notrotatedproperly = true;
+                    }
+                }else
+                {
+                    if(r == oldr)
+                    {
+                        notrotatedproperly = true;
+                    }
+                }
+            }
+            else
+            {
+                oldr = r;
+            }
+            i++;
         }
     }
     void CheckPlacement()
@@ -115,10 +203,10 @@ public class Detailing : MonoBehaviour
         int i = 0;
         while (i < connection1.Count)
         {
-            if (connection1[i].IsTouching(connection2[i]))
-            {
-                connectionmade[i] = true;
-            }
+            if (connection1[i].bounds.Intersects(connection2[i].bounds))
+                {
+                    connectionmade[i] = true;
+                }
             i++;
         }
         int j = 0;
@@ -133,10 +221,18 @@ public class Detailing : MonoBehaviour
         }
         if (done)
         {
-            displayitems[0].GetComponent<DragDetailing>().item.GetComponent<Item>().detailingdone = true;
-            detailingitems.Remove(displayitems[1].GetComponent<DragDetailing>().item);
-            displayitems[1].SetActive(false);
-            detailinginventorycount--;
+            displayitems[product_i].GetComponent<DragDetailing>().item.GetComponent<Item>().detailingdone = true;
+            i = 0;
+            while (i < detailinginventorycount)
+            {
+                if(i != product_i)
+                {
+                    detailingitems.Remove(displayitems[i].GetComponent<DragDetailing>().item);
+                    displayitems[i].SetActive(false);
+                    detailinginventorycount--;
+                }
+                i++;
+            }
         }
     }
     void DisplayItems()
