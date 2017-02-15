@@ -102,14 +102,14 @@ public class Forge : MonoBehaviour {
                 j++;
             }
             int i = 0;
-            while (i < player.playeritems.Count)
+            while (i < player.playerinventorycount)
             {
                 player.forgedisplayitems[i].SetActive(true);
                 SpriteRenderer spriterenderer = player.forgedisplayitems[i].GetComponent<SpriteRenderer>();
-                Sprite newsprite = player.playeritems[i].GetComponent<Item>().image;
+                Sprite newsprite = player.forgedisplayitems[i].GetComponent<DragForce>().item.GetComponent<Item>().image;
                 if (player.playeritems[i].GetComponent<Item>().forgedone)
                 {
-                    newsprite = player.playeritems[i].GetComponent<Item>().hotimage;
+                    newsprite = player.forgedisplayitems[i].GetComponent<DragForce>().item.GetComponent<Item>().hotimage;
                 }
                 spriterenderer.sprite = newsprite;
                 i++;

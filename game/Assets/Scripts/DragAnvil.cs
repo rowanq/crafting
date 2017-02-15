@@ -5,6 +5,7 @@ using UnityEngine;
 public class DragAnvil : MonoBehaviour {
     public GameObject self;
     public GameObject item;
+    public bool isplayeritem;
     public Collider2D targetlocation;
     public Collider2D playerlocation;
     public Player player;
@@ -18,77 +19,82 @@ public class DragAnvil : MonoBehaviour {
     {
         startposition = transform.position;
     }
-    void OnMouseDrag()
+    void OnMouseDown()
     {
-        if (ready == false)
+        if (isplayeritem)//goes to anvil
         {
-            Debug.Log("why god");
-            Vector2 mouseposition = new Vector2(Input.mousePosition.x, Input.mousePosition.y);
-            Vector2 objposition = Camera.main.ScreenToWorldPoint(mouseposition);
-            transform.position = objposition;
-        }
-        if (start == false)
-        {
-            if (Input.GetKeyDown(KeyCode.LeftArrow))
-            {
-                transform.Rotate(0, 0, 90);
-                rotated--;
-            }
-            if (Input.GetKeyDown(KeyCode.RightArrow))
-            {
-                transform.Rotate(0, 0, -90);
-                rotated++;
-            }
-        }
-    }
-    void OnMouseUp()
-    {
-        Vector2 mouseposition = new Vector2(transform.position.x, transform.position.y);
-        if (targetlocation.OverlapPoint(mouseposition) && start != false && ready == false)//is it in the target place?
-        {
-            //do something related to the thing
+            //find gameobject item needs to go to
             anvil.displayitems[anvil.anvilinventorycount].GetComponent<DragAnvil>().item = item;
+            //give this item to it
             player.playeritems.Remove(item);
             anvil.anvilitems.Add(item);
-            //deal with the game object you left behind in old menu
-            if ((player.playerinventorycount - 1) <= player.playeritems.Count)
+            //check if GAMEOBJECT SELf is last in list
+            int i = 0;
+            int placeinline = -1;
+            while (i < player.playerinventorycount)
             {
-                item = player.anvildisplayitems[player.playerinventorycount - 1].GetComponent<DragAnvil>().item;
+                if (self == player.anvildisplayitems[i])//i now equals the place in order
+                {
+                    if (i != (player.playerinventorycount - 1))//it is not last in the order
+                    {
+                        placeinline = i;
+                    }
+                    else //is last
+                    {
+                        self.SetActive(false);
+                    }
+                }
+                i++;
             }
-            else
+            if (placeinline != -1)//its not last and you need to do something
             {
-                item = null;
+                while ((placeinline + 1) < player.playerinventorycount)
+                {
+                    GameObject curplace = player.anvildisplayitems[placeinline];
+                    GameObject nextplace = player.anvildisplayitems[placeinline + 1];
+                    curplace.GetComponent<DragAnvil>().item = nextplace.GetComponent<DragAnvil>().item;
+                    placeinline++;
+                }
             }
             player.playerinventorycount--;
             anvil.anvilinventorycount++;
-            transform.position = startposition;
-            self.SetActive(false);
         }
-        if (playerlocation.OverlapPoint(mouseposition) && start != true && ready == false)//is it in the player's inventory?
+        else if (player.playerinventorycount < 4)//goes to player
         {
-            //do something related to the thing
-            //set the newitem to display that item
+            //find gameobject item needs to go to
             player.anvildisplayitems[player.playerinventorycount].GetComponent<DragAnvil>().item = item;
-            anvil.anvilitems.Remove(item);
             player.playeritems.Add(item);
-            //deal with old game object
-            if ((player.playerinventorycount + 1) <= anvil.anvilitems.Count)
+            anvil.anvilitems.Remove(item);
+            //check if GAMEOBJECT SELf is last in list
+            int i = 0;
+            int placeinline = -1;
+            while (i < anvil.anvilinventorycount)
             {
-                item = anvil.displayitems[player.playerinventorycount + 1].GetComponent<DragForce>().item;
+                if (self == anvil.displayitems[i])//i now equals the place in order
+                {
+                    if (i != (anvil.anvilinventorycount - 1))//it is not last in the order
+                    {
+                        placeinline = i;
+                    }
+                    else //is last
+                    {
+                        self.SetActive(false);
+                    }
+                }
+                i++;
             }
-            else
+            if (placeinline != -1)//its not last and you need to do something
             {
-                item = null;
+                while ((placeinline + 1) < anvil.anvilinventorycount)
+                {
+                    GameObject curplace = anvil.displayitems[placeinline];
+                    GameObject nextplace = anvil.displayitems[placeinline + 1];
+                    curplace.GetComponent<DragAnvil>().item = nextplace.GetComponent<DragAnvil>().item;
+                    placeinline++;
+                }
             }
             player.playerinventorycount++;
             anvil.anvilinventorycount--;
-            transform.position = startposition;
-            self.SetActive(false);
-        }
-        if (ready == false)
-        {
-            transform.position = startposition;
-            self.SetActive(false);
         }
     }
 }

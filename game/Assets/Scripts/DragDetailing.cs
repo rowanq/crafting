@@ -6,6 +6,7 @@ public class DragDetailing : MonoBehaviour
 {
     public GameObject self;
     public GameObject item;
+    public bool isplayeritem;
     public Collider2D targetlocation;
     public Collider2D playerlocation;
     public Player player;
@@ -19,70 +20,82 @@ public class DragDetailing : MonoBehaviour
     {
         startposition = transform.position;
     }
-    void OnMouseDrag()
+    void OnMouseDown()
     {
-        Vector2 mouseposition = new Vector2(Input.mousePosition.x, Input.mousePosition.y);
-        Vector2 objposition = Camera.main.ScreenToWorldPoint(mouseposition);
-        transform.position = objposition;
-        if (start == false)
+        if (isplayeritem)//goes to detailing
         {
-            if (Input.GetKeyDown(KeyCode.LeftArrow))
-            {
-                transform.Rotate(0, 0, 90);
-                rotated--;
-            }
-            if (Input.GetKeyDown(KeyCode.RightArrow))
-            {
-                transform.Rotate(0, 0, -90);
-                rotated++;
-            }
-        }
-    }
-    void OnMouseUp()
-    {
-        //Debug.Log("a"+transform.name);
-        Vector2 mouseposition = new Vector2(transform.position.x, transform.position.y);
-        if (targetlocation.OverlapPoint(mouseposition) && ready == false)//is it in the target place?
-        {
-            //do something related to the thing
+            //find gameobject item needs to go to
             detailing.displayitems[detailing.detailinginventorycount].GetComponent<DragDetailing>().item = item;
+            //give this item to it
             player.playeritems.Remove(item);
             detailing.detailingitems.Add(item);
-            //deal with the game object you left behind in old menu
-            if ((player.playerinventorycount - 1) <= player.playeritems.Count)
+            //check if GAMEOBJECT SELf is last in list
+            int i = 0;
+            int placeinline = -1;
+            while (i < player.playerinventorycount)
             {
-                item = player.detailingdisplayitems[player.playerinventorycount - 1].GetComponent<DragDetailing>().item;
+                if (self == player.detailingdisplayitems[i])//i now equals the place in order
+                {
+                    if (i != (player.playerinventorycount - 1))//it is not last in the order
+                    {
+                        placeinline = i;
+                    }
+                    else //is last
+                    {
+                        self.SetActive(false);
+                    }
+                }
+                i++;
             }
-            else
+            if (placeinline != -1)//its not last and you need to do something
             {
-                item = null;
+                while ((placeinline + 1) < player.playerinventorycount)
+                {
+                    GameObject curplace = player.detailingdisplayitems[placeinline];
+                    GameObject nextplace = player.detailingdisplayitems[placeinline + 1];
+                    curplace.GetComponent<DragDetailing>().item = nextplace.GetComponent<DragDetailing>().item;
+                    placeinline++;
+                }
             }
             player.playerinventorycount--;
             detailing.detailinginventorycount++;
         }
-        if (playerlocation.OverlapPoint(mouseposition) && ready == false)//is it in the player's inventory?
+        else if (player.playerinventorycount < 4)//goes to player
         {
-            //do something related to the thing
-            //set the newitem to display that item
+            //find gameobject item needs to go to
             player.detailingdisplayitems[player.playerinventorycount].GetComponent<DragDetailing>().item = item;
-            detailing.detailingitems.Remove(item);
             player.playeritems.Add(item);
-            //deal with old game object
-            if ((player.playerinventorycount + 1) <= detailing.detailingitems.Count)
+            detailing.detailingitems.Remove(item);
+            //check if GAMEOBJECT SELf is last in list
+            int i = 0;
+            int placeinline = -1;
+            while (i < detailing.detailinginventorycount)
             {
-                item = detailing.displayitems[player.playerinventorycount + 1].GetComponent<DragDetailing>().item;
+                if (self == detailing.displayitems[i])//i now equals the place in order
+                {
+                    if (i != (detailing.detailinginventorycount - 1))//it is not last in the order
+                    {
+                        placeinline = i;
+                    }
+                    else //is last
+                    {
+                        self.SetActive(false);
+                    }
+                }
+                i++;
             }
-            else
+            if (placeinline != -1)//its not last and you need to do something
             {
-                item = null;
+                while ((placeinline + 1) < detailing.detailinginventorycount)
+                {
+                    GameObject curplace = detailing.displayitems[placeinline];
+                    GameObject nextplace = detailing.displayitems[placeinline + 1];
+                    curplace.GetComponent<DragDetailing>().item = nextplace.GetComponent<DragDetailing>().item;
+                    placeinline++;
+                }
             }
             player.playerinventorycount++;
             detailing.detailinginventorycount--;
-        }
-        if (ready == false)
-        {
-            transform.position = startposition;
-            self.SetActive(false);
         }
     }
 }

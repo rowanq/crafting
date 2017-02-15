@@ -150,11 +150,11 @@ public class Detailing : MonoBehaviour
                 j++;
             }
             int i = 0;
-            while (i < player.playeritems.Count)
+            while (i < player.playerinventorycount)
             {
                 player.detailingdisplayitems[i].SetActive(true);
                 SpriteRenderer spriterenderer = player.detailingdisplayitems[i].GetComponent<SpriteRenderer>();
-                Sprite newsprite = player.playeritems[i].GetComponent<Item>().image;
+                Sprite newsprite =player.detailingdisplayitems[i].GetComponent<DragDetailing>().item.GetComponent<Item>().image;
                 spriterenderer.sprite = newsprite;
                 i++;
             }

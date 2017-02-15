@@ -40,7 +40,6 @@ public class DragStorage : MonoBehaviour
                     }
                     else //is last
                     {
-                        Debug.Log("last!");
                         self.SetActive(false);
                     }
                 }
@@ -76,6 +75,10 @@ public class DragStorage : MonoBehaviour
                     {
                         placeinline = i;
                     }
+                    else //is last
+                    {
+                        self.SetActive(false);
+                    }
                 }
                 i++;
             }
@@ -83,7 +86,6 @@ public class DragStorage : MonoBehaviour
             {
                 while ((placeinline + 1) < storage.storageinventorycount)
                 {
-                    Debug.Log("FAAAAA");
                     GameObject curplace = storage.displayitems[placeinline];
                     GameObject nextplace = storage.displayitems[placeinline + 1];
                     curplace.GetComponent<DragStorage>().item = nextplace.GetComponent<DragStorage>().item;

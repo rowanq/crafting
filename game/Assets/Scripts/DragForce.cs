@@ -6,6 +6,7 @@ public class DragForce : MonoBehaviour
 {
     public GameObject self;
     public GameObject item;
+    public bool isplayeritem;
     public Collider2D targetlocation;
     public Collider2D playerlocation;
     public Player player;
@@ -16,58 +17,82 @@ public class DragForce : MonoBehaviour
     {
         startposition = transform.position;
     }
-    void OnMouseDrag()
+    void OnMouseDown()
     {
-        Vector2 mouseposition = new Vector2(Input.mousePosition.x, Input.mousePosition.y);
-        Vector2 objposition = Camera.main.ScreenToWorldPoint(mouseposition);
-        transform.position = objposition;
-    }
-    void OnMouseUp()
-    {
-        Vector2 mouseposition = new Vector2(transform.position.x, transform.position.y);
-        if (targetlocation.OverlapPoint(mouseposition))//is it in the target place?
+        if (isplayeritem)//goes to forge
         {
-            //do something related to the thing
+            //find gameobject item needs to go to
             forge.displayitems[forge.forgeinventorycount].GetComponent<DragForce>().item = item;
+            //give this item to it
             player.playeritems.Remove(item);
             forge.forgeitems.Add(item);
-            //deal with the game object you left behind in old menu
-            if ((player.playerinventorycount - 1) <= player.playeritems.Count)
+            //check if GAMEOBJECT SELf is last in list
+            int i = 0;
+            int placeinline = -1;
+            while (i < player.playerinventorycount)
             {
-                item = player.forgedisplayitems[player.playerinventorycount - 1].GetComponent<DragForce>().item;
+                if (self == player.forgedisplayitems[i])//i now equals the place in order
+                {
+                    if (i != (player.playerinventorycount - 1))//it is not last in the order
+                    {
+                        placeinline = i;
+                    }
+                    else //is last
+                    {
+                        self.SetActive(false);
+                    }
+                }
+                i++;
             }
-            else
+            if (placeinline != -1)//its not last and you need to do something
             {
-                item = null;
+                while ((placeinline + 1) < player.playerinventorycount)
+                {
+                    GameObject curplace = player.forgedisplayitems[placeinline];
+                    GameObject nextplace = player.forgedisplayitems[placeinline + 1];
+                    curplace.GetComponent<DragForce>().item = nextplace.GetComponent<DragForce>().item;
+                    placeinline++;
+                }
             }
             player.playerinventorycount--;
             forge.forgeinventorycount++;
-            transform.position = startposition;
-            self.SetActive(false);
-            Debug.Log(player.playerinventorycount);
         }
-        if (playerlocation.OverlapPoint(mouseposition))//is it in the player's inventory?
+        else if (player.playerinventorycount < 4)//goes to player
         {
-            //do something related to the thing
-            //set the newitem to display that item
+            //find gameobject item needs to go to
             player.forgedisplayitems[player.playerinventorycount].GetComponent<DragForce>().item = item;
-            forge.forgeitems.Remove(item);
             player.playeritems.Add(item);
-            //deal with old game object
-            if ((player.playerinventorycount + 1) <= forge.forgeitems.Count)
+            forge.forgeitems.Remove(item);
+            //check if GAMEOBJECT SELf is last in list
+            int i = 0;
+            int placeinline = -1;
+            while (i < forge.forgeinventorycount)
             {
-                item = forge.displayitems[player.playerinventorycount + 1].GetComponent<DragForce>().item;
+                if (self == forge.displayitems[i])//i now equals the place in order
+                {
+                    if (i != (forge.forgeinventorycount - 1))//it is not last in the order
+                    {
+                        placeinline = i;
+                    }
+                    else //is last
+                    {
+                        self.SetActive(false);
+                    }
+                }
+                i++;
             }
-            else
+            if (placeinline != -1)//its not last and you need to do something
             {
-                item = null;
+                while ((placeinline + 1) < forge.forgeinventorycount)
+                {
+                    GameObject curplace = forge.displayitems[placeinline];
+                    GameObject nextplace = forge.displayitems[placeinline + 1];
+                    curplace.GetComponent<DragForce>().item = nextplace.GetComponent<DragForce>().item;
+                    placeinline++;
+                }
             }
             player.playerinventorycount++;
             forge.forgeinventorycount--;
-            transform.position = startposition;
-            self.SetActive(false);
         }
-        transform.position = startposition;
-        self.SetActive(false);
     }
 }
