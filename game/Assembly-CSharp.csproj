@@ -46,6 +46,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+     <Compile Include="Assets\DragStore.cs" />
+     <Compile Include="Assets\MoneyDisplay.cs" />
      <Compile Include="Assets\Scripts\Anvil.cs" />
      <Compile Include="Assets\Scripts\Desk.cs" />
      <Compile Include="Assets\Scripts\Detailing.cs" />
@@ -54,12 +56,15 @@
      <Compile Include="Assets\Scripts\DragForce.cs" />
      <Compile Include="Assets\Scripts\DragStorage.cs" />
      <Compile Include="Assets\Scripts\Forge.cs" />
+     <Compile Include="Assets\Scripts\Global.cs" />
      <Compile Include="Assets\Scripts\Help.cs" />
      <Compile Include="Assets\Scripts\Item.cs" />
      <Compile Include="Assets\Scripts\Library.cs" />
      <Compile Include="Assets\Scripts\Player.cs" />
+     <Compile Include="Assets\Scripts\SingletonHelper.cs" />
      <Compile Include="Assets\Scripts\Storage.cs" />
      <Compile Include="Assets\Scripts\TempGauge.cs" />
+     <Compile Include="Assets\Store.cs" />
      <None Include="Assets\Sprites\Prototype\README.txt" />
  <Reference Include="UnityEngine.UI">
  <HintPath>C:/Program Files/Unity/Editor/Data/UnityExtensions/Unity/GUISystem/UnityEngine.UI.dll</HintPath>

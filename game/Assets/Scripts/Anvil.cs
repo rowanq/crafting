@@ -16,6 +16,8 @@ public class Anvil : MonoBehaviour {
     public float placementscore;
     public float hitscore;
     public int anvilinventorycount;
+    public GameObject check;
+    public List<GameObject> checks;
     int numberofbarsused;
     bool rotated;
     string product;
@@ -24,11 +26,11 @@ public class Anvil : MonoBehaviour {
     public List<Collider2D> placestoweld;
     public List<Collider2D> placestoweldto;
     public List<bool> placeswelt;
-    int lastplaceclicked = -1;
     bool clicked = false;
     int framesclicked = 0;
-	// Use this for initialization
-	void Start () {
+    public List<float> scores;
+    // Use this for initialization
+    void Start () {
         isRunning = false;
     }
 	
@@ -163,6 +165,13 @@ public class Anvil : MonoBehaviour {
             placeswelt.Remove(placeswelt[i]);
             i++;
         }
+        i = 0;
+        while(i < checks.Count)
+        {
+            Destroy(checks[i]);
+            i++;
+        }
+        checks = new List<GameObject>();
     }
     public void GetHammer()
     {
@@ -241,9 +250,9 @@ public class Anvil : MonoBehaviour {
                 int j = 0;
                 while (j < numberofbarsused)
                 {
-                    bool addedaweld = false;
-                    int i = displayitems[j].transform.childCount - 1;
-                    while (i > -1)
+                    int addedaweld = 0;
+                    int i = 0;
+                    while (i <displayitems[j].transform.childCount)
                     {
                         if (displayitems[j].transform.GetChild(i).name == "MidLeftX")
                         {
@@ -255,28 +264,116 @@ public class Anvil : MonoBehaviour {
                             placestohit.Add(displayitems[j].transform.GetChild(i).gameObject.GetComponent<Collider2D>());
                             placeshit.Add(false);
                         }
-                        if (displayitems[j].transform.GetChild(i).name == "MidBottom" && addedaweld == false)
+                        if (displayitems[j].transform.GetChild(i).name == "Bottom" && addedaweld <4)
                         {
-                            if (placestoweldto.Count > placestoweld.Count || placestoweld.Count == 0) //more those than these
-                            {
-                                placestoweld.Add(displayitems[j].transform.GetChild(i).gameObject.GetComponent<Collider2D>());
-                                placeswelt.Add(false);
-                                addedaweld = true;
-                            }
+                            placestoweld.Add(displayitems[j].transform.GetChild(i).gameObject.GetComponent<Collider2D>());
+                            placeswelt.Add(false);
+                            addedaweld++;
                         }
-                        if (displayitems[j].transform.GetChild(i).name == "MidTop" && addedaweld == false)
+                        if (displayitems[j].transform.GetChild(i).name == "Top" && addedaweld <4)
                         {
-                            if (placestoweld.Count > placestoweldto.Count || placestoweldto.Count == 0) //more those than these
-                            {
-                                placestoweldto.Add(displayitems[j].transform.GetChild(i).gameObject.GetComponent<Collider2D>());
-                                addedaweld = true;
-                            }
+                            placestoweldto.Add(displayitems[j].transform.GetChild(i).gameObject.GetComponent<Collider2D>());
+                            addedaweld++;
                         }
-                        i--;
+                        i++;
                     }
                     j++;
                 }
+                Debug.Log(placestoweld.Count);
+                int q = 0;
+                while (q < placestoweld.Count)
+                {
+                    if (placestoweld[q].bounds.Intersects(placestoweldto[q].bounds) == false)
+                    {
+                        placestoweld.Remove(placestoweld[q]);
+                        placestoweldto.Remove(placestoweldto[q]);
+                        placeswelt.Remove(placeswelt[q]);
+                        if(placestoweld.Count == 0)
+                        {
+                            UnReadyAnvil();
+                        }
+                    }
+                    q++;
+                }
+                Debug.Log(placestoweld.Count);
 
+            }else
+            {
+                product = "Scythe";
+                int j = 0;
+                int left_j = 0;
+                while (j < numberofbarsused)
+                {
+                    if (displayitems[j].transform.position.x < displayitems[left_j].transform.position.x)
+                    {
+                        left_j = j;
+                    }
+                    j++;
+                }
+                Debug.Log(displayitems[j].transform.name);
+                j = 0;
+                while (j < numberofbarsused)
+                {
+                    int addedaweld = 0;
+                    int i = 0;
+                    while (i < displayitems[j].transform.childCount)
+                    {
+                        if (displayitems[j].transform.GetChild(i).name == "MidLeftX" && j != left_j)
+                        {
+                            placestohit.Add(displayitems[j].transform.GetChild(i).gameObject.GetComponent<Collider2D>());
+                            placeshit.Add(false);
+                        }
+                        if (displayitems[j].transform.GetChild(i).name == "MidTop" && j != left_j)
+                        {
+                            placestohit.Add(displayitems[j].transform.GetChild(i).gameObject.GetComponent<Collider2D>());
+                            placeshit.Add(false);
+                        }
+                        if (displayitems[j].transform.GetChild(i).name == "MidBottom" && j == left_j)
+                        {
+                            placestohit.Add(displayitems[j].transform.GetChild(i).gameObject.GetComponent<Collider2D>());
+                            placeshit.Add(false);
+                        }
+                        if (displayitems[j].transform.GetChild(i).name == "RightTop" && j == left_j)
+                        {
+                            placestohit.Add(displayitems[j].transform.GetChild(i).gameObject.GetComponent<Collider2D>());
+                            placeshit.Add(false);
+                        }
+                        if (displayitems[j].transform.GetChild(i).name == "LeftTop" && j == left_j)
+                        {
+                            placestohit.Add(displayitems[j].transform.GetChild(i).gameObject.GetComponent<Collider2D>());
+                            placeshit.Add(false);
+                        }
+                        if (displayitems[j].transform.GetChild(i).name == "Bottom" && addedaweld < 4)
+                        {
+                            placestoweld.Add(displayitems[j].transform.GetChild(i).gameObject.GetComponent<Collider2D>());
+                            placeswelt.Add(false);
+                            addedaweld++;
+                        }
+                        if (displayitems[j].transform.GetChild(i).name == "Top" && addedaweld < 4)
+                        {
+                            placestoweldto.Add(displayitems[j].transform.GetChild(i).gameObject.GetComponent<Collider2D>());
+                            addedaweld++;
+                        }
+                        i++;
+                    }
+                    j++;
+                }
+                Debug.Log(placestohit.Count);
+                int q = 0;
+                while (q < placestoweld.Count)
+                {
+                    if (placestoweld[q].bounds.Intersects(placestoweldto[q].bounds) == false)
+                    {
+                        placestoweld.Remove(placestoweld[q]);
+                        placestoweldto.Remove(placestoweldto[q]);
+                        placeswelt.Remove(placeswelt[q]);
+                        if (placestoweld.Count == 0)
+                        {
+                            UnReadyAnvil();
+                        }
+                    }
+                    q++;
+                }
             }
         }
     }
@@ -292,15 +389,23 @@ public class Anvil : MonoBehaviour {
     {
         Vector2 mouseposition = new Vector2(Input.mousePosition.x, Input.mousePosition.y);
         Vector2 mouse = Camera.main.ScreenToWorldPoint(mouseposition);
-        Vector2 mouses = mouse -  new Vector2(150, 0);
-        if (product == "Dagger" || product == "Hammer" || product == "Sword")
+        Vector2 mouses = mouse - new Vector2(0.65f, 0);
+        if (product != "None")
         {
             int i = 0;
             while (i < placestohit.Count)
             {
-                if (placestohit[i].OverlapPoint(mouse))
+                if (placestohit[i].OverlapPoint(mouses))
                 {
                     placeshit[i] = true;
+                    Debug.Log("hit "+placestohit[i].transform.name);
+                    Vector2 goal = placestohit[i].transform.position;
+                    float distance = Vector2.Distance(goal, mouses);
+                    float score = 100 + (-612*distance*distance);
+                    scores.Add(score);
+                    GameObject newcheck = Instantiate(check, new Vector3(mouses.x,mouses.y,0), new Quaternion(0,0,0,0),panel.transform);
+                    newcheck.SetActive(true);
+                    checks.Add(newcheck);
                 }
                 i++;
             }
@@ -316,9 +421,19 @@ public class Anvil : MonoBehaviour {
             }
             if (done && anvilitems[0].GetComponent<Item>().anvildone == false)
             {
+                i = 0;
+                float totalscore = 0;
+                while (i < scores.Count)
+                {
+                    totalscore = totalscore + scores[i];
+                    i++;
+                }
+                totalscore = totalscore / scores.Count;
                 anvilitems[0].GetComponent<Item>().anvildone = true;
+                anvilitems[0].GetComponent<Item>().anvilscore = totalscore;
+                Debug.Log(totalscore);
                 anvilitems[0].GetComponent<Item>().product = product;
-                if (product == "Sword")
+                if (product == "Sword" || product == "Scythe")
                 {
                     anvilitems.Remove(displayitems[1].GetComponent<DragAnvil>().item);
                     Debug.Log(displayitems[1].transform.name);
@@ -326,6 +441,13 @@ public class Anvil : MonoBehaviour {
                     anvilinventorycount--;
                     displayitems[1].transform.position = displayitems[1].GetComponent<DragAnvil>().startposition;
                 }
+                i = 0;
+                while (i < checks.Count)
+                {
+                    Destroy(checks[i]);
+                    i++;
+                }
+                checks = new List<GameObject>();
             }
         }
     }
@@ -338,23 +460,12 @@ public class Anvil : MonoBehaviour {
             int i = 0;
             while (i < placestoweld.Count)
             {
-                if (placestoweldto[i].OverlapPoint(mouse))
+                if (placestoweldto[i].OverlapPoint(mouse) || placestoweld[i].OverlapPoint(mouse))
                 {
-                    if (lastplaceclicked > -1)
-                    {
-                        if (lastplaceclicked == i)
-                        {
-                            placeswelt[i] = true;
-                            lastplaceclicked = -1;
-                        }
-                    }
-                }
-                if (placestoweld[i].OverlapPoint(mouse))
-                {
-                    if (lastplaceclicked == -1)
-                    {
-                        lastplaceclicked = i;
-                    }
+                    placeswelt[i] = true;
+                    GameObject newcheck = Instantiate(check, new Vector3(mouse.x, mouse.y, 0), new Quaternion(0, 0, 0, 0), panel.transform);
+                    newcheck.SetActive(true);
+                    checks.Add(newcheck);
                 }
                 i++;
             }
@@ -377,45 +488,39 @@ public class Anvil : MonoBehaviour {
     }
     void DisplayItems()
     {
-        if (player.playeritems.Count != 0)
+        int j = 0;
+        while (j < player.anvildisplayitems.Count)
         {
-            int j = 0;
-            while (j < player.anvildisplayitems.Count)
-            {
-                player.anvildisplayitems[j].SetActive(false);
-                j++;
-            }
-            int i = 0;
-            while (i < player.playerinventorycount)
-            {
-                player.anvildisplayitems[i].SetActive(true);
-                SpriteRenderer spriterenderer = player.anvildisplayitems[i].GetComponent<SpriteRenderer>();
-                Sprite newsprite = player.anvildisplayitems[i].GetComponent<DragAnvil>().item.GetComponent<Item>().image;
-                if (player.playeritems[i].GetComponent<Item>().forgedone && player.playeritems[i].GetComponent<Item>().anvildone == false)
-                {
-                    newsprite = player.forgedisplayitems[i].GetComponent<DragForce>().item.GetComponent<Item>().hotimage;
-                }
-                spriterenderer.sprite = newsprite;
-                i++;
-            }
+            player.anvildisplayitems[j].SetActive(false);
+            j++;
         }
-        if (anvilitems.Count != 0)
+        int i = 0;
+        while (i < player.playerinventorycount)
         {
-            int j = 0;
-            while (j < displayitems.Count)
+            player.anvildisplayitems[i].SetActive(true);
+            SpriteRenderer spriterenderer = player.anvildisplayitems[i].GetComponent<SpriteRenderer>();
+            Sprite newsprite = player.anvildisplayitems[i].GetComponent<DragAnvil>().item.GetComponent<Item>().image;
+            if (player.playeritems[i].GetComponent<Item>().forgedone && player.playeritems[i].GetComponent<Item>().anvildone == false)
             {
-                displayitems[j].SetActive(false);
-                j++;
+                newsprite = player.forgedisplayitems[i].GetComponent<DragForce>().item.GetComponent<Item>().hotimage;
             }
-            int i = 0;
-            while (i < anvilinventorycount)
-            {
-                displayitems[i].SetActive(true);
-                SpriteRenderer spriterenderer = displayitems[i].GetComponent<SpriteRenderer>();
-                Sprite newsprite = displayitems[i].GetComponent<DragAnvil>().item.GetComponent<Item>().anvilimage;
-                spriterenderer.sprite = newsprite;
-                i++;
-            }
+            spriterenderer.sprite = newsprite;
+            i++;
+        }
+        j = 0;
+        while (j < displayitems.Count)
+        {
+            displayitems[j].SetActive(false);
+            j++;
+        }
+        i = 0;
+        while (i < anvilinventorycount)
+        {
+            displayitems[i].SetActive(true);
+            SpriteRenderer spriterenderer = displayitems[i].GetComponent<SpriteRenderer>();
+            Sprite newsprite = displayitems[i].GetComponent<DragAnvil>().item.GetComponent<Item>().anvilimage;
+            spriterenderer.sprite = newsprite;
+            i++;
         }
     }
 }

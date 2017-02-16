@@ -18,8 +18,12 @@ public class Player : MonoBehaviour {
     public Library libraryscript;
     public Collider2D desk;
     public Desk deskscript;
+    public Collider2D store;
+    public Store storescript;
     public List<string> orders;
     public List<GameObject> orderdisplays;
+    public int money;
+    public int thingssold;
     public SpriteRenderer spriteRenderer;
     public List<Sprite> Anim;
     public List<GameObject> itemsingame;
@@ -27,6 +31,7 @@ public class Player : MonoBehaviour {
     public List<GameObject> storagedisplayitems;
     public List<GameObject> anvildisplayitems;
     public List<GameObject> detailingdisplayitems;
+    public List<GameObject> storedisplayitems;
     public List<GameObject> playeritems;
     public int playerinventorycount = 0;
     bool facingRight;
@@ -52,7 +57,7 @@ public class Player : MonoBehaviour {
 	void Update () {
         canmove = true;
         DealWithItems();
-        if (forgescript.isRunning || storagescript.isRunning || anvilscript.isRunning || libraryscript.isRunning || detailingscript.isRunning)
+        if (forgescript.isRunning || storagescript.isRunning || anvilscript.isRunning || libraryscript.isRunning || detailingscript.isRunning || storescript.isRunning)
         {
             canmove = false;
         }
@@ -88,6 +93,10 @@ public class Player : MonoBehaviour {
             if (desk.OverlapPoint(position))
             {
                 deskscript.CheckforOrder();
+            }
+            if (store.OverlapPoint(position))
+            {
+                storescript.OpenStore();
             }
         }
 
@@ -183,10 +192,21 @@ public class Player : MonoBehaviour {
     }
     void DealWithItems()
     {
+        int j = 0;
+        while (j < 4)
+        {
+            storedisplayitems[j].GetComponent<DragStore>().item = null;
+            storagedisplayitems[j].GetComponent<DragStorage>().item = null;
+            forgedisplayitems[j].GetComponent<DragForce>().item = null;
+            anvildisplayitems[j].GetComponent<DragAnvil>().item = null;
+            detailingdisplayitems[j].GetComponent<DragDetailing>().item = null;
+            j++;
+        }
         int i = 0;
         while (i < playerinventorycount)
         {
             //storage
+            storedisplayitems[i].GetComponent<DragStore>().item = playeritems[i];
             storagedisplayitems[i].GetComponent<DragStorage>().item = playeritems[i];
             forgedisplayitems[i].GetComponent<DragForce>().item = playeritems[i];
             anvildisplayitems[i].GetComponent<DragAnvil>().item = playeritems[i];

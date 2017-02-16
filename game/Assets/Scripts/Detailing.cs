@@ -156,7 +156,41 @@ public class Detailing : MonoBehaviour
                     int j = 0;
                     while (j < displayitems[i].transform.childCount)
                     {
-                        if (displayitems[i].transform.GetChild(j).name == "Middle")
+                        if (displayitems[i].transform.GetChild(j).name == "Middle_Top")
+                        {
+                            connection2.Add(displayitems[i].transform.GetChild(j).gameObject.GetComponent<Collider2D>());
+                        }
+                        j++;
+                    }
+                }
+                i++;
+            }
+        }
+        else if(product == "Scythe")
+        {
+            rotationsame = true;
+            int i = 0;
+            while (i < detailinginventorycount)
+            {
+                if (displayitems[i].GetComponent<DragDetailing>().item.GetComponent<Item>().product != "None")
+                {
+                    int j = 0;
+                    while (j < displayitems[i].transform.childCount)
+                    {
+                        if (displayitems[i].transform.GetChild(j).name == "Scythe_Handle")
+                        {
+                            connection1.Add(displayitems[i].transform.GetChild(j).gameObject.GetComponent<Collider2D>());
+                            connectionmade.Add(false);
+                        }
+                        j++;
+                    }
+                }
+                if (displayitems[i].GetComponent<DragDetailing>().item.GetComponent<Item>().product == "None")
+                {
+                    int j = 0;
+                    while (j < displayitems[i].transform.childCount)
+                    {
+                        if (displayitems[i].transform.GetChild(j).name == "Middle_Top")
                         {
                             connection2.Add(displayitems[i].transform.GetChild(j).gameObject.GetComponent<Collider2D>());
                         }
@@ -174,7 +208,6 @@ public class Detailing : MonoBehaviour
         while (i < detailinginventorycount)
         {
             int r = displayitems[i].GetComponent<DragDetailing>().rotated % 4;
-            Debug.Log(i + " is " + r);
             if (i != 0) //not first time
             {
                 if (rotationsame)//supposed to be the same
@@ -200,13 +233,26 @@ public class Detailing : MonoBehaviour
     }
     void CheckPlacement()
     {
+        Debug.Log(product_i);
+        List<float> scores = new List<float>();
         int i = 0;
         while (i < connection1.Count)
         {
             if (connection1[i].bounds.Intersects(connection2[i].bounds))
+            {
+                connectionmade[i] = true;
+                Vector2 goal1 = connection1[i].transform.position;
+                Vector2 goal2 = connection2[i].transform.position;
+                float distance = Vector2.Distance(goal1, goal2);
+                Debug.Log("Distance: " + distance);
+                float score = 125 + (-16 * distance * distance);
+                if (score > 100)
                 {
-                    connectionmade[i] = true;
+                    score = 100f;
                 }
+                Debug.Log("Score: " + score);
+                scores.Add(score);
+            }
             i++;
         }
         int j = 0;
@@ -221,57 +267,65 @@ public class Detailing : MonoBehaviour
         }
         if (done)
         {
-            displayitems[product_i].GetComponent<DragDetailing>().item.GetComponent<Item>().detailingdone = true;
             i = 0;
-            while (i < detailinginventorycount)
+            float totalscore = 0;
+            while (i < scores.Count)
+            {
+                totalscore = totalscore + scores[i];
+                i++;
+            }
+            totalscore = totalscore / scores.Count;
+            displayitems[product_i].GetComponent<DragDetailing>().item.GetComponent<Item>().detailingdone = true;
+            displayitems[product_i].GetComponent<DragDetailing>().item.GetComponent<Item>().detailingscore = totalscore;
+            i = detailinginventorycount-1;
+            while (i > 0)
             {
                 if(i != product_i)
                 {
+                    Debug.Log(i);
                     detailingitems.Remove(displayitems[i].GetComponent<DragDetailing>().item);
                     displayitems[i].SetActive(false);
-                    detailinginventorycount--;
+                }else if(i > 0)
+                {
+                    displayitems[i - 1].GetComponent<DragDetailing>().item = displayitems[i].GetComponent<DragDetailing>().item;
+                    product_i--;
                 }
-                i++;
+                i--;
             }
+            detailinginventorycount = 1;
         }
     }
     void DisplayItems()
     {
-        if (player.playeritems.Count != 0)
+        int j = 0;
+        while (j < player.detailingdisplayitems.Count)
         {
-            int j = 0;
-            while (j < player.detailingdisplayitems.Count)
-            {
-                player.detailingdisplayitems[j].SetActive(false);
-                j++;
-            }
-            int i = 0;
-            while (i < player.playerinventorycount)
-            {
-                player.detailingdisplayitems[i].SetActive(true);
-                SpriteRenderer spriterenderer = player.detailingdisplayitems[i].GetComponent<SpriteRenderer>();
-                Sprite newsprite =player.detailingdisplayitems[i].GetComponent<DragDetailing>().item.GetComponent<Item>().image;
-                spriterenderer.sprite = newsprite;
-                i++;
-            }
+            player.detailingdisplayitems[j].SetActive(false);
+            j++;
         }
-        if (detailingitems.Count != 0)
+        int i = 0;
+        while (i < player.playerinventorycount)
         {
-            int j = 0;
-            while (j < displayitems.Count)
-            {
-                displayitems[j].SetActive(false);
-                j++;
-            }
-            int i = 0;
-            while (i < detailinginventorycount)
-            {
-                displayitems[i].SetActive(true);
-                SpriteRenderer spriterenderer = displayitems[i].GetComponent<SpriteRenderer>();
-                Sprite newsprite = displayitems[i].GetComponent<DragDetailing>().item.GetComponent<Item>().anvilimage;
-                spriterenderer.sprite = newsprite;
-                i++;
-            }
+            player.detailingdisplayitems[i].SetActive(true);
+            SpriteRenderer spriterenderer = player.detailingdisplayitems[i].GetComponent<SpriteRenderer>();
+            Sprite newsprite = player.detailingdisplayitems[i].GetComponent<DragDetailing>().item.GetComponent<Item>().image;
+            spriterenderer.sprite = newsprite;
+            i++;
+        }
+        j = 0;
+        while (j < displayitems.Count)
+        {
+            displayitems[j].SetActive(false);
+            j++;
+        }
+        i = 0;
+        while (i < detailinginventorycount)
+        {
+            displayitems[i].SetActive(true);
+            SpriteRenderer spriterenderer = displayitems[i].GetComponent<SpriteRenderer>();
+            Sprite newsprite = displayitems[i].GetComponent<DragDetailing>().item.GetComponent<Item>().anvilimage;
+            spriterenderer.sprite = newsprite;
+            i++;
         }
     }
 }

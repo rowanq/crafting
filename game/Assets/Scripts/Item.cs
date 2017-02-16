@@ -11,13 +11,19 @@ public class Item : MonoBehaviour {
     public GameObject displayitem;
     public float forgeprogress;
     public string name;
-    public string product;
+    public string product = "None";
     public float forgemintemp;
     public float forgemaxtemp;
     public bool forgedone = false;
+    public float forgescore = 100;
     public bool welddone = false;
     public bool anvildone = false;
+    public float anvilscore = 0;
     public bool detailingdone = false;
+    public float detailingscore = 0;
+    public float totalscore;
+    public int price;
+    public int buyprice;
     public List<Sprite> imagesprites;
     public int spriteplace;
     float forgeprocessneeded;
@@ -26,7 +32,6 @@ public class Item : MonoBehaviour {
     // Use this for initialization
     void Start()
     {
-        product = "None";
         typeOfItem = 0;
         itemID = Random.Range(0, 100000);
         player.itemsingame.Add(gameObject);
@@ -38,6 +43,7 @@ public class Item : MonoBehaviour {
             forgemintemp = 40;
             forgemaxtemp = 60;
             forgeprocessneeded = 80;
+            buyprice = 1;
         }
         else if (name == "Iron")
         {
@@ -55,6 +61,7 @@ public class Item : MonoBehaviour {
             forgemintemp = 1000;
             forgemaxtemp = 1010;
             forgeprocessneeded = 100;
+            buyprice = 1;
         }
         else if (name == "Handle_Long")
         {
@@ -89,9 +96,16 @@ public class Item : MonoBehaviour {
                 anvilimage = imagesprites[18];
                 image = imagesprites[16];
             }
+            else if (product == "Scythe")
+            {
+                anvilimage = imagesprites[22];
+                image = imagesprites[20];
+            }
         }
         if (detailingdone)
         {
+            CalculateScore();
+            CalculatePrice();
             if (product == "Dagger")
             {
                 anvilimage = imagesprites[6];
@@ -107,7 +121,27 @@ public class Item : MonoBehaviour {
                 anvilimage = imagesprites[19];
                 image = imagesprites[17];
             }
-            Debug.Log("SUCKFUCKINGCESS!!");
+            else if(product == "Scythe")
+            {
+                anvilimage = imagesprites[23];
+                image = imagesprites[21];
+            }
         }
 	}
+    void CalculateScore()
+    {
+        totalscore = (anvilscore + detailingscore) / 2;
+    }
+    void CalculatePrice()
+    {
+        float originalprice = 0f;
+        if(name == "Bronze")
+        {
+            if(product == "Dagger")
+            {
+                originalprice = 5f;
+            }
+        }
+        price = (int)Mathf.Round(originalprice * (totalscore / 100));
+    }
 }

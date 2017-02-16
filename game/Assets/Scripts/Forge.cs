@@ -93,49 +93,43 @@ public class Forge : MonoBehaviour {
     }
     void DisplayItems()
     {
-        if (player.playeritems.Count != 0)
+        int j = 0;
+        while (j < player.forgedisplayitems.Count)
         {
-            int j = 0;
-            while (j < player.forgedisplayitems.Count)
-            {
-                player.forgedisplayitems[j].SetActive(false);
-                j++;
-            }
-            int i = 0;
-            while (i < player.playerinventorycount)
-            {
-                player.forgedisplayitems[i].SetActive(true);
-                SpriteRenderer spriterenderer = player.forgedisplayitems[i].GetComponent<SpriteRenderer>();
-                Sprite newsprite = player.forgedisplayitems[i].GetComponent<DragForce>().item.GetComponent<Item>().image;
-                if (player.playeritems[i].GetComponent<Item>().forgedone && player.playeritems[i].GetComponent<Item>().anvildone == false)
-                {
-                    newsprite = player.forgedisplayitems[i].GetComponent<DragForce>().item.GetComponent<Item>().hotimage;
-                }
-                spriterenderer.sprite = newsprite;
-                i++;
-            }
+            player.forgedisplayitems[j].SetActive(false);
+            j++;
         }
-        if (forgeitems.Count != 0)
+        int i = 0;
+        while (i < player.playerinventorycount)
         {
-            int j = 0;
-            while (j < displayitems.Count)
+            player.forgedisplayitems[i].SetActive(true);
+            SpriteRenderer spriterenderer = player.forgedisplayitems[i].GetComponent<SpriteRenderer>();
+            Sprite newsprite = player.forgedisplayitems[i].GetComponent<DragForce>().item.GetComponent<Item>().image;
+            if (player.playeritems[i].GetComponent<Item>().forgedone && player.playeritems[i].GetComponent<Item>().anvildone == false)
             {
-                displayitems[j].SetActive(false);
-                j++;
+                newsprite = player.forgedisplayitems[i].GetComponent<DragForce>().item.GetComponent<Item>().hotimage;
             }
-            int i = 0;
-            while (i < forgeinventorycount)
+            spriterenderer.sprite = newsprite;
+            i++;
+        }
+        j = 0;
+        while (j < displayitems.Count)
+        {
+            displayitems[j].SetActive(false);
+            j++;
+        }
+        i = 0;
+        while (i < forgeinventorycount)
+        {
+            displayitems[i].SetActive(true);
+            SpriteRenderer spriterenderer = displayitems[i].GetComponent<SpriteRenderer>();
+            Sprite newsprite = displayitems[i].GetComponent<DragForce>().item.GetComponent<Item>().image;
+            if (displayitems[i].GetComponent<DragForce>().item.GetComponent<Item>().forgedone)
             {
-                displayitems[i].SetActive(true);
-                SpriteRenderer spriterenderer = displayitems[i].GetComponent<SpriteRenderer>();
-                Sprite newsprite = displayitems[i].GetComponent<DragForce>().item.GetComponent<Item>().image;
-                if (displayitems[i].GetComponent<DragForce>().item.GetComponent<Item>().forgedone)
-                {
-                    newsprite = displayitems[i].GetComponent<DragForce>().item.GetComponent<Item>().hotimage;
-                }
-                spriterenderer.sprite = newsprite;
-                i++;
+                newsprite = displayitems[i].GetComponent<DragForce>().item.GetComponent<Item>().hotimage;
             }
+            spriterenderer.sprite = newsprite;
+            i++;
         }
     }
 

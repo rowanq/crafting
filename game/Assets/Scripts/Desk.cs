@@ -12,9 +12,11 @@ public class Desk : MonoBehaviour {
     string thesaying;
     int timeitsbeenup;
     int timetillnextorder;
+    List<string> potentialproducts =  new List<string>();
 	// Use this for initialization
 	void Start () {
         timeitsbeenup = 30;
+        potentialproducts.Add("Dagger");
 	}
 	
 	// Update is called once per frame
@@ -71,20 +73,31 @@ public class Desk : MonoBehaviour {
         }
         Debug.Log(timetillnextorder);
     }
+    void DealWithPlayerProgression()
+    {
+        int level = player.thingssold;
+        if (level > 1)
+        {
+            potentialproducts.Add("Hammer");
+        }
+        else if(level > 4)
+        {
+            potentialproducts.Add("Sword");
+        }
+        else if (level > 8)
+        {
+            potentialproducts.Add("Scythe");
+        }
+    }
     void GenerateOrder()
     {
         string order = "";
-        int ordern = Random.Range(0, 2);
-        if(ordern == 0)
+        int ordern = Random.Range(0, potentialproducts.Count);
+        if(potentialproducts.Count == 1)
         {
-            order = "Dagger";
-        }else if(ordern == 1)
-        {
-            order = "Hammer";
-        }else if(ordern == 2)
-        {
-            order = "Sword";
+            ordern = 0;
         }
+        order = potentialproducts[ordern];
         if (player.orders.Count < maxplayerorders)
         {
             player.orders.Add(order);
@@ -121,21 +134,36 @@ public class Desk : MonoBehaviour {
         int i = 0;
         while (i < player.orders.Count)
         {
+            bool wassomethingremoved = false;
             int j = 0;
             while (j < player.playerinventorycount)
             {
-                if (player.playeritems[j].GetComponent<Item>().product == player.orders[i])
+                if(wassomethingremoved == false)
                 {
-                    //congrats order completed!!
-                    player.playeritems.Remove(player.playeritems[j]);
-                    player.playerinventorycount--;
-                    thesaying = "Thank you oh so much for " + player.orders[i];
-                    timeitsbeenup = 120;
-                    DisplayOrder();
-                    player.orders.Remove(player.orders[i]);
-                    Debug.Log(thesaying);
+                    if (player.playeritems[j].GetComponent<Item>().product == player.orders[i])
+                    {
+                        //congrats order completed!!
+                        player.thingssold++;
+                        DealWithPlayerProgression();
+                        player.money += player.playeritems[j].GetComponent<Item>().price;
+                        Debug.Log("Anvil Score: " + player.playeritems[j].GetComponent<Item>().anvilscore);
+                        Debug.Log("Detailing Score: " + player.playeritems[j].GetComponent<Item>().detailingscore);
+                        Debug.Log("Total Score: " + player.playeritems[j].GetComponent<Item>().totalscore);
+                        player.playeritems.Remove(player.playeritems[j]);
+                        wassomethingremoved = true;
+                        thesaying = "Thank you oh so much for " + player.orders[i];
+                        timeitsbeenup = 120;
+                        DisplayOrder();
+                        player.orders.Remove(player.orders[i]);
+                        Debug.Log(thesaying);
+                        j--;
+                    }
                 }
                 j++;
+            }
+            if (wassomethingremoved)
+            {
+                player.playerinventorycount--;
             }
             i++;
         }

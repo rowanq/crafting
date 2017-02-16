@@ -11,11 +11,10 @@ public class DragStorage : MonoBehaviour
     public Collider2D playerlocation;
     public Player player;
     public Storage storage;
-    Vector2 startposition;
     // Use this for initialization
     void Start()
     {
-        startposition = transform.position;
+
     }
     void OnMouseDown()
     {

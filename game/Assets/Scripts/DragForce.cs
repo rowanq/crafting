@@ -11,11 +11,10 @@ public class DragForce : MonoBehaviour
     public Collider2D playerlocation;
     public Player player;
     public Forge forge;
-    Vector2 startposition;
     // Use this for initialization
     void Start()
     {
-        startposition = transform.position;
+
     }
     void OnMouseDown()
     {
