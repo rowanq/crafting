@@ -455,7 +455,7 @@ public class Anvil : MonoBehaviour {
     {
         Vector2 mouseposition = new Vector2(Input.mousePosition.x, Input.mousePosition.y);
         Vector2 mouse = Camera.main.ScreenToWorldPoint(mouseposition);
-        if (product == "Sword")
+        if (product == "Sword" || product == "Scythe")
         {
             int i = 0;
             while (i < placestoweld.Count)
@@ -479,11 +479,11 @@ public class Anvil : MonoBehaviour {
                 }
                 j++;
             }
-            if (done)
+            /*if (done)
             {
                 displayitems[1].transform.position = new Vector2(displayitems[0].transform.position.x, displayitems[0].transform.position.y - 2.1f);
                 Debug.Log("wtf");
-            }
+            }*/
         }
     }
     void DisplayItems()
