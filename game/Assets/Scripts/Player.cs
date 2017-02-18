@@ -68,6 +68,10 @@ public class Player : MonoBehaviour {
             DealWithMovement();
             //DisplayOrders();
         }
+        if (Input.GetKeyDown(KeyCode.P))
+        {
+            Global.me.gameon = false;
+        }
         if (Input.GetKeyDown(KeyCode.E))
         {
             if (forge.OverlapPoint(position))

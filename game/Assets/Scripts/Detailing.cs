@@ -35,12 +35,14 @@ public class Detailing : MonoBehaviour
     public void OpenDetailing()
     {
         isRunning = true;
-        panel.active = true;
+        panel.SetActive(true);
+        Global.me.openpanel = panel;
     }
     public void CloseDetailing()
     {
         isRunning = false;
-        panel.active = false;
+        panel.SetActive(false);
+        Global.me.openpanel = null;
     }
     public void ReadyDetailing()
     {
@@ -98,7 +100,7 @@ public class Detailing : MonoBehaviour
     }
     void CheckProduct()
     {
-        if (product == "Dagger" || product == "Sword")
+        if (product == "Dagger" || product == "Sword" || product == "Claymore" || product == "Cutlass")
         {
             rotationsame = true;
             int i = 0;
@@ -109,7 +111,7 @@ public class Detailing : MonoBehaviour
                     int j = 0;
                     while (j < displayitems[i].transform.childCount)
                     {
-                        if (displayitems[i].transform.GetChild(j).name == "Bottom")
+                        if (((product == "Dagger" || product == "Sword") && displayitems[i].transform.GetChild(j).name == "Bottom") || ((product == "Claymore" || product == "Cutlass") && displayitems[i].transform.GetChild(j).name == "Cutlass_Handle"))
                         {
                             connection1.Add(displayitems[i].transform.GetChild(j).gameObject.GetComponent<Collider2D>());
                             connectionmade.Add(false);
@@ -164,9 +166,9 @@ public class Detailing : MonoBehaviour
                     }
                 }
                 i++;
-            }
+            } 
         }
-        else if(product == "Scythe")
+        else if(product == "Scythe" || product == "Axe" || product == "Halberd" || product == "Spear")
         {
             rotationsame = true;
             int i = 0;
@@ -177,10 +179,11 @@ public class Detailing : MonoBehaviour
                     int j = 0;
                     while (j < displayitems[i].transform.childCount)
                     {
-                        if (displayitems[i].transform.GetChild(j).name == "Scythe_Handle")
+                        if ((product == "Spear" && displayitems[i].transform.GetChild(j).name == "Spear_Handle") || (product == "Scythe" && displayitems[i].transform.GetChild(j).name == "Scythe_Handle") || (product == "Axe" && displayitems[i].transform.GetChild(j).name == "Axe_Handle") || (product == "Halberd" && displayitems[i].transform.GetChild(j).name == "Halberd_Handle"))
                         {
                             connection1.Add(displayitems[i].transform.GetChild(j).gameObject.GetComponent<Collider2D>());
                             connectionmade.Add(false);
+                            Debug.Log(product);
                         }
                         j++;
                     }
@@ -191,6 +194,41 @@ public class Detailing : MonoBehaviour
                     while (j < displayitems[i].transform.childCount)
                     {
                         if (displayitems[i].transform.GetChild(j).name == "Middle_Top")
+                        {
+                            connection2.Add(displayitems[i].transform.GetChild(j).gameObject.GetComponent<Collider2D>());
+                        }
+                        j++;
+                    }
+                }
+                i++;
+            }
+        }
+        else if (product == "Legs" || product == "Armor" || product == "Shield")
+        {
+            rotationsame = true;
+            int i = 0;
+            while (i < detailinginventorycount)
+            {
+                if (displayitems[i].GetComponent<DragDetailing>().item.GetComponent<Item>().product != "None")
+                {
+                    int j = 0;
+                    while (j < displayitems[i].transform.childCount)
+                    {
+                        if ((product == "Legs" && displayitems[i].transform.GetChild(j).name == "Legs_Crest") || (product == "Armor" && displayitems[i].transform.GetChild(j).name == "Armor_Crest") || (product == "Shield" && displayitems[i].transform.GetChild(j).name == "Shield_Crest"))
+                        {
+                            connection1.Add(displayitems[i].transform.GetChild(j).gameObject.GetComponent<Collider2D>());
+                            connectionmade.Add(false);
+                            Debug.Log(product);
+                        }
+                        j++;
+                    }
+                }
+                if (displayitems[i].GetComponent<DragDetailing>().item.GetComponent<Item>().product == "None")
+                {
+                    int j = 0;
+                    while (j < displayitems[i].transform.childCount)
+                    {
+                        if (displayitems[i].transform.GetChild(j).name == "Crest")
                         {
                             connection2.Add(displayitems[i].transform.GetChild(j).gameObject.GetComponent<Collider2D>());
                         }
@@ -325,6 +363,8 @@ public class Detailing : MonoBehaviour
             SpriteRenderer spriterenderer = displayitems[i].GetComponent<SpriteRenderer>();
             Sprite newsprite = displayitems[i].GetComponent<DragDetailing>().item.GetComponent<Item>().anvilimage;
             spriterenderer.sprite = newsprite;
+            int anvilsize = displayitems[i].GetComponent<DragDetailing>().item.GetComponent<Item>().anvilsize;
+            displayitems[i].transform.localScale = new Vector2(anvilsize, anvilsize);
             i++;
         }
     }

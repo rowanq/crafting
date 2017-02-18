@@ -84,12 +84,14 @@ public class Forge : MonoBehaviour {
     public void OpenForge()
     {
         isRunning = true;
-        panel.active = true;
+        panel.SetActive(true);
+        Global.me.openpanel = panel;
     }
     public void CloseForge()
     {
         isRunning = false;
-        panel.active = false;
+        panel.SetActive(false);
+        Global.me.openpanel = null;
     }
     void DisplayItems()
     {

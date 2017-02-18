@@ -26,11 +26,13 @@ public class Storage : MonoBehaviour {
     {
         isRunning = true;
         panel.SetActive(true);
+        Global.me.openpanel = panel;
     }
     public void CloseStorage()
     {
         isRunning = false;
         panel.SetActive(false);
+        Global.me.openpanel = null;
     }
     void DisplayItems()
     {

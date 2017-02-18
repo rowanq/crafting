@@ -22,8 +22,10 @@ public class Item : MonoBehaviour {
     public bool detailingdone = false;
     public float detailingscore = 0;
     public float totalscore;
+    public string scoreword;
     public int price;
     public int buyprice;
+    public int anvilsize = 75;
     public List<Sprite> imagesprites;
     public int menuspriteplace;
     public int anvilspriteplace;
@@ -36,6 +38,7 @@ public class Item : MonoBehaviour {
     void Start()
     {
         typeOfItem = 0;
+        anvilsize = 75;
         itemID = Random.Range(0, 100000);
         player.itemsingame.Add(gameObject);
         if (name == "Bronze")
@@ -104,6 +107,7 @@ public class Item : MonoBehaviour {
             forgemaxtemp = 1010;
             forgeprocessneeded = 100;
             buyprice = 1;
+            anvilsize = 300;
         }
     }
 	// Update is called once per frame
@@ -136,6 +140,12 @@ public class Item : MonoBehaviour {
                 menuspriteplace += i;
                 anvilspriteplace += i;
             }
+            else if (product == "Axe")
+            {
+                int i = 8;
+                menuspriteplace += i;
+                anvilspriteplace += i;
+            }
             else if (product == "Scythe")
             {
                 int i = 10;
@@ -156,21 +166,24 @@ public class Item : MonoBehaviour {
             }
             else if (product == "Spear")
             {
-                int i = 6;
+                int i = 16;
                 menuspriteplace += i;
                 anvilspriteplace += i;
+                anvilsize = 50;
             }
             else if (product == "Halberd")
             {
                 int i = 18;
                 menuspriteplace += i;
                 anvilspriteplace += i;
+                anvilsize = 50;
             }
             else if (product == "Legs")
             {
                 int i = 20;
                 menuspriteplace += i;
                 anvilspriteplace += i;
+                anvilsize = 300;
             }
 
             else if (product == "Armor")
@@ -178,12 +191,14 @@ public class Item : MonoBehaviour {
                 int i = 22;
                 menuspriteplace += i;
                 anvilspriteplace += i;
+                anvilsize = 300;
             }
             else if (product == "Shield")
             {
                 int i = 24;
                 menuspriteplace += i;
                 anvilspriteplace += i;
+                anvilsize = 300;
             }
         }
         if (detailingdone && detailingchecked == false)
@@ -198,6 +213,26 @@ public class Item : MonoBehaviour {
     void CalculateScore()
     {
         totalscore = (anvilscore + detailingscore) / 2;
+        if (totalscore > 94)
+        {
+            scoreword = "Perfect!";
+        }else if( totalscore > 90)
+        {
+            scoreword = "Excellent!";
+        }else if(totalscore > 80)
+        {
+            scoreword = "Good";
+        }else if(totalscore > 70)
+        {
+            scoreword =  "Decent";
+        }else if(totalscore > 60)
+        {
+            scoreword = "Below";
+        }
+        else
+        {
+            scoreword = "Nope";
+        }
     }
     void CalculatePrice()
     {
@@ -223,6 +258,6 @@ public class Item : MonoBehaviour {
         {
             originalprice = 5f;
         }
-        price = (int)Mathf.Round(originalprice * (totalscore / 100));
+        price = (int)Mathf.Round((pricemodifier*originalprice) * (totalscore / 100));
     }
 }

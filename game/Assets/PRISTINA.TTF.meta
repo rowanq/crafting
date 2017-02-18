@@ -1,0 +1,21 @@
+fileFormatVersion: 2
+guid: 4dad80b096401ce4fbf0e56a74189e0b
+timeCreated: 1487407832
+licenseType: Free
+TrueTypeFontImporter:
+  serializedVersion: 4
+  fontSize: 16
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontName: Pristina
+  fontNames:
+  - Pristina
+  fallbackFontReferences: []
+  customCharacters: 
+  fontRenderingMode: 0
+  ascentCalculationMode: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

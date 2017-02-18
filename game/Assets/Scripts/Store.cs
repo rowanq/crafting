@@ -24,11 +24,13 @@ public class Store : MonoBehaviour {
     {
         isRunning = true;
         panel.SetActive(true);
+        Global.me.openpanel = panel;
     }
     public void CloseStore()
     {
         isRunning = false;
         panel.SetActive(false);
+        Global.me.openpanel = null;
     }
     void DisplayItems()
     {

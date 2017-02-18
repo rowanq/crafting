@@ -12,7 +12,7 @@ public class Library : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
         isRunning = false;
-        pagenumber = 4;
+        pagenumber = 5;
         bookopen = -1;
 	}
 	
@@ -37,7 +37,7 @@ public class Library : MonoBehaviour {
         int i = 0;
         while (i < books.Count)
         {
-            if (books[i].GetComponent<Collider2D>().OverlapPoint(mouse))
+            if (books[i].transform.GetChild(0).GetComponent<Collider2D>().OverlapPoint(mouse))
             {
                 bookopen = i;
                 curmaxpage = books[i].transform.childCount -1; 
@@ -55,15 +55,18 @@ public class Library : MonoBehaviour {
         }
         books[bookopen].transform.GetChild(3).gameObject.SetActive(true);
         books[bookopen].transform.GetChild(2).gameObject.SetActive(true);
-        Debug.Log("a" + pagenumber);
-        if (pagenumber == 4)
+        books[bookopen].transform.GetChild(4).gameObject.SetActive(true);
+        if (pagenumber == 5)
         {
             books[bookopen].transform.GetChild(1).gameObject.SetActive(false);
+            books[bookopen].transform.GetChild(0).gameObject.SetActive(false);
+            books[bookopen].transform.GetChild(3).gameObject.SetActive(false);
 
-        }else
+        }
+        else
         {
             Debug.Log(books[bookopen].transform.GetChild(1).gameObject.name);
-            books[bookopen].transform.GetChild(1).gameObject.SetActive(true);
+            books[bookopen].transform.GetChild(3).gameObject.SetActive(true);
         }
         if (pagenumber >= curmaxpage)
         {
@@ -75,17 +78,19 @@ public class Library : MonoBehaviour {
     public void OpenLibrary()
     {
         isRunning = true;
-        panel.active = true;
+        panel.SetActive(true);
+        Global.me.openpanel = panel;
     }
     public void CloseLibrary()
     {
         isRunning =false;
-        panel.active = false;
+        panel.SetActive(false);
+        Global.me.openpanel = null;
     }
     public void TurnPageLeft()
     {
         pagenumber--;
-        if (pagenumber < 4)
+        if (pagenumber < 5)
         {
             pagenumber++;
         }
@@ -97,12 +102,14 @@ public class Library : MonoBehaviour {
     public void CloseBook()
     {
         int i = 1;
+        books[bookopen].transform.GetChild(0).gameObject.SetActive(true);
+        books[bookopen].transform.GetChild(1).gameObject.SetActive(true);
         while (i < books[bookopen].transform.childCount)
         {
             books[bookopen].transform.GetChild(i).gameObject.SetActive(false);
             i++;
         }
         bookopen = -1;
-        pagenumber = 4;
+        pagenumber = 5;
     }
 }
