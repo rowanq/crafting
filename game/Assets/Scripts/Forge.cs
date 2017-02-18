@@ -73,6 +73,7 @@ public class Forge : MonoBehaviour {
             if (forgeitems[i].GetComponent<Item>().forgemintemp < temp && temp < forgeitems[i].GetComponent<Item>().forgemaxtemp)
             {
                 forgeitems[i].GetComponent<Item>().forgeprogress++;
+                Debug.Log("Smelting!");
             }
             i++;
         }

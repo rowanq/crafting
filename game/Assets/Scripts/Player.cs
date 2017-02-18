@@ -23,7 +23,7 @@ public class Player : MonoBehaviour {
     public List<string> orders;
     public List<GameObject> orderdisplays;
     public int money;
-    public int thingssold;
+    public int thingssold = 1;
     public SpriteRenderer spriteRenderer;
     public List<Sprite> Anim;
     public List<GameObject> itemsingame;
@@ -36,6 +36,7 @@ public class Player : MonoBehaviour {
     public int playerinventorycount = 0;
     bool facingRight;
     public bool canmove;
+    public int level;
     bool moving;
     bool running;
     int curSprite;
@@ -232,6 +233,122 @@ public class Player : MonoBehaviour {
             orderdisplays[j].SetActive(true);
             orderdisplays[j].GetComponent<Text>().text = orders[j];
             j++;
+        }
+    }
+    void LevelUp()
+    {
+        level++;
+        string recog = "";
+        if (level == 1 || level == 9 || level == 12)//newbook
+        {
+            recog = "You got a new book!";
+        }
+        else if (level == 2 || level == 6 || level == 8)//newpage in blades
+        {
+            recog = "You got a new page in Blades.";
+        }
+        else if (level == 4 || level == 5)//newpage in tools
+        {
+            recog = "You got a new page in Tools.";
+        }
+        else if (level == 10)//newpage in poles
+        {
+            recog = "You got a new page in Poles.";
+        }
+        else if (level == 13 || level == 14)//newpage in armor
+        {
+            recog = "You got a new page in Armor.";
+        }
+        else if (level == 3 || level == 7 || level == 11)//newpage in metal
+        {
+            recog = "You got a new page in Metal.";
+        }
+        deskscript.DisplayOrder(recog);
+    }
+    public void DealWithProgression()
+    {
+        Debug.Log(thingssold);
+        if (thingssold > 1 && level < 1)
+        {
+            Debug.Log(level);
+            deskscript.potentialproducts.Add("Hammer");
+            libraryscript.booksunlocked++;
+            LevelUp();
+        }
+        else if (thingssold > 4 && level < 2)
+        {
+            deskscript.potentialproducts.Add("Sword");
+            libraryscript.pagesunlocked[1]++;
+            LevelUp();
+        }
+        else if (thingssold > 8 && level < 3)
+        {
+            libraryscript.booksunlocked++;
+            LevelUp();
+        }
+        else if (thingssold > 13 && level < 4)
+        {
+            deskscript.potentialproducts.Add("Axe");
+            libraryscript.pagesunlocked[2]++;
+            LevelUp();
+        }
+        else if (thingssold > 18 && level < 5)
+        {
+            deskscript.potentialproducts.Add("Scythe");
+            libraryscript.pagesunlocked[2]++;
+            LevelUp();
+        }
+        else if (thingssold > 23 && level < 6)
+        {
+            deskscript.potentialproducts.Add("Claymore");
+            libraryscript.pagesunlocked[1]++;
+            LevelUp();
+        }
+        else if (thingssold > 30 && level < 7)
+        {
+            libraryscript.pagesunlocked[0]++;
+            LevelUp();
+        }
+        else if (thingssold > 37 && level < 8)
+        {
+            deskscript.potentialproducts.Add("Cutlass");
+            libraryscript.pagesunlocked[1]++;
+            LevelUp();
+        }
+        else if (thingssold > 44 && level < 9)
+        {
+            deskscript.potentialproducts.Add("Spear");
+            libraryscript.booksunlocked++;
+            LevelUp();
+        }
+        else if (thingssold > 51 && level < 10)
+        {
+            deskscript.potentialproducts.Add("Halberd");
+            libraryscript.pagesunlocked[3]++;
+            LevelUp();
+        }
+        else if (thingssold > 60 && level < 11)
+        {
+            libraryscript.pagesunlocked[0]++;
+            LevelUp();
+        }
+        else if (thingssold > 6 && level < 12)
+        {
+            deskscript.potentialproducts.Add("Legs");
+            libraryscript.booksunlocked++;
+            LevelUp();
+        }
+        else if (thingssold > 78 && level < 13)
+        {
+            deskscript.potentialproducts.Add("Shield");
+            libraryscript.pagesunlocked[4]++;
+            LevelUp();
+        }
+        else if (thingssold > 87 && level < 14)
+        {
+            deskscript.potentialproducts.Add("Armor");
+            libraryscript.pagesunlocked[4]++;
+            LevelUp();
         }
     }
 }

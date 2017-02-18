@@ -30,7 +30,6 @@ public class Global : MonoBehaviourSingleton<Global> {
                 openpanel.SetActive(true);
                 if(openpanel.name == "forge_panel" && tutorial.GetComponent<Tutorial>().forgefinished == false && tutorial.GetComponent<Tutorial>().curtutorial != 1)
                 {
-                    Debug.Log("F");
                     tutorial.GetComponent<Tutorial>().curtutorial = 1;
                     tutorial.GetComponent<Tutorial>().place = 0;
                 }

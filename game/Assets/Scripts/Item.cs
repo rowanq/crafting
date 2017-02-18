@@ -66,9 +66,9 @@ public class Item : MonoBehaviour {
             menuspriteplace = 55;
             anvilspriteplace = 162;
             hotimage = imagesprites[menuspriteplace + 1];
-            forgemintemp = 100;
-            forgemaxtemp = 120;
-            forgeprocessneeded = 160;
+            forgemintemp = 160;
+            forgemaxtemp = 180;
+            forgeprocessneeded = 240;
             buyprice = 3;
         }
         else if (name == "Titanium")
@@ -76,9 +76,9 @@ public class Item : MonoBehaviour {
             menuspriteplace = 81;
             anvilspriteplace = 188;
             hotimage = imagesprites[menuspriteplace + 1];
-            forgemintemp = 100;
-            forgemaxtemp = 120;
-            forgeprocessneeded = 160;
+            forgemintemp = 200;
+            forgemaxtemp = 220;
+            forgeprocessneeded = 320;
             buyprice = 4;
         }
         else if (name == "Handle")

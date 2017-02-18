@@ -7,6 +7,8 @@ public class Library : MonoBehaviour {
     public GameObject panel;
     public List<GameObject> books;
     public int pagenumber;
+    public int booksunlocked;
+    public List<int> pagesunlocked = new List<int>();
     int bookopen;
     int curmaxpage;
 	// Use this for initialization
@@ -14,12 +16,24 @@ public class Library : MonoBehaviour {
         isRunning = false;
         pagenumber = 5;
         bookopen = -1;
-	}
+        booksunlocked = 2;
+        pagesunlocked.Add(6); //0:metal book
+        pagesunlocked.Add(6); //1:blade book
+        pagesunlocked.Add(6); //2:tool book
+        pagesunlocked.Add(6); //3:poles book
+        pagesunlocked.Add(6); //4:armor book
+    }
 	
 	// Update is called once per frame
 	void Update () {
 		if (isRunning)
         {
+            int i = 0;
+            while (i < booksunlocked)
+            {
+                books[i].SetActive(true);
+                i++;
+            }
             if (Input.GetMouseButtonDown(0))
             {
                 DealWithBooks();
@@ -35,7 +49,7 @@ public class Library : MonoBehaviour {
         Vector2 mouseposition = new Vector2(Input.mousePosition.x, Input.mousePosition.y);
         Vector2 mouse = Camera.main.ScreenToWorldPoint(mouseposition);
         int i = 0;
-        while (i < books.Count)
+        while (i < booksunlocked)
         {
             if (books[i].transform.GetChild(0).GetComponent<Collider2D>().OverlapPoint(mouse))
             {
@@ -51,6 +65,15 @@ public class Library : MonoBehaviour {
         while (i < books[bookopen].transform.childCount)
         {
             books[bookopen].transform.GetChild(i).gameObject.SetActive(false);
+            i++;
+        }
+        i = 0;
+        while(i < books.Count)
+        {
+            if(i != bookopen)
+            {
+                books[i].SetActive(false);
+            }
             i++;
         }
         books[bookopen].transform.GetChild(3).gameObject.SetActive(true);
@@ -94,14 +117,22 @@ public class Library : MonoBehaviour {
         {
             pagenumber++;
         }
+        if(pagenumber > pagesunlocked[bookopen])
+        {
+            pagenumber = pagesunlocked[bookopen];
+        }
     }
     public void TurnPageRight()
     {
         pagenumber++;
+        if(pagenumber == pagesunlocked[bookopen]+1)
+        {
+            pagenumber = curmaxpage;
+        }
     }
     public void CloseBook()
     {
-        int i = 1;
+        int i = 2;
         books[bookopen].transform.GetChild(0).gameObject.SetActive(true);
         books[bookopen].transform.GetChild(1).gameObject.SetActive(true);
         while (i < books[bookopen].transform.childCount)

@@ -9,13 +9,13 @@ public class Desk : MonoBehaviour {
     public GameObject orders;
     public int maxplayerorders = 3;
     public GameObject productdisplay;
+    public List<string> potentialproducts = new List<string>();
     bool isRunning;
     string thesaying;
     int timeitsbeenup;
     int timetillnextorder;
     int player_j_to_be_sold;
     int order_i;
-    List<string> potentialproducts =  new List<string>();
 	// Use this for initialization
 	void Start () {
         timeitsbeenup = 30;
@@ -24,6 +24,12 @@ public class Desk : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+        Debug.Log(player.orders.Count);
+        if (player.orders.Count == 0)
+        {
+            timetillnextorder = 0;
+            Debug.Log("a");
+        }
         if (timeitsbeenup <= 0 && Global.me.tutorial.GetComponent<Tutorial>().finished)
         {
             speaking.SetActive(false);
@@ -43,10 +49,13 @@ public class Desk : MonoBehaviour {
         if (player.canmove)
         {
             i = 0;
-            while (i < player.orders.Count)
+            while (i < player.orders.Count+1)
             {
                 orders.transform.GetChild(i).gameObject.SetActive(true);
-                orders.transform.GetChild(i).gameObject.GetComponent<Text>().text = player.orders[i];
+                if(i != 0)
+                {
+                    orders.transform.GetChild(i).gameObject.GetComponent<Text>().text = player.orders[i-1];
+                }
                 i++;
             }
         }
@@ -75,22 +84,6 @@ public class Desk : MonoBehaviour {
             timetillnextorder = random + (player.orders.Count * (60*60));
         }
         Debug.Log(timetillnextorder);
-    }
-    void DealWithPlayerProgression()
-    {
-        int level = player.thingssold;
-        if (level > 1)
-        {
-            potentialproducts.Add("Hammer");
-        }
-        else if(level > 4)
-        {
-            potentialproducts.Add("Sword");
-        }
-        else if (level > 8)
-        {
-            potentialproducts.Add("Scythe");
-        }
     }
     void GenerateOrder()
     {
@@ -124,13 +117,15 @@ public class Desk : MonoBehaviour {
             speak = "";
         }
         thesaying = speak + order;
-        DisplayOrder();
+        DisplayOrder(thesaying);
         Debug.Log(thesaying);
     }
-    void DisplayOrder()
+    public void DisplayOrder(string blorp)
     {
+        timeitsbeenup = 300;
         speaking.SetActive(true);
-        speaking.transform.GetChild(0).gameObject.GetComponent<Text>().text = thesaying;
+        Debug.Log(blorp);
+        speaking.transform.GetChild(0).gameObject.GetComponent<Text>().text = blorp;
     }
     void DisplaySell()
     {
@@ -148,13 +143,12 @@ public class Desk : MonoBehaviour {
     public void Sell()
     {
         player.thingssold++;
-        DealWithPlayerProgression();
+        player.DealWithProgression();
         player.money += player.playeritems[player_j_to_be_sold].GetComponent<Item>().price;
         player.playeritems.Remove(player.playeritems[player_j_to_be_sold]);
         player.playerinventorycount--;
-        thesaying = "Thank you oh so much for " + player.orders[order_i];
-        timeitsbeenup = 120;
-        DisplayOrder();
+        //thesaying = "Thank you oh so much for " + player.orders[order_i];
+        //DisplayOrder(thesaying);
         player.orders.Remove(player.orders[order_i]);
         productdisplay.SetActive(false);
     }

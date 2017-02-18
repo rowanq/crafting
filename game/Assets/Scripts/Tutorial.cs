@@ -77,7 +77,7 @@ public class Tutorial : MonoBehaviour {
             tutorialdisplays[curtutorial].transform.GetChild(1).gameObject.SetActive(false);
             tutorialdisplays[curtutorial].transform.GetChild(2).gameObject.SetActive(false);
             tutorialdisplays[curtutorial].transform.GetChild(3).gameObject.SetActive(false);
-            if (place != tutorial.Count -1)
+            if (place != tutorials[curtutorial].Count -1)
             {
                 tutorialdisplays[curtutorial].transform.GetChild(1).gameObject.SetActive(true);
             }
@@ -106,7 +106,22 @@ public class Tutorial : MonoBehaviour {
     }
     public void Skip()
     {
-        Debug.Log("food");
+        if(curtutorial == 0)
+        {
+            forgefinished = true;
+            anvilfinished = true;
+            detailfinished = true;
+        }else if(curtutorial == 1)
+        {
+            forgefinished = true;
+        }else if(curtutorial == 2)
+        {
+            anvilfinished = true;
+        }else if(curtutorial == 3)
+        {
+            detailfinished = true;
+        }
+        finished = true;
         tutorialdisplays[curtutorial].SetActive(false);
         Global.me.openpanel = null;
         place = -1;
