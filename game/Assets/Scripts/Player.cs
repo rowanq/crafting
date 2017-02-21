@@ -32,6 +32,7 @@ public class Player : MonoBehaviour {
     public List<GameObject> anvildisplayitems;
     public List<GameObject> detailingdisplayitems;
     public List<GameObject> storedisplayitems;
+    public List<GameObject> huddisplayitems;
     public List<GameObject> playeritems;
     public int playerinventorycount = 0;
     bool facingRight;
@@ -42,6 +43,7 @@ public class Player : MonoBehaviour {
     int curSprite;
     float speed;
     Vector2 position;
+    int timesincelastmove;
     // Use this for initialization
     void Start () {
         facingRight = true;
@@ -52,6 +54,7 @@ public class Player : MonoBehaviour {
         float x = transform.position.x;
         float y = transform.position.y;
         position = new Vector2(x, y);
+        timesincelastmove = 10;
     }
 	
 	// Update is called once per frame
@@ -69,9 +72,9 @@ public class Player : MonoBehaviour {
             DealWithMovement();
             //DisplayOrders();
         }
-        if (Input.GetKeyDown(KeyCode.P))
+        if (Input.GetKeyDown(KeyCode.T))
         {
-            Global.me.gameon = false;
+            Debug.Log(Time.time);
         }
         if (Input.GetKeyDown(KeyCode.E))
         {
@@ -104,7 +107,42 @@ public class Player : MonoBehaviour {
                 storescript.OpenStore();
             }
         }
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            if (forgescript.isRunning)
+            {
+                forgescript.CloseForge();
+            }
+            else if (storagescript.isRunning)
+            {
+                storagescript.CloseStorage();
+            }
+            else if (anvilscript.isRunning)
+            {
+                anvilscript.CloseAnvil();
+            }
+            else if (detailingscript.isRunning)
+            {
+                detailingscript.CloseDetailing();
+            }
+            else if (libraryscript.isRunning)
+            {
+                libraryscript.CloseLibrary();
+            }
+            else if (storescript.isRunning)
+            {
+                storescript.CloseStore();
+            }
+            else
+            {
+                Global.me.gameon = false;
+            }
+        }
 
+    }
+    void FixedUpdate()
+    {
+        timesincelastmove++;
     }
     void DealWithMovement()
     {
@@ -169,23 +207,27 @@ public class Player : MonoBehaviour {
     {
         if (moving)
         {
-            curSprite += 1;
-            if (running)//running!
+            if(timesincelastmove >= 4)
             {
-                if (curSprite > 11)
+                timesincelastmove = 0;
+                curSprite += 1;
+                if (running)//running!
                 {
-                    curSprite = 8;
+                    if (curSprite > 11)
+                    {
+                        curSprite = 9;
+                    }
+                    if (curSprite < 8)
+                    {
+                        curSprite = 9;
+                    }
                 }
-                if (curSprite < 8)
+                else //just moving
                 {
-                    curSprite = 8;
-                }
-            }
-            else //just moving
-            {
-                if (curSprite > 7)
-                {
-                    curSprite = 0;
+                    if (curSprite > 7)
+                    {
+                        curSprite = 0;
+                    }
                 }
             }
         }
@@ -205,6 +247,7 @@ public class Player : MonoBehaviour {
             forgedisplayitems[j].GetComponent<DragForce>().item = null;
             anvildisplayitems[j].GetComponent<DragAnvil>().item = null;
             detailingdisplayitems[j].GetComponent<DragDetailing>().item = null;
+            huddisplayitems[j].GetComponent<DragForce>().item = null;
             j++;
         }
         int i = 0;
@@ -216,6 +259,7 @@ public class Player : MonoBehaviour {
             forgedisplayitems[i].GetComponent<DragForce>().item = playeritems[i];
             anvildisplayitems[i].GetComponent<DragAnvil>().item = playeritems[i];
             detailingdisplayitems[i].GetComponent<DragDetailing>().item = playeritems[i];
+            huddisplayitems[i].GetComponent<DragForce>().item = playeritems[i];
             i++;
         }
     }
@@ -276,76 +320,79 @@ public class Player : MonoBehaviour {
             libraryscript.booksunlocked++;
             LevelUp();
         }
-        else if (thingssold > 4 && level < 2)
+        if (thingssold > 4 && level < 2)
         {
             deskscript.potentialproducts.Add("Sword");
             libraryscript.pagesunlocked[1]++;
             LevelUp();
         }
-        else if (thingssold > 8 && level < 3)
+        if (thingssold > 8 && level < 3)
         {
             libraryscript.pagesunlocked[0]++;
+            storescript.storeinventorycount++;
             LevelUp();
         }
-        else if (thingssold > 13 && level < 4)
+        if (thingssold > 13 && level < 4)
         {
             deskscript.potentialproducts.Add("Axe");
             libraryscript.pagesunlocked[2]++;
             LevelUp();
         }
-        else if (thingssold > 18 && level < 5)
+        if (thingssold > 18 && level < 5)
         {
             deskscript.potentialproducts.Add("Scythe");
             libraryscript.pagesunlocked[2]++;
             LevelUp();
         }
-        else if (thingssold > 23 && level < 6)
+        if (thingssold > 23 && level < 6)
         {
             deskscript.potentialproducts.Add("Claymore");
             libraryscript.pagesunlocked[1]++;
             LevelUp();
         }
-        else if (thingssold > 30 && level < 7)
+        if (thingssold > 30 && level < 7)
         {
             libraryscript.pagesunlocked[0]++;
+            storescript.storeinventorycount++;
             LevelUp();
         }
-        else if (thingssold > 37 && level < 8)
+        if (thingssold > 37 && level < 8)
         {
             deskscript.potentialproducts.Add("Cutlass");
             libraryscript.pagesunlocked[1]++;
             LevelUp();
         }
-        else if (thingssold > 44 && level < 9)
+        if (thingssold > 44 && level < 9)
         {
             deskscript.potentialproducts.Add("Spear");
             libraryscript.booksunlocked++;
             LevelUp();
         }
-        else if (thingssold > 51 && level < 10)
+        if (thingssold > 51 && level < 10)
         {
             deskscript.potentialproducts.Add("Halberd");
             libraryscript.pagesunlocked[3]++;
             LevelUp();
         }
-        else if (thingssold > 60 && level < 11)
+        if (thingssold > 60 && level < 11)
         {
             libraryscript.pagesunlocked[0]++;
+            storescript.storeinventorycount++;
             LevelUp();
         }
-        else if (thingssold > 69 && level < 12)
+        if (thingssold > 69 && level < 12)
         {
             deskscript.potentialproducts.Add("Legs");
             libraryscript.booksunlocked++;
             LevelUp();
         }
-        else if (thingssold > 78 && level < 13)
+        if (thingssold > 78 && level < 13)
         {
             deskscript.potentialproducts.Add("Shield");
             libraryscript.pagesunlocked[4]++;
             LevelUp();
         }
-        else if (thingssold > 87 && level < 14)
+        if (thingssold > 87 && level < 14)
         {
             deskscript.potentialproducts.Add("Armor");
             libraryscript.pagesunlocked[4]++;

@@ -28,7 +28,6 @@ public class Desk : MonoBehaviour {
         if (player.orders.Count == 0)
         {
             timetillnextorder = 0;
-            Debug.Log("a");
         }
         if (timeitsbeenup <= 0 && Global.me.tutorial.GetComponent<Tutorial>().finished)
         {
@@ -118,7 +117,6 @@ public class Desk : MonoBehaviour {
         }
         thesaying = speak + order;
         DisplayOrder(thesaying);
-        Debug.Log(thesaying);
     }
     public void DisplayOrder(string blorp)
     {

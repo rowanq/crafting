@@ -34,7 +34,6 @@ public class DragStore : MonoBehaviour
     }
     void OnMouseDown()
     {
-        Debug.Log(self.name);
         if (isplayeritem)//goes to storage
         {
             //find gameobject item needs to go to

@@ -8,6 +8,7 @@ public class Help : MonoBehaviour {
     public Collider2D self;
     public Image selfs;
     public GameObject help;
+    public GameObject items;
 	// Use this for initialization
 	void Start () {
 		
@@ -16,6 +17,13 @@ public class Help : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
         help.SetActive(false);
+        int i = 0;
+        while (i < player.huddisplayitems.Count)
+        {
+            player.huddisplayitems[i].SetActive(false);
+            i++;
+        }
+        items.SetActive(false);
         if (player.canmove)
         {
             selfs.enabled = true;
@@ -25,12 +33,30 @@ public class Help : MonoBehaviour {
             if (self.OverlapPoint(mouse))
             {
                 help.SetActive(true);
+                items.SetActive(true);
+                DisplayHUDitems();
             }
         }
         else
         {
             selfs.enabled = false;
             transform.GetChild(0).GetComponent<Text>().enabled = false;
+        }
+    }
+    void DisplayHUDitems()
+    {
+        int i = 0;
+        while (i < player.playerinventorycount)
+        {
+            player.huddisplayitems[i].SetActive(true);
+            SpriteRenderer spriterenderer = player.huddisplayitems[i].GetComponent<SpriteRenderer>();
+            Sprite newsprite = player.huddisplayitems[i].GetComponent<DragForce>().item.GetComponent<Item>().image;
+            if (player.playeritems[i].GetComponent<Item>().forgedone && player.playeritems[i].GetComponent<Item>().anvildone == false)
+            {
+                newsprite = player.huddisplayitems[i].GetComponent<DragForce>().item.GetComponent<Item>().hotimage;
+            }
+            spriterenderer.sprite = newsprite;
+            i++;
         }
     }
 }

@@ -41,7 +41,6 @@ public class Store : MonoBehaviour {
             j++;
         }
         int i = 0;
-        Debug.Log(player.playerinventorycount);
         while (i < player.playerinventorycount)
         {
             player.storedisplayitems[i].SetActive(true);
