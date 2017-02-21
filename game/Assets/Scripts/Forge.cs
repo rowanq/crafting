@@ -14,10 +14,13 @@ public class Forge : MonoBehaviour {
     public List<GameObject> displayitems;
     public List<GameObject> forgeitems;
     public int forgeinventorycount = 0;
+    public GameObject blower;
+    public List<Sprite> blowerimages;
     float temp;
     int amountofcoal;
     int amountoftimespentatrighttemp;
     bool blowerposition; //false is down, true is up
+    int blowerframes = 10;
     
 	// Use this for initialization
 	void Start () {
@@ -62,6 +65,40 @@ public class Forge : MonoBehaviour {
             if (Input.GetKeyDown(KeyCode.W))
             {
                 blowerposition = true;
+            }
+        }
+        AnimateBlower();
+    }
+    void AnimateBlower()
+    {
+        SpriteRenderer spriterenderer = blower.GetComponent<SpriteRenderer>();
+        if(blowerposition == false)
+        {
+            if(spriterenderer.sprite == blowerimages[2])
+            {
+                blowerframes = 0;
+            }
+            blowerframes++;
+            if(blowerframes < 5)
+            {
+                spriterenderer.sprite = blowerimages[1];
+            }else
+            {
+                spriterenderer.sprite = blowerimages[0];
+            }
+        }else
+        {
+            if(spriterenderer.sprite == blowerimages[0])
+            {
+                blowerframes = 0;
+            }
+            blowerframes++;
+            if (blowerframes > 5)
+            {
+                spriterenderer.sprite = blowerimages[2];
+            }else
+            {
+                spriterenderer.sprite = blowerimages[1];
             }
         }
     }

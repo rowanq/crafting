@@ -47,6 +47,10 @@ public class Store : MonoBehaviour {
             player.storedisplayitems[i].SetActive(true);
             SpriteRenderer spriterenderer = player.storedisplayitems[i].GetComponent<SpriteRenderer>();
             Sprite newsprite = player.storedisplayitems[i].GetComponent<DragStore>().item.GetComponent<Item>().image;
+            if (player.playeritems[i].GetComponent<Item>().forgedone && player.playeritems[i].GetComponent<Item>().anvildone == false)
+            {
+                newsprite = player.storedisplayitems[i].GetComponent<DragStore>().item.GetComponent<Item>().hotimage;
+            }
             spriterenderer.sprite = newsprite;
             i++;
         }
@@ -62,6 +66,10 @@ public class Store : MonoBehaviour {
             displayitems[i].SetActive(true);
             SpriteRenderer spriterenderer = displayitems[i].GetComponent<SpriteRenderer>();
             Sprite newsprite = displayitems[i].GetComponent<DragStore>().item.GetComponent<Item>().image;
+            if (displayitems[i].GetComponent<DragStore>().item.GetComponent<Item>().forgedone)
+            {
+                newsprite = displayitems[i].GetComponent<DragStore>().item.GetComponent<Item>().hotimage;
+            }
             spriterenderer.sprite = newsprite;
             i++;
         }

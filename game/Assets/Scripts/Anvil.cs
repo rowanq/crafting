@@ -33,6 +33,7 @@ public class Anvil : MonoBehaviour {
     // Use this for initialization
     void Start () {
         isRunning = false;
+        product = "None";
     }
 	
 	// Update is called once per frame
@@ -40,6 +41,21 @@ public class Anvil : MonoBehaviour {
         if (isRunning)
         {
             DisplayItems();
+            int j = 0;
+            while (j < anvilinventorycount)
+            {
+                displayitems[j].GetComponent<BoxCollider2D>().size = displayitems[j].GetComponent<SpriteRenderer>().sprite.bounds.size;
+                j++;
+            }
+            if (product == "None")//only should be able to click Ready, turn off Unready ready is 8 unready is 9
+            {
+                panel.transform.GetChild(8).gameObject.SetActive(true);
+                panel.transform.GetChild(9).gameObject.SetActive(false);
+            }else
+            {
+                panel.transform.GetChild(8).gameObject.SetActive(false);
+                panel.transform.GetChild(9).gameObject.SetActive(true);
+            }
             if (hammer)
             {
                 AnimateHammer();
@@ -101,90 +117,125 @@ public class Anvil : MonoBehaviour {
     }
     public void ReadyAnvil()
     {
-        int i = 0;
-        bool nothot = false;
-        while (i < anvilinventorycount && nothot == false)
+        if(numberofbarsused == 0)
         {
-            if (displayitems[i].GetComponent<DragAnvil>().item.GetComponent<Item>().forgedone)
+            int i = 0;
+            bool nothot = false;
+            while (i < anvilinventorycount && nothot == false)
             {
-                displayitems[i].GetComponent<DragAnvil>().ready = true;
-                if (displayitems[i].active)
+                if (displayitems[i].GetComponent<DragAnvil>().item.GetComponent<Item>().forgedone)
                 {
-                    numberofbarsused++;
-                    if (displayitems[i].GetComponent<DragAnvil>().rotated % 2 != 0) //odd and therefore rotated
+                    displayitems[i].GetComponent<DragAnvil>().ready = true;
+                    if (displayitems[i].active)
                     {
-                        rotated.Add(true);
-                        numberrotated++;
-                    }
-                    else //even and therefore not rotated
-                    {
-                        rotated.Add(false);
+                        numberofbarsused++;
+                        if (displayitems[i].GetComponent<DragAnvil>().rotated % 2 != 0) //odd and therefore rotated
+                        {
+                            rotated.Add(true);
+                            numberrotated++;
+                        }
+                        else //even and therefore not rotated
+                        {
+                            rotated.Add(false);
+                        }
+                        //turn on hitareas
+                        int w = 0;
+                        while (w < displayitems[i].transform.childCount)
+                        {
+                            displayitems[i].transform.GetChild(w).gameObject.SetActive(true);
+                            w++;
+                        }
                     }
                 }
-            }
-            else //item isn't hot enough, FUCK YOU!!
-            {
-                nothot = true;
-            }
-            i++;
-        }
-        if (nothot)
-        {
-            i = 0;
-            while(i < displayitems.Count)
-            {
-                displayitems[i].GetComponent<DragAnvil>().ready = false;
-                numberofbarsused = -1;
+                else //item isn't hot enough, FUCK YOU!!
+                {
+                    nothot = true;
+                }
                 i++;
             }
-            Debug.Log("You cna't fuckin use thees");
-        }else
-        {
-            CheckProduct();
-            CheckPlacement();
+            if (nothot)
+            {
+                i = 0;
+                while (i < displayitems.Count)
+                {
+                    displayitems[i].GetComponent<DragAnvil>().ready = false;
+                    numberofbarsused = -1;
+                    i++;
+                }
+                Global.me.sendmessage = true;
+                Global.me.message = "You can't do anything if your bars aren't hot!";
+            }
+            else
+            {
+                CheckProduct();
+                CheckPlacement();
+            }
         }
     }
     public void UnReadyAnvil()
     {
-        int i = 0;
-        while (i < displayitems.Count)
+        if (hammer == false)
         {
-            displayitems[i].GetComponent<DragAnvil>().ready = false;
-            displayitems[i].transform.position = displayitems[i].GetComponent<DragAnvil>().startposition;
-            i++;
+            int i = 0;
+            product = "None";
+            while (i < displayitems.Count)
+            {
+                displayitems[i].GetComponent<DragAnvil>().ready = false;
+                displayitems[i].transform.position = displayitems[i].GetComponent<DragAnvil>().startposition;
+                i++;
+            }
+            numberofbarsused = 0;
+            i = 0;
+            while (i < placeshit.Count)
+            {
+                placestohit.Remove(placestohit[i]);
+                placeshit.Remove(placeshit[i]);
+                i++;
+            }
+            i = 0;
+            while (i < placeswelt.Count)
+            {
+                placestoweld.Remove(placestoweld[i]);
+                placestoweldto.Remove(placestoweldto[i]);
+                placeswelt.Remove(placeswelt[i]);
+                i++;
+            }
+            i = 0;
+            int w = 0;
+            while(i < displayitems.Count)
+            {
+                while (w < displayitems[i].transform.childCount)
+                {
+                    displayitems[i].transform.GetChild(w).gameObject.SetActive(false);
+                    w++;
+                }
+                i++;
+            }
+            rotated = new List<bool>();
+            numberrotated = 0;
+            i = 0;
+            while (i < checks.Count)
+            {
+                Destroy(checks[i]);
+                i++;
+            }
+            checks = new List<GameObject>();
         }
-        numberofbarsused = 0;
-        i = 0;
-        while (i < placeshit.Count)
-        {
-            placestohit.Remove(placestohit[i]);
-            placeshit.Remove(placeshit[i]);
-            i++;
-        }
-        i = 0;
-        while (i < placeswelt.Count)
-        {
-            placestoweld.Remove(placestoweld[i]);
-            placestoweldto.Remove(placestoweldto[i]);
-            placeswelt.Remove(placeswelt[i]);
-            i++;
-        }
-        i = 0;
-        while(i < checks.Count)
-        {
-            Destroy(checks[i]);
-            i++;
-        }
-        checks = new List<GameObject>();
+       
     }
     public void GetHammer()
     {
-        if (hammer)
+        if (product != "None")
         {
-            hammer = false;
-        }else
-        {
-            hammer = true;
+            Debug.Log("y");
+            if (hammer)
+            {
+                hammer = false;
+            }
+            else
+            {
+                hammer = true;
+            }
         }
 
     }
@@ -225,8 +276,8 @@ public class Anvil : MonoBehaviour {
             else
             {
                 product = "Hammer";
-                int i = displayitems[0].transform.childCount - 1;
-                while (i > -1)
+                int i = 0;
+                while (i < displayitems[0].transform.childCount)
                 {
                     if (displayitems[0].transform.GetChild(i).name == "MidBottom")
                     {
@@ -243,13 +294,14 @@ public class Anvil : MonoBehaviour {
                         placestohit.Add(displayitems[0].transform.GetChild(i).gameObject.GetComponent<Collider2D>());
                         placeshit.Add(false);
                     }
-                    i--;
+                    i++;
                 }
+                Debug.Log(placestohit.Count);
             }
         }
         else if (numberofbarsused == 2)
         {
-            if (rotated[0] == false)
+            if (numberrotated == 0)
             {
                 product = "Sword";
                 int j = 0;
@@ -372,7 +424,7 @@ public class Anvil : MonoBehaviour {
                     q++;
                 }
             }
-            else if (rotated[0] == true || rotated[0] == true)
+            else if (numberrotated == 2)
             {
                 product = "Scythe";
                 int j = 0;
@@ -1181,6 +1233,10 @@ public class Anvil : MonoBehaviour {
                     Vector2 goal = placestohit[i].transform.position;
                     float distance = Vector2.Distance(goal, mouses);
                     float score = 100 + (-612*distance*distance);
+                    if (score < 25)
+                    {
+                        score = 25;
+                    }
                     scores.Add(score);
                     GameObject newcheck = Instantiate(check, new Vector3(mouses.x,mouses.y,0), new Quaternion(0,0,0,0),panel.transform);
                     Color green = Color.green;
@@ -1232,13 +1288,6 @@ public class Anvil : MonoBehaviour {
                 {
                     displayitems[0].transform.Rotate(0, 0, 90);
                 }
-                i = 0;
-                while (i < checks.Count)
-                {
-                    Destroy(checks[i]);
-                    i++;
-                }
-                checks = new List<GameObject>();
             }
         }
     }
@@ -1293,7 +1342,7 @@ public class Anvil : MonoBehaviour {
             Sprite newsprite = player.anvildisplayitems[i].GetComponent<DragAnvil>().item.GetComponent<Item>().image;
             if (player.playeritems[i].GetComponent<Item>().forgedone && player.playeritems[i].GetComponent<Item>().anvildone == false)
             {
-                newsprite = player.forgedisplayitems[i].GetComponent<DragForce>().item.GetComponent<Item>().hotimage;
+                newsprite = player.anvildisplayitems[i].GetComponent<DragAnvil>().item.GetComponent<Item>().hotimage;
             }
             spriterenderer.sprite = newsprite;
             i++;

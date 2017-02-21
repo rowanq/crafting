@@ -263,7 +263,8 @@ public class Player : MonoBehaviour {
         {
             recog = "You got a new page in Metal.";
         }
-        deskscript.DisplayOrder(recog);
+        Global.me.sendmessage = true;
+        Global.me.message = recog;
     }
     public void DealWithProgression()
     {
@@ -283,7 +284,7 @@ public class Player : MonoBehaviour {
         }
         else if (thingssold > 8 && level < 3)
         {
-            libraryscript.booksunlocked++;
+            libraryscript.pagesunlocked[0]++;
             LevelUp();
         }
         else if (thingssold > 13 && level < 4)
@@ -332,7 +333,7 @@ public class Player : MonoBehaviour {
             libraryscript.pagesunlocked[0]++;
             LevelUp();
         }
-        else if (thingssold > 6 && level < 12)
+        else if (thingssold > 69 && level < 12)
         {
             deskscript.potentialproducts.Add("Legs");
             libraryscript.booksunlocked++;

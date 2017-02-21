@@ -11,10 +11,12 @@ public class Tutorial : MonoBehaviour {
     public bool forgefinished = false;
     public bool anvilfinished = false;
     public bool detailfinished = false;
+    public bool libraryfinished = false;
     List<string> tutorial;
     List<string> forgetutorial;
     List<string> anviltutorial;
     List<string> detailtutorial;
+    List<string> librarytutorial;
     List<List<string>> tutorials;
     // Use this for initialization
     void Start()
@@ -59,11 +61,22 @@ public class Tutorial : MonoBehaviour {
         detailtutorial.Add("Now you are capable of moving the items by shift-clicking like in the Anvil station, as well as rotating using A or D. Your goal is to align the two items as closely as possible. Once you are satisfied with your alignment, click Unready");
         detailtutorial.Add("Awesome! You now have a finished dagger and have completed the tutorial! To sell this first creation, go to the desk. Remember you can always go to the library for references on the design of items and general help, and you can redo the tutorial from the options menu.");
         detailtutorial.Add("Good luck!");
+        librarytutorial = new List<string>();
+        librarytutorial.Add("Welcome to the Library! This is where you can get all the information you need to be a successful blacksmith.");
+        librarytutorial.Add("First note that right now you only own two books: Metal and Blades. As you gain experience and craft items, you will unlock more books and more pages for these books.");
+        librarytutorial.Add("Please open the metal book and open it to the first page: Bronze.");
+        librarytutorial.Add("As you can see, like all pages it has the name in the top left corner. Images of how it appear also are on the page.");
+        librarytutorial.Add("In the bottom left corner is what color the temperature gauge in the forge needs to be for the metal to start smelting.");
+        librarytutorial.Add("In the bottom right corner is the price modifier applied to the item if it is built out of this material. After you are done here, close this book and open the blades book to the dagger page.");
+        librarytutorial.Add("As you can see, two check marks appear on the bar. This is where you need to hammer in the anvil station. Later, red checks will appear on more complex designs. These red checks are where you weld.");
+        librarytutorial.Add("On the right hand side you can see an image of the final product which shows you what you have to do in detailing to finish the item. Finally, the price is in the bottom right corner.");
+        librarytutorial.Add("That’s all for the Library. Good luck!");
         tutorials = new List<List<string>>();
         tutorials.Add(tutorial);
         tutorials.Add(forgetutorial);
         tutorials.Add(anviltutorial);
         tutorials.Add(detailtutorial);
+        tutorials.Add(librarytutorial);
 
     }
 	
@@ -91,6 +104,19 @@ public class Tutorial : MonoBehaviour {
                 tutorialdisplays[curtutorial].SetActive(false);
                 Global.me.openpanel = null;
                 place = -1;
+                if(curtutorial == 1)
+                {
+                    forgefinished = true;
+                }else if(curtutorial == 2)
+                {
+                    anvilfinished = true;
+                }else if(curtutorial == 3)
+                {
+                    detailfinished = true;
+                }else if(curtutorial == 4)
+                {
+                    libraryfinished = true;
+                }
             }
         }
 
@@ -111,6 +137,7 @@ public class Tutorial : MonoBehaviour {
             forgefinished = true;
             anvilfinished = true;
             detailfinished = true;
+            libraryfinished = true;
         }else if(curtutorial == 1)
         {
             forgefinished = true;
@@ -120,6 +147,9 @@ public class Tutorial : MonoBehaviour {
         }else if(curtutorial == 3)
         {
             detailfinished = true;
+        }else if(curtutorial == 4)
+        {
+            libraryfinished = true;
         }
         finished = true;
         tutorialdisplays[curtutorial].SetActive(false);

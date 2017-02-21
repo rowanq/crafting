@@ -46,6 +46,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+     <Compile Include="Assets\NPC.cs" />
      <Compile Include="Assets\Scripts\Anvil.cs" />
      <Compile Include="Assets\Scripts\Desk.cs" />
      <Compile Include="Assets\Scripts\Detailing.cs" />

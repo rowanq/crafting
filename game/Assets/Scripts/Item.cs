@@ -25,10 +25,13 @@ public class Item : MonoBehaviour {
     public string scoreword;
     public int price;
     public int buyprice;
+    public int expworth; //how much experience they give the player (i.e. # of bars used)
     public int anvilsize = 75;
     public List<Sprite> imagesprites;
     public int menuspriteplace;
     public int anvilspriteplace;
+    public int originalprice;
+    public float temperature;
     float forgeprocessneeded;
     float typeOfItem;
     float itemID;
@@ -37,6 +40,7 @@ public class Item : MonoBehaviour {
     // Use this for initialization
     void Start()
     {
+        temperature = -1;
         typeOfItem = 0;
         anvilsize = 75;
         itemID = Random.Range(0, 100000);
@@ -85,18 +89,18 @@ public class Item : MonoBehaviour {
         {
             menuspriteplace = 0;
             anvilspriteplace = 107;
-            forgemintemp = 1000;
-            forgemaxtemp = 1010;
-            forgeprocessneeded = 100;
+            forgemintemp = 10;
+            forgemaxtemp = 500;
+            forgeprocessneeded = 5;
             buyprice = 1;
         }
-        else if (name == "Handle_Long")
+        else if (name == "Long Handle")
         {
             menuspriteplace = 1;
             anvilspriteplace = 108;
-            forgemintemp = 1000;
-            forgemaxtemp = 1010;
-            forgeprocessneeded = 100;
+            forgemintemp = 10;
+            forgemaxtemp = 500;
+            forgeprocessneeded = 10;
             buyprice = 1;
         }
         else if (name == "Crest")
@@ -110,13 +114,38 @@ public class Item : MonoBehaviour {
             anvilsize = 300;
         }
     }
+    void FixedUpdate()
+    {
+        if (forgedone && anvildone == false)
+        {
+            if (temperature > 0)
+            {
+                temperature--;
+            }
+            else
+            {
+                temperature = -1;
+                if (anvildone == false)
+                {
+                    forgedone = false;
+                    forgeprogress = 0;
+                }
+            }
+        }
+        
+    }
 	// Update is called once per frame
 	void Update () {
         image = imagesprites[menuspriteplace];
         anvilimage = imagesprites[anvilspriteplace];
-        if (forgeprogress >= forgeprocessneeded)
+        if (forgeprogress >= forgeprocessneeded && temperature < 0)
         {
             forgedone = true;
+            temperature = 1800;
+            if(name == "Handle" || name == "Long Handle")
+            {
+                //name = "Trash";
+            }
         }
         if (anvildone && anvilchecked == false)
         {
@@ -126,6 +155,8 @@ public class Item : MonoBehaviour {
                 int i = 2;
                 menuspriteplace += i;
                 anvilspriteplace += i;
+                originalprice = 5;
+                expworth = 1;
 
             }
             else if (product == "Hammer")
@@ -133,36 +164,48 @@ public class Item : MonoBehaviour {
                 int i = 4;
                 menuspriteplace += i;
                 anvilspriteplace += i;
+                originalprice = 7;
+                expworth = 1;
             }
             else if (product == "Sword")
             {
                 int i = 6;
                 menuspriteplace += i;
                 anvilspriteplace += i;
+                originalprice = 10;
+                expworth = 2;
             }
             else if (product == "Axe")
             {
                 int i = 8;
                 menuspriteplace += i;
                 anvilspriteplace += i;
+                originalprice = 12;
+                expworth = 2;
             }
             else if (product == "Scythe")
             {
                 int i = 10;
                 menuspriteplace += i;
                 anvilspriteplace += i;
+                originalprice = 14;
+                expworth = 2;
             }
             else if (product == "Claymore")
             {
                 int i = 12;
                 menuspriteplace += i;
                 anvilspriteplace += i;
+                originalprice = 15;
+                expworth = 3;
             }
             else if (product == "Cutlass")
             {
                 int i = 14;
                 menuspriteplace += i;
                 anvilspriteplace += i;
+                originalprice = 20;
+                expworth = 3;
             }
             else if (product == "Spear")
             {
@@ -170,6 +213,8 @@ public class Item : MonoBehaviour {
                 menuspriteplace += i;
                 anvilspriteplace += i;
                 anvilsize = 50;
+                originalprice = 18;
+                expworth = 3;
             }
             else if (product == "Halberd")
             {
@@ -177,6 +222,8 @@ public class Item : MonoBehaviour {
                 menuspriteplace += i;
                 anvilspriteplace += i;
                 anvilsize = 50;
+                originalprice = 19;
+                expworth = 3;
             }
             else if (product == "Legs")
             {
@@ -184,6 +231,8 @@ public class Item : MonoBehaviour {
                 menuspriteplace += i;
                 anvilspriteplace += i;
                 anvilsize = 300;
+                originalprice = 20;
+                expworth = 3;
             }
 
             else if (product == "Armor")
@@ -192,6 +241,8 @@ public class Item : MonoBehaviour {
                 menuspriteplace += i;
                 anvilspriteplace += i;
                 anvilsize = 300;
+                originalprice = 22;
+                expworth = 4;
             }
             else if (product == "Shield")
             {
@@ -199,6 +250,8 @@ public class Item : MonoBehaviour {
                 menuspriteplace += i;
                 anvilspriteplace += i;
                 anvilsize = 300;
+                originalprice = 20;
+                expworth = 4;
             }
         }
         if (detailingdone && detailingchecked == false)
@@ -236,7 +289,6 @@ public class Item : MonoBehaviour {
     }
     void CalculatePrice()
     {
-        float originalprice = 0f;
         float pricemodifier = 0f;
         if(name == "Bronze")
         {
@@ -253,10 +305,6 @@ public class Item : MonoBehaviour {
         else if (name == "Titanium")
         {
             pricemodifier = 4f;
-        }
-        if (product == "Dagger")
-        {
-            originalprice = 5f;
         }
         price = (int)Mathf.Round((pricemodifier*originalprice) * (totalscore / 100));
     }

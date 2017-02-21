@@ -18,6 +18,7 @@ public class Detailing : MonoBehaviour
     public List<bool> connectionmade;
     bool notrotatedproperly = false;
     bool rotationsame; //if true, rotations need to be the same, if not the opposite
+    bool state = false; //ready displays when false, unready when true
     // Use this for initialization
     void Start()
     {
@@ -30,6 +31,22 @@ public class Detailing : MonoBehaviour
         if (isRunning)
         {
             DisplayItems();
+            int j = 0;
+            while (j < detailinginventorycount)
+            {
+                displayitems[j].GetComponent<BoxCollider2D>().size = displayitems[j].GetComponent<SpriteRenderer>().sprite.bounds.size;
+                j++;
+            }
+            if (state == false)//only should be able to click Ready, turn off Unready ready is 6 unready is 5
+            {
+                panel.transform.GetChild(6).gameObject.SetActive(true);
+                panel.transform.GetChild(5).gameObject.SetActive(false);
+            }
+            else
+            {
+                panel.transform.GetChild(6).gameObject.SetActive(false);
+                panel.transform.GetChild(5).gameObject.SetActive(true);
+            }
         }
     }
     public void OpenDetailing()
@@ -64,7 +81,9 @@ public class Detailing : MonoBehaviour
                 {
                     product = displayitems[i].GetComponent<DragDetailing>().item.GetComponent<Item>().product;
                     product_i = i;
+                    state = true;
                 }
+
             }
             i++;
         }
@@ -72,31 +91,73 @@ public class Detailing : MonoBehaviour
     }
     public void UnReadyDetailing()
     {
-        CheckRotation();
-        if (notrotatedproperly == false)
+        int w = 0;
+        bool alreadydone = false;
+        while (w < displayitems.Count)
         {
-            Debug.Log("yay");
-            CheckPlacement();
+            if(displayitems[w].GetComponent<DragDetailing>().item != null)
+            {
+                if (displayitems[w].GetComponent<DragDetailing>().item.GetComponent<Item>().detailingdone)
+                {
+                    alreadydone = true;
+                }
+            }
+            w++;
         }
-        else
+        if(alreadydone == false)
         {
-            Debug.Log("boo");
+            int i = 0;
+            while (i < displayitems.Count)
+            {
+                w = 0;
+                while (w < displayitems[i].transform.childCount)
+                {
+                    displayitems[i].transform.GetChild(w).gameObject.SetActive(true);
+                    w++;
+                }
+                i++;
+            }
+            CheckRotation();
+            state = false;
+            if (notrotatedproperly == false)
+            {
+                Debug.Log("yay");
+                CheckPlacement();
+            }
+            else
+            {
+                Debug.Log("boo");
+                Global.me.message = "Your pieces weren't properly aligned!";
+                Global.me.sendmessage = true;
+            }
+            i = 0;
+            while (i < displayitems.Count)
+            {
+                displayitems[i].GetComponent<DragDetailing>().ready = false;
+                displayitems[i].transform.position = displayitems[i].GetComponent<DragDetailing>().startposition;
+                i++;
+            }
+            i = 0;
+            while (i < connectionmade.Count)
+            {
+                connection1.Remove(connection1[i]);
+                connection2.Remove(connection2[i]);
+                connectionmade.Remove(connectionmade[i]);
+                i++;
+            }
+            i = 0;
+            w = 0;
+            while (i < displayitems.Count)
+            {
+                while (w < displayitems[i].transform.childCount)
+                {
+                    displayitems[i].transform.GetChild(w).gameObject.SetActive(false);
+                    w++;
+                }
+                i++;
+            }
         }
-        int i = 0;
-        while (i < displayitems.Count)
-        {
-            displayitems[i].GetComponent<DragDetailing>().ready = false;
-            displayitems[i].transform.position = displayitems[i].GetComponent<DragDetailing>().startposition;
-            i++;
-        }
-        i = 0;
-        while (i < connectionmade.Count)
-        {
-            connection1.Remove(connection1[i]);
-            connection2.Remove(connection2[i]);
-            connectionmade.Remove(connectionmade[i]);
-            i++;
-        }
+
     }
     void CheckProduct()
     {
@@ -331,6 +392,10 @@ public class Detailing : MonoBehaviour
                 i--;
             }
             detailinginventorycount = 1;
+        }else
+        {
+            Global.me.message = "Your pieces weren't properly aligned!";
+            Global.me.sendmessage = true;
         }
     }
     void DisplayItems()
@@ -347,6 +412,10 @@ public class Detailing : MonoBehaviour
             player.detailingdisplayitems[i].SetActive(true);
             SpriteRenderer spriterenderer = player.detailingdisplayitems[i].GetComponent<SpriteRenderer>();
             Sprite newsprite = player.detailingdisplayitems[i].GetComponent<DragDetailing>().item.GetComponent<Item>().image;
+            if (player.playeritems[i].GetComponent<Item>().forgedone && player.playeritems[i].GetComponent<Item>().anvildone == false)
+            {
+                newsprite = player.detailingdisplayitems[i].GetComponent<DragDetailing>().item.GetComponent<Item>().hotimage;
+            }
             spriterenderer.sprite = newsprite;
             i++;
         }

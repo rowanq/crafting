@@ -23,8 +23,8 @@ public class Desk : MonoBehaviour {
 	}
 	
 	// Update is called once per frame
-	void Update () {
-        Debug.Log(player.orders.Count);
+	void Update () { 
+
         if (player.orders.Count == 0)
         {
             timetillnextorder = 0;
@@ -142,7 +142,7 @@ public class Desk : MonoBehaviour {
     }
     public void Sell()
     {
-        player.thingssold++;
+        player.thingssold += player.playeritems[player_j_to_be_sold].GetComponent<Item>().expworth;
         player.DealWithProgression();
         player.money += player.playeritems[player_j_to_be_sold].GetComponent<Item>().price;
         player.playeritems.Remove(player.playeritems[player_j_to_be_sold]);

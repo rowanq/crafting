@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class DragStore : MonoBehaviour
 {
@@ -15,6 +16,21 @@ public class DragStore : MonoBehaviour
     void Start()
     {
 
+    }
+    void OnMouseOver()
+    {
+        if(isplayeritem == false)
+        {
+            self.transform.GetChild(0).gameObject.SetActive(true);
+            self.transform.GetChild(0).GetChild(0).GetComponent<Text>().text = item.GetComponent<Item>().name + "\n" + item.GetComponent<Item>().buyprice;
+        }
+    }
+    void OnMouseExit()
+    {
+        if(isplayeritem == false)
+        {
+            self.transform.GetChild(0).gameObject.SetActive(false);
+        }
     }
     void OnMouseDown()
     {

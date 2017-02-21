@@ -48,6 +48,10 @@ public class Storage : MonoBehaviour {
             player.storagedisplayitems[i].SetActive(true);
             SpriteRenderer spriterenderer = player.storagedisplayitems[i].GetComponent<SpriteRenderer>();
             Sprite newsprite = player.storagedisplayitems[i].GetComponent<DragStorage>().item.GetComponent<Item>().image;
+            if (player.playeritems[i].GetComponent<Item>().forgedone && player.playeritems[i].GetComponent<Item>().anvildone == false)
+            {
+                newsprite = player.storagedisplayitems[i].GetComponent<DragStorage>().item.GetComponent<Item>().hotimage;
+            }
             spriterenderer.sprite = newsprite;
             i++;
         }
@@ -63,6 +67,10 @@ public class Storage : MonoBehaviour {
             displayitems[i].SetActive(true);
             SpriteRenderer spriterenderer = displayitems[i].GetComponent<SpriteRenderer>();
             Sprite newsprite = displayitems[i].GetComponent<DragStorage>().item.GetComponent<Item>().image;
+            if (displayitems[i].GetComponent<DragStorage>().item.GetComponent<Item>().forgedone)
+            {
+                newsprite = displayitems[i].GetComponent<DragStorage>().item.GetComponent<Item>().hotimage;
+            }
             spriterenderer.sprite = newsprite;
             i++;
         }

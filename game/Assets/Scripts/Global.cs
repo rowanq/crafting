@@ -10,6 +10,10 @@ public class Global : MonoBehaviourSingleton<Global> {
     public GameObject openpanel;
     public GameObject tutorial;
     public bool gameon;
+    public bool gamestarted;
+    public string message;
+    public bool sendmessage;
+    public Desk desk;
     // Use this for initialization
     private void Awake()
     {
@@ -17,10 +21,21 @@ public class Global : MonoBehaviourSingleton<Global> {
     }
     void Start () {
         openpanel = tutorial;
+        sendmessage = false;
 	}
 	
 	// Update is called once per frame
 	void Update () {
+        if (sendmessage)
+        {
+            desk.DisplayOrder(message);
+            sendmessage = false;
+            message = "";
+        }
+        if (Input.GetKeyDown(KeyCode.P) && gamestarted)
+        {
+           gameon = true;
+        }
         if (gameon)
         {
             world.SetActive(true);
@@ -41,6 +56,11 @@ public class Global : MonoBehaviourSingleton<Global> {
                 if (openpanel.name == "detailing_panel" && tutorial.GetComponent<Tutorial>().detailfinished == false && tutorial.GetComponent<Tutorial>().curtutorial != 3)
                 {
                     tutorial.GetComponent<Tutorial>().curtutorial = 3;
+                    tutorial.GetComponent<Tutorial>().place = 0;
+                }
+                if (openpanel.name == "library_panel" && tutorial.GetComponent<Tutorial>().libraryfinished == false && tutorial.GetComponent<Tutorial>().curtutorial != 4)
+                {
+                    tutorial.GetComponent<Tutorial>().curtutorial = 4;
                     tutorial.GetComponent<Tutorial>().place = 0;
                 }
             }
@@ -73,6 +93,7 @@ public class Global : MonoBehaviourSingleton<Global> {
         }else
         {
             gameon = true;
+            gamestarted = true;
         }
     }
     public void Quit()
