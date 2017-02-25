@@ -4,8 +4,11 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class Player : MonoBehaviour {
+    public Camera camera;
     public float xMovement;
     public float yMovement;
+    public int money;
+    public int thingssold = 1;
     public Collider2D forge;
     public Forge forgescript;
     public Collider2D storage;
@@ -22,11 +25,14 @@ public class Player : MonoBehaviour {
     public Store storescript;
     public List<string> orders;
     public List<GameObject> orderdisplays;
-    public int money;
-    public int thingssold = 1;
+    public Collider2D backdoor;
+    public bool inback = false;
+    public Collider2D supplies;
+    public Supplies suppliesscript;
+    public Collider2D frontdoor;
+    public bool infront = false;
     public SpriteRenderer spriteRenderer;
     public List<Sprite> Anim;
-    public List<GameObject> itemsingame;
     public List<GameObject> forgedisplayitems;
     public List<GameObject> storagedisplayitems;
     public List<GameObject> anvildisplayitems;
@@ -44,8 +50,10 @@ public class Player : MonoBehaviour {
     float speed;
     Vector2 position;
     int timesincelastmove;
+    int timesincelastsave = 0;
     // Use this for initialization
     void Start () {
+        DealWithProgression();
         facingRight = true;
         moving = false;
         canmove = true;
@@ -61,7 +69,7 @@ public class Player : MonoBehaviour {
 	void Update () {
         canmove = true;
         DealWithItems();
-        if (forgescript.isRunning || storagescript.isRunning || anvilscript.isRunning || libraryscript.isRunning || detailingscript.isRunning || storescript.isRunning)
+        if (forgescript.isRunning || storagescript.isRunning || anvilscript.isRunning || libraryscript.isRunning || detailingscript.isRunning || storescript.isRunning || Global.me.tutorial.GetComponent<Tutorial>().finished == false)
         {
             canmove = false;
         }
@@ -78,33 +86,78 @@ public class Player : MonoBehaviour {
         }
         if (Input.GetKeyDown(KeyCode.E))
         {
-            if (forge.OverlapPoint(position))
+            bool foundcustomer = false;
+            int w = 0;
+            while (w < deskscript.customers.Count)
+            {
+                if (deskscript.customers[w].GetComponent<Collider2D>().OverlapPoint(position))
+                {
+                    deskscript.CheckforOrder();
+                    deskscript.player_customer = w;
+                    foundcustomer = true;
+                }
+                w++;
+            }
+            if (foundcustomer)
+            {
+
+            }
+            else if (backdoor.OverlapPoint(position))
+            {
+                if(camera.transform.position.y == 10)
+                {
+                    camera.transform.position = new Vector3(0,0,-10);
+                    transform.position += new Vector3(0, -2.5f,0);
+                    inback = false;
+                }else
+                {
+                    camera.transform.position = new Vector3(0, 10,-10);
+                    transform.position += new Vector3(0, 2.5f, 0);
+                    inback = true;
+                }
+            }
+            else if (frontdoor.OverlapPoint(position))
+            {
+                if (camera.transform.position.x == 17.7f)
+                {
+                    camera.transform.position = new Vector3(0, 0, -10);
+                    transform.position += new Vector3(-2.5f, 0, 0);
+                    infront = false;
+                }
+                else
+                {
+                    camera.transform.position = new Vector3(17.7f, 0, -10);
+                    transform.position += new Vector3(2.5f, 0, 0);
+                    infront = true;
+                }
+            }
+            else if (forge.OverlapPoint(position))
             {
                 forgescript.OpenForge();
             }
-            if (storage.OverlapPoint(position))
+            else if (storage.OverlapPoint(position))
             {
                 storagescript.OpenStorage();
             }
-            if (anvil.OverlapPoint(position))
+            else if (anvil.OverlapPoint(position))
             {
                 anvilscript.OpenAnvil();
             }
-            if (detailing.OverlapPoint(position))
+            else if (detailing.OverlapPoint(position))
             {
                 detailingscript.OpenDetailing();
             }
-            if (library.OverlapPoint(position))
+            else if (library.OverlapPoint(position))
             {
                 libraryscript.OpenLibrary();
             }
-            if (desk.OverlapPoint(position))
-            {
-                deskscript.CheckforOrder();
-            }
-            if (store.OverlapPoint(position))
+            else if (store.OverlapPoint(position))
             {
                 storescript.OpenStore();
+            }
+            else if (supplies.OverlapPoint(position))
+            {
+                suppliesscript.OpenSupplies();
             }
         }
         if (Input.GetKeyDown(KeyCode.Escape))
@@ -143,6 +196,65 @@ public class Player : MonoBehaviour {
     void FixedUpdate()
     {
         timesincelastmove++;
+        timesincelastsave++;
+        if(timesincelastsave >= 50)
+        {
+            Save();
+            timesincelastsave = 0;
+        }
+    }
+    public void Save()
+    {
+        PlayerPrefs.SetInt("Level", level);
+        PlayerPrefs.SetInt("Money", money);
+        PlayerPrefs.SetInt("Inventory Size", playerinventorycount);
+        if (playerinventorycount > 0)
+        {
+            PlayerPrefs.SetString("Item 0", playeritems[0].GetComponent<Item>().name);
+        }
+        if (playerinventorycount > 1)
+        {
+            PlayerPrefs.SetString("Item 1", playeritems[1].GetComponent<Item>().name);
+        }
+        if (playerinventorycount > 2)
+        {
+            PlayerPrefs.SetString("Item 2", playeritems[2].GetComponent<Item>().name);
+        }
+        if (playerinventorycount > 3)
+        {
+            PlayerPrefs.SetString("Item 3", playeritems[3].GetComponent<Item>().name);
+        }
+        PlayerPrefs.Save();
+    }
+    public void Load()
+    {
+        level = PlayerPrefs.GetInt("Level");
+        money = PlayerPrefs.GetInt("Money");
+        playerinventorycount = PlayerPrefs.GetInt("Inventory Size");
+        if (playerinventorycount > 0)
+        {
+            GameObject newitem = (GameObject)Instantiate(Resources.Load("Item"));
+            playeritems.Add(newitem);
+            playeritems[0].GetComponent<Item>().name = PlayerPrefs.GetString("Item 0");
+        }
+        if (playerinventorycount > 1)
+        {
+            GameObject newitem = (GameObject)Instantiate(Resources.Load("Item"));
+            playeritems.Add(newitem);
+            playeritems[1].GetComponent<Item>().name = PlayerPrefs.GetString("Item 1");
+        }
+        if (playerinventorycount > 2)
+        {
+            GameObject newitem = (GameObject)Instantiate(Resources.Load("Item"));
+            playeritems.Add(newitem);
+            playeritems[2].GetComponent<Item>().name = PlayerPrefs.GetString("Item 2");
+        }
+        if (playerinventorycount > 3)
+        {
+            GameObject newitem = (GameObject)Instantiate(Resources.Load("Item"));
+            playeritems.Add(newitem);
+            playeritems[3].GetComponent<Item>().name = PlayerPrefs.GetString("Item 3");
+        }
     }
     void DealWithMovement()
     {
@@ -167,7 +279,7 @@ public class Player : MonoBehaviour {
                 facingRight = true;
             }
         }
-        else if (Input.GetKey(KeyCode.A))
+        if (Input.GetKey(KeyCode.A))
         {
             xdirection = -1;
             moving = true;
@@ -176,22 +288,49 @@ public class Player : MonoBehaviour {
                 facingRight = false;
             }
         }
+        if(Input.GetKey(KeyCode.D) && Input.GetKey(KeyCode.A))
+        {
+            xdirection = 0;
+            moving = false;
+        }
         if (Input.GetKey(KeyCode.W))
         {
             ydirection = 1;
             moving = true;
         }
-        else if (Input.GetKey(KeyCode.S))
+        if (Input.GetKey(KeyCode.S))
         {
             ydirection = -1;
             moving = true;
         }
+        if (Input.GetKey(KeyCode.W) && Input.GetKey(KeyCode.S))
+        {
+            ydirection = 0;
+            moving = false;
+        }
         if (moving)
         {
             //xmovement
-            transform.position += new Vector3(Time.deltaTime*xMovement * speed * xdirection, 0, 0);
+            int ylow = -4;
+            int yhi = 4;
+            if (inback)
+            {
+                yhi = 14;
+                ylow = 6;
+            }
+            float xlow = -8f;
+            float xhi = 8f;
+            if (infront)
+            {
+                xlow += 17.7f;
+                xhi += 17.7f;
+            }
+            float xposition = Mathf.Clamp(transform.position.x+Time.deltaTime * xMovement * speed * xdirection, xlow, xhi);
+            transform.position = new Vector3(xposition, transform.position.y, 0);
             //ymovement
-            transform.position += new Vector3(0, Time.deltaTime*yMovement * speed * ydirection, 0);
+            float yposition = Mathf.Clamp(transform.position.y+Time.deltaTime * yMovement * speed * ydirection, ylow, yhi);
+            transform.position = new Vector3(transform.position.x, yposition, 0);
+
         }
         if (facingRight)
         {
@@ -207,7 +346,7 @@ public class Player : MonoBehaviour {
     {
         if (moving)
         {
-            if(timesincelastmove >= 4)
+            if(timesincelastmove >= 6)
             {
                 timesincelastmove = 0;
                 curSprite += 1;
@@ -312,10 +451,8 @@ public class Player : MonoBehaviour {
     }
     public void DealWithProgression()
     {
-        Debug.Log(thingssold);
         if (thingssold > 1 && level < 1)
         {
-            Debug.Log(level);
             deskscript.potentialproducts.Add("Hammer");
             libraryscript.booksunlocked++;
             LevelUp();

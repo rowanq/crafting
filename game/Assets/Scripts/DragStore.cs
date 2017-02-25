@@ -79,11 +79,18 @@ public class DragStore : MonoBehaviour
         else if (player.playerinventorycount < 4)//goes to player
         {
             //find gameobject item needs to go to
-            GameObject newitem = Instantiate(item);
-            player.storedisplayitems[player.playerinventorycount].GetComponent<DragStore>().item = newitem;
-            player.playeritems.Add(newitem);
-            player.playerinventorycount++;
-            player.money -= newitem.GetComponent<Item>().buyprice;
+            if(player.money > item.GetComponent<Item>().buyprice)
+            {
+                GameObject newitem = Instantiate(item);
+                player.storedisplayitems[player.playerinventorycount].GetComponent<DragStore>().item = newitem;
+                player.playeritems.Add(newitem);
+                player.playerinventorycount++;
+                player.money -= newitem.GetComponent<Item>().buyprice;
+            }else
+            {
+                Global.me.sendmessage = true;
+                Global.me.message = "You can't afford that!";
+            }
         }
     }
 }

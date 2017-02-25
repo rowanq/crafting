@@ -117,6 +117,7 @@ public class Tutorial : MonoBehaviour {
                 {
                     libraryfinished = true;
                 }
+                curtutorial = -1;
             }
         }
 
@@ -155,5 +156,6 @@ public class Tutorial : MonoBehaviour {
         tutorialdisplays[curtutorial].SetActive(false);
         Global.me.openpanel = null;
         place = -1;
+        curtutorial = -1;
     }
 }

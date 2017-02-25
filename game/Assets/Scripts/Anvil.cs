@@ -117,8 +117,10 @@ public class Anvil : MonoBehaviour {
     }
     public void ReadyAnvil()
     {
+        Debug.Log(numberofbarsused);
         if(numberofbarsused == 0)
         {
+            Debug.Log("food");
             int i = 0;
             bool nothot = false;
             while (i < anvilinventorycount && nothot == false)
@@ -159,9 +161,10 @@ public class Anvil : MonoBehaviour {
                 while (i < displayitems.Count)
                 {
                     displayitems[i].GetComponent<DragAnvil>().ready = false;
-                    numberofbarsused = -1;
+                    numberofbarsused = 0;
                     i++;
                 }
+                UnReadyAnvil();
                 Global.me.sendmessage = true;
                 Global.me.message = "You can't do anything if your bars aren't hot!";
             }
@@ -204,6 +207,8 @@ public class Anvil : MonoBehaviour {
             int w = 0;
             while(i < displayitems.Count)
             {
+                displayitems[i].GetComponent<DragAnvil>().rotated = 0;
+                displayitems[i].transform.rotation = new Quaternion(0, 0, 0, 0);
                 while (w < displayitems[i].transform.childCount)
                 {
                     displayitems[i].transform.GetChild(w).gameObject.SetActive(false);
@@ -227,7 +232,6 @@ public class Anvil : MonoBehaviour {
     {
         if (product != "None")
         {
-            Debug.Log("y");
             if (hammer)
             {
                 hammer = false;
@@ -296,7 +300,6 @@ public class Anvil : MonoBehaviour {
                     }
                     i++;
                 }
-                Debug.Log(placestohit.Count);
             }
         }
         else if (numberofbarsused == 2)
@@ -518,8 +521,6 @@ public class Anvil : MonoBehaviour {
                 }
                 a++;
             }
-            Debug.Log("Left" + left_a);
-            Debug.Log("Same" + same_x);
             int j = 0;
             int top_j = 0;
             int bot_j = 0;
@@ -572,15 +573,6 @@ public class Anvil : MonoBehaviour {
                         }
                         j++;
                     }
-                    Debug.Log(placestoweld.Count);
-                    int p = 0;
-                    while (p < placestoweld.Count)
-                    {
-                        Debug.Log("testing,testing");
-                        Debug.Log(placestoweld[p]);
-                        Debug.Log(placestoweldto[p]);
-                        p++;
-                    }
                     int q = 0;
                     while (q < placestoweld.Count)
                     {
@@ -596,7 +588,6 @@ public class Anvil : MonoBehaviour {
                         }
                         q++;
                     }
-                    Debug.Log(placestoweld.Count);
                 }
                 else
                 {
@@ -679,7 +670,6 @@ public class Anvil : MonoBehaviour {
                     }
                     j++;
                 }
-                Debug.Log("Shitfuck " + rotated_j + " " + top_j);
                 if(rotated_j == top_j)
                 {
                     product = "Legs";
@@ -762,7 +752,6 @@ public class Anvil : MonoBehaviour {
                     product = "Spear";
                     j = 0;
                     Collider2D h = new Collider2D();
-                    Debug.Log(placestoweld.Count);
                     placestoweld.Add(h);
                     placestoweld.Add(h);
                     placestoweldto.Add(h);
@@ -921,23 +910,7 @@ public class Anvil : MonoBehaviour {
                 }
                 a++;
             }
-            Debug.Log("Left" + left_a);
-            Debug.Log("Same" + same_x);
             int j = 0;
-            int top_j = 0;
-            int bot_j = 0;
-            while (j < numberofbarsused)
-            {
-                if (displayitems[j].transform.position.y > displayitems[top_j].transform.position.y)
-                {
-                    top_j = j;
-                }
-                if (displayitems[j].transform.position.y < displayitems[bot_j].transform.position.y)
-                {
-                    bot_j = j;
-                }
-                j++;
-            }
             int topleft = left_a;
             int botleft = -1;
             int botright = -1;
@@ -1229,7 +1202,7 @@ public class Anvil : MonoBehaviour {
                 if (placestohit[i].OverlapPoint(mouses))
                 {
                     placeshit[i] = true;
-                    Debug.Log("hit "+placestohit[i].transform.name);
+                    //Debug.Log("hit "+placestohit[i].transform.name);
                     Vector2 goal = placestohit[i].transform.position;
                     float distance = Vector2.Distance(goal, mouses);
                     float score = 100 + (-612*distance*distance);
@@ -1270,7 +1243,7 @@ public class Anvil : MonoBehaviour {
                 totalscore = totalscore / scores.Count;
                 anvilitems[0].GetComponent<Item>().anvildone = true;
                 anvilitems[0].GetComponent<Item>().anvilscore = totalscore;
-                Debug.Log(totalscore);
+                //Debug.Log(totalscore);
                 anvilitems[0].GetComponent<Item>().product = product;
                 if (product != "Dagger" || product != "Hammer")
                 {

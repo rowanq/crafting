@@ -12,16 +12,19 @@ public class Library : MonoBehaviour {
     int bookopen;
     int curmaxpage;
 	// Use this for initialization
-	void Start () {
-        isRunning = false;
-        pagenumber = 5;
-        bookopen = -1;
+    void Awake()
+    {
         booksunlocked = 2;
         pagesunlocked.Add(6); //0:metal book
         pagesunlocked.Add(6); //1:blade book
         pagesunlocked.Add(6); //2:tool book
         pagesunlocked.Add(6); //3:poles book
         pagesunlocked.Add(6); //4:armor book
+    }
+	void Start () {
+        isRunning = false;
+        pagenumber = 5;
+        bookopen = -1;
     }
 	
 	// Update is called once per frame

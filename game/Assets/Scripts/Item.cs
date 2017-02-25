@@ -44,7 +44,6 @@ public class Item : MonoBehaviour {
         typeOfItem = 0;
         anvilsize = 75;
         itemID = Random.Range(0, 100000);
-        player.itemsingame.Add(gameObject);
         if (name == "Bronze")
         {
             menuspriteplace = 3;
@@ -144,8 +143,13 @@ public class Item : MonoBehaviour {
             temperature = 1800;
             if(name == "Handle" || name == "Long Handle")
             {
-                //name = "Trash";
+                name = "Trash";
             }
+        }
+        if(name ==  "Trash")
+        {
+            menuspriteplace = 214;
+            hotimage = imagesprites[menuspriteplace];
         }
         if (anvildone && anvilchecked == false)
         {

@@ -7,36 +7,48 @@ public class Desk : MonoBehaviour {
     public Player player;
     public GameObject speaking;
     public GameObject orders;
-    public int maxplayerorders = 3;
+    public int maxplayerorders = 6;
     public GameObject productdisplay;
     public List<string> potentialproducts = new List<string>();
+    public List<GameObject> customers = new List<GameObject>();
+    public Collider2D exitDoor;
+    public int player_customer;
+    public DayCycle day;
     bool isRunning;
     string thesaying;
     int timeitsbeenup;
     int timetillnextorder;
+    bool go = false;
     int player_j_to_be_sold;
     int order_i;
+    List<int> timesinceorderbegan = new List<int>();
 	// Use this for initialization
 	void Start () {
         timeitsbeenup = 30;
         potentialproducts.Add("Dagger");
-	}
+        timesinceorderbegan.Add(0);
+        timesinceorderbegan.Add(0);
+        timesinceorderbegan.Add(0);
+        timesinceorderbegan.Add(0);
+        timesinceorderbegan.Add(0);
+        timesinceorderbegan.Add(0);
+    }
 	
 	// Update is called once per frame
-	void Update () { 
-
-        if (player.orders.Count == 0)
+	void Update () {
+        if (player.orders.Count == 0 && timetillnextorder != 0)
         {
-            timetillnextorder = 0;
+            go = true;
         }
         if (timeitsbeenup <= 0 && Global.me.tutorial.GetComponent<Tutorial>().finished)
         {
             speaking.SetActive(false);
-            if (timetillnextorder <= 0 && player.orders.Count < maxplayerorders)
+            if ((timetillnextorder <= 0 || go) && player.orders.Count < maxplayerorders && day.time > day.nearclosingtime)
             {
                 GenerateOrder();
                 WhenIsNextOrder();
                 timeitsbeenup = 60 * 4;
+                go = false;
             }
         }
         int i = 0;
@@ -58,6 +70,16 @@ public class Desk : MonoBehaviour {
                 i++;
             }
         }
+        i = 0;
+        while (i < player.orders.Count)
+        {
+            timesinceorderbegan[i]++;
+            /*if(timesinceorderbegan[i] > 120)
+            {
+                Debug.Log(player.orders[i] + " is going to need more work!");
+            }*/
+            i++;
+        }
 	}
     void FixedUpdate()
     {
@@ -74,15 +96,12 @@ public class Desk : MonoBehaviour {
     }
     void WhenIsNextOrder()
     {
-        int random = Random.Range((60*20), (60*40));
-        if(player.orders.Count == 0)
+        int random = Random.Range((20), (40));
+        if(go == false)
         {
-            timetillnextorder = 0;
-        }else
-        {
-            timetillnextorder = random + (player.orders.Count * (60*60));
+            timetillnextorder = random + (player.orders.Count * (60)) - (player.level * (10));
+            timetillnextorder = 60 * timetillnextorder;
         }
-        Debug.Log(timetillnextorder);
     }
     void GenerateOrder()
     {
@@ -117,12 +136,16 @@ public class Desk : MonoBehaviour {
         }
         thesaying = speak + order;
         DisplayOrder(thesaying);
+        GameObject customernew = (GameObject)Instantiate(Resources.Load("NPC"), exitDoor.transform.position,exitDoor.transform.rotation,transform.parent);
+        customernew.GetComponent<NPC>().deleteZone = exitDoor;
+        customernew.GetComponent<NPC>().order = order;
+        customers.Add(customernew);
     }
     public void DisplayOrder(string blorp)
     {
         timeitsbeenup = 300;
         speaking.SetActive(true);
-        Debug.Log(blorp);
+        //Debug.Log(blorp);
         speaking.transform.GetChild(0).gameObject.GetComponent<Text>().text = blorp;
     }
     void DisplaySell()
@@ -143,34 +166,51 @@ public class Desk : MonoBehaviour {
         player.thingssold += player.playeritems[player_j_to_be_sold].GetComponent<Item>().expworth;
         player.DealWithProgression();
         player.money += player.playeritems[player_j_to_be_sold].GetComponent<Item>().price;
+        day.moneymade += player.playeritems[player_j_to_be_sold].GetComponent<Item>().price;
+        day.ordersmadethisday.Add(player.orders[order_i]);
+        day.totalscores.Add(player.playeritems[player_j_to_be_sold].GetComponent<Item>().totalscore);
         player.playeritems.Remove(player.playeritems[player_j_to_be_sold]);
         player.playerinventorycount--;
         //thesaying = "Thank you oh so much for " + player.orders[order_i];
         //DisplayOrder(thesaying);
         player.orders.Remove(player.orders[order_i]);
+        //deal with order times resetting
+        customers[order_i].GetComponent<NPC>().Leave();
+        customers.Remove(customers[order_i]);
+        timesinceorderbegan[2] = 0;
+        if(order_i < 2)
+        {
+            timesinceorderbegan[1] = timesinceorderbegan[2];
+        }
+        if(order_i < 1)
+        {
+            timesinceorderbegan[0] = timesinceorderbegan[1];
+        }
         productdisplay.SetActive(false);
     }
     public void ExitSell()
     {
         productdisplay.SetActive(false);
+        customers[order_i].GetComponent<NPC>().Go();
         player_j_to_be_sold = -1;
         order_i = -1;
     }
     public void CheckforOrder()
     {
         int i = 0;
-        while (i < player.orders.Count)
+        while (i < customers.Count)
         {
             int j = 0;
             while (j < player.playerinventorycount)
             {
-                if (player.playeritems[j].GetComponent<Item>().product == player.orders[i])
+                if (player.playeritems[j].GetComponent<Item>().product == customers[i].GetComponent<NPC>().order && i == player_customer)
                 {
                     if (player.playeritems[j].GetComponent<Item>().detailingdone)
                     {
                         player_j_to_be_sold = j;
                         order_i = i;
                         DisplaySell();
+                        customers[i].GetComponent<NPC>().Stop();
                     }
                 }
                 j++;

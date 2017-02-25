@@ -7,6 +7,7 @@ public class DragForce : MonoBehaviour
     public GameObject self;
     public GameObject item;
     public bool isplayeritem;
+    public bool not;
     public Collider2D targetlocation;
     public Collider2D playerlocation;
     public Player player;
@@ -18,7 +19,7 @@ public class DragForce : MonoBehaviour
     }
     void OnMouseDown()
     {
-        if (isplayeritem)//goes to forge
+        if (isplayeritem && not == false)//goes to forge
         {
             //find gameobject item needs to go to
             forge.displayitems[forge.forgeinventorycount].GetComponent<DragForce>().item = item;
@@ -56,7 +57,7 @@ public class DragForce : MonoBehaviour
             player.playerinventorycount--;
             forge.forgeinventorycount++;
         }
-        else if (player.playerinventorycount < 4)//goes to player
+        else if (player.playerinventorycount < 4 && not == false)//goes to player
         {
             //find gameobject item needs to go to
             player.forgedisplayitems[player.playerinventorycount].GetComponent<DragForce>().item = item;

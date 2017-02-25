@@ -5,6 +5,7 @@ using UnityEngine;
 public class Global : MonoBehaviourSingleton<Global> {
     public static Global me;
     public GameObject world;
+    public Player player;
     public GameObject startmenu;
     public GameObject canvas;
     public GameObject openpanel;
@@ -91,13 +92,14 @@ public class Global : MonoBehaviourSingleton<Global> {
         {
             gameon = false;
         }else
-        {
+        {            
             gameon = true;
             gamestarted = true;
         }
     }
     public void Quit()
     {
+        player.Save();
         Application.Quit();
     }
 }

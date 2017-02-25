@@ -7,6 +7,7 @@ public class DragStorage : MonoBehaviour
     public GameObject self;
     public GameObject item;
     public bool isplayeritem;
+    public bool trashon;
     public Collider2D targetlocation;
     public Collider2D playerlocation;
     public Player player;
@@ -18,14 +19,87 @@ public class DragStorage : MonoBehaviour
     }
     void OnMouseDown()
     {
+        trashon = storage.trashon;
         Debug.Log(self.name);
         if (isplayeritem)//goes to storage
         {
             //find gameobject item needs to go to
-            storage.displayitems[storage.storageinventorycount].GetComponent<DragStorage>().item = item;
+            bool benormal = true;
+            if(item.GetComponent<Item>().name == "Bronze")
+            {
+                benormal = false;
+                if(storage.bronzecount == 0)
+                {
+                    benormal = true;
+                }
+                storage.bronzecount++;
+            }else if (item.GetComponent<Item>().name == "Iron")
+            {
+                benormal = false;
+                if (storage.ironcount == 0)
+                {
+                    benormal = true;
+                }
+                storage.ironcount++;
+            }else if (item.GetComponent<Item>().name == "Steel")
+            {
+                benormal = false;
+                if (storage.steelcount == 0)
+                {
+                    benormal = true;
+                }
+                storage.steelcount++;
+            }
+            else if (item.GetComponent<Item>().name == "Titanium")
+            {
+                benormal = false;
+                if (storage.titaniumcount == 0)
+                {
+                    benormal = true;
+                }
+                storage.titaniumcount++;
+            }
+            else if (item.GetComponent<Item>().name == "Handle")
+            {
+                benormal = false;
+                if (storage.handlecount == 0)
+                {
+                    benormal = true;
+                }
+                storage.handlecount++;
+            }
+            else if (item.GetComponent<Item>().name == "Long Handle")
+            {
+                benormal = false;
+                if (storage.longhandlecount == 0)
+                {
+                    benormal = true;
+                }
+                storage.longhandlecount++;
+            }
+            else if (item.GetComponent<Item>().name == "Crest")
+            {
+                benormal = false;
+                if (storage.crestcount == 0)
+                {
+                    benormal = true;
+                }
+                storage.crestcount++;
+            }
+            if (benormal)
+            {
+                storage.displayitems[storage.storageinventorycount].GetComponent<DragStorage>().item = item;
+                if (trashon == false)
+                {
+                    storage.storageinventorycount++;
+                }
+            }
             //give this item to it
             player.playeritems.Remove(item);
-            storage.storageitems.Add(item);
+            if (trashon == false)
+            {
+                storage.storageitems.Add(item);
+            }
             //check if GAMEOBJECT SELf is last in list
             int i = 0;
             int placeinline = -1;
@@ -55,12 +129,78 @@ public class DragStorage : MonoBehaviour
                 }
             }
             player.playerinventorycount--;
-            storage.storageinventorycount++;
         }
-        else if(player.playerinventorycount < 4)//goes to player
+        else if(player.playerinventorycount < 4 && trashon == false)//goes to player
         {
-            //find gameobject item needs to go to
-            player.storagedisplayitems[player.playerinventorycount].GetComponent<DragStorage>().item = item;
+            bool benormal = true;
+            if (item.GetComponent<Item>().name == "Bronze")
+            {
+                benormal = false;
+                storage.bronzecount--;
+                if (storage.bronzecount == 0)
+                {
+                    benormal = true;
+                }
+            }else if (item.GetComponent<Item>().name == "Iron")
+            {
+                benormal = false;
+                storage.ironcount--;
+                if (storage.ironcount == 0)
+                {
+                    benormal = true;
+                }
+            }
+            else if (item.GetComponent<Item>().name == "Steel")
+            {
+                benormal = false;
+                storage.steelcount--;
+                if (storage.steelcount == 0)
+                {
+                    benormal = true;
+                }
+            }
+            else if (item.GetComponent<Item>().name == "Titanium")
+            {
+                benormal = false;
+                storage.titaniumcount--;
+                if (storage.titaniumcount == 0)
+                {
+                    benormal = true;
+                }
+            }
+            else if (item.GetComponent<Item>().name == "Handle")
+            {
+                benormal = false;
+                storage.handlecount--;
+                if (storage.handlecount == 0)
+                {
+                    benormal = true;
+                }
+            }
+            else if (item.GetComponent<Item>().name == "Long Handle")
+            {
+                benormal = false;
+                storage.longhandlecount--;
+                if (storage.longhandlecount == 0)
+                {
+                    benormal = true;
+                }
+            }
+            else if (item.GetComponent<Item>().name == "Crest")
+            {
+                benormal = false;
+                storage.crestcount--;
+                if (storage.crestcount == 0)
+                {
+                    benormal = true;
+                }
+            }
+            if (benormal)
+            {
+                player.storagedisplayitems[player.playerinventorycount].GetComponent<DragStorage>().item = item;
+                storage.storageinventorycount--;
+            }
+                //find gameobject item needs to go to
             player.playeritems.Add(item);
             storage.storageitems.Remove(item);
             //check if GAMEOBJECT SELf is last in list
@@ -92,7 +232,6 @@ public class DragStorage : MonoBehaviour
                 }
             }
             player.playerinventorycount++;
-            storage.storageinventorycount--;
         }
     }
 }

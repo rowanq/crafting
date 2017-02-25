@@ -107,7 +107,7 @@ public class Detailing : MonoBehaviour
         if(alreadydone == false)
         {
             int i = 0;
-            while (i < displayitems.Count)
+            while (i < detailinginventorycount)
             {
                 w = 0;
                 while (w < displayitems[i].transform.childCount)
@@ -135,6 +135,13 @@ public class Detailing : MonoBehaviour
             {
                 displayitems[i].GetComponent<DragDetailing>().ready = false;
                 displayitems[i].transform.position = displayitems[i].GetComponent<DragDetailing>().startposition;
+                w = 0;
+                while (w < displayitems[i].transform.childCount)
+                {
+                    displayitems[i].transform.GetChild(w).gameObject.SetActive(false);
+                    Debug.Log("a");
+                    w++;
+                }
                 i++;
             }
             i = 0;
@@ -143,17 +150,6 @@ public class Detailing : MonoBehaviour
                 connection1.Remove(connection1[i]);
                 connection2.Remove(connection2[i]);
                 connectionmade.Remove(connectionmade[i]);
-                i++;
-            }
-            i = 0;
-            w = 0;
-            while (i < displayitems.Count)
-            {
-                while (w < displayitems[i].transform.childCount)
-                {
-                    displayitems[i].transform.GetChild(w).gameObject.SetActive(false);
-                    w++;
-                }
                 i++;
             }
         }
@@ -244,7 +240,6 @@ public class Detailing : MonoBehaviour
                         {
                             connection1.Add(displayitems[i].transform.GetChild(j).gameObject.GetComponent<Collider2D>());
                             connectionmade.Add(false);
-                            Debug.Log(product);
                         }
                         j++;
                     }
@@ -279,7 +274,6 @@ public class Detailing : MonoBehaviour
                         {
                             connection1.Add(displayitems[i].transform.GetChild(j).gameObject.GetComponent<Collider2D>());
                             connectionmade.Add(false);
-                            Debug.Log(product);
                         }
                         j++;
                     }
@@ -332,7 +326,6 @@ public class Detailing : MonoBehaviour
     }
     void CheckPlacement()
     {
-        Debug.Log(product_i);
         List<float> scores = new List<float>();
         int i = 0;
         while (i < connection1.Count)
@@ -343,13 +336,13 @@ public class Detailing : MonoBehaviour
                 Vector2 goal1 = connection1[i].transform.position;
                 Vector2 goal2 = connection2[i].transform.position;
                 float distance = Vector2.Distance(goal1, goal2);
-                Debug.Log("Distance: " + distance);
+                //Debug.Log("Distance: " + distance);
                 float score = 125 + (-16 * distance * distance);
                 if (score > 100)
                 {
                     score = 100f;
                 }
-                Debug.Log("Score: " + score);
+                //Debug.Log("Score: " + score);
                 scores.Add(score);
             }
             i++;
@@ -381,7 +374,6 @@ public class Detailing : MonoBehaviour
             {
                 if(i != product_i)
                 {
-                    Debug.Log(i);
                     detailingitems.Remove(displayitems[i].GetComponent<DragDetailing>().item);
                     displayitems[i].SetActive(false);
                 }else if(i > 0)

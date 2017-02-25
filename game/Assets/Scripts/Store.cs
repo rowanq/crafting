@@ -18,6 +18,7 @@ public class Store : MonoBehaviour {
         if (isRunning)
         {
             DisplayItems();
+
         }
     }
     public void OpenStore()
@@ -65,7 +66,7 @@ public class Store : MonoBehaviour {
             displayitems[i].SetActive(true);
             SpriteRenderer spriterenderer = displayitems[i].GetComponent<SpriteRenderer>();
             Sprite newsprite = displayitems[i].GetComponent<DragStore>().item.GetComponent<Item>().image;
-            if (displayitems[i].GetComponent<DragStore>().item.GetComponent<Item>().forgedone)
+            if (displayitems[i].GetComponent<DragStore>().item.GetComponent<Item>().forgedone && displayitems[i].GetComponent<DragStore>().item.GetComponent<Item>().anvildone == false)
             {
                 newsprite = displayitems[i].GetComponent<DragStore>().item.GetComponent<Item>().hotimage;
             }

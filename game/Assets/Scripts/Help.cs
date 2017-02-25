@@ -9,6 +9,7 @@ public class Help : MonoBehaviour {
     public Image selfs;
     public GameObject help;
     public GameObject items;
+    public GameObject level;
 	// Use this for initialization
 	void Start () {
 		
@@ -17,13 +18,14 @@ public class Help : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
         help.SetActive(false);
-        int i = 0;
-        while (i < player.huddisplayitems.Count)
-        {
-            player.huddisplayitems[i].SetActive(false);
-            i++;
-        }
-        items.SetActive(false);
+            int i = 0;
+            while (i < player.huddisplayitems.Count)
+            {
+              player.huddisplayitems[i].SetActive(false);
+              i++;
+            }
+                items.SetActive(false);
+        level.SetActive(false);
         if (player.canmove)
         {
             selfs.enabled = true;
@@ -35,6 +37,8 @@ public class Help : MonoBehaviour {
                 help.SetActive(true);
                 items.SetActive(true);
                 DisplayHUDitems();
+                level.SetActive(true);
+                level.GetComponent<Text>().text = "Level: " + player.level;
             }
         }
         else

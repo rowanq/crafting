@@ -16,6 +16,7 @@ public class Forge : MonoBehaviour {
     public int forgeinventorycount = 0;
     public GameObject blower;
     public List<Sprite> blowerimages;
+    public ParticleSystem smoke;
     float temp;
     int amountofcoal;
     int amountoftimespentatrighttemp;
@@ -34,6 +35,7 @@ public class Forge : MonoBehaviour {
 		if (isRunning)
         {
             RunBlower();
+            SetUpBlower();
             if (Input.GetKeyDown(KeyCode.J))
             {
                 Debug.Log(temp);
@@ -68,6 +70,17 @@ public class Forge : MonoBehaviour {
             }
         }
         AnimateBlower();
+    }
+    void SetUpBlower()
+    {
+        if(Global.me.tutorial.GetComponent<Tutorial>().curtutorial == 1)
+        {
+            blower.GetComponent<SpriteRenderer>().sortingOrder = 0;
+        }
+        else
+        {
+            blower.GetComponent<SpriteRenderer>().sortingOrder = 2;
+        }
     }
     void AnimateBlower()
     {
@@ -105,14 +118,24 @@ public class Forge : MonoBehaviour {
     void CheckBar()
     {
         int i = 0;
+        bool smelting = false;
         while (i < forgeitems.Count)
         {
-            if (forgeitems[i].GetComponent<Item>().forgemintemp < temp && temp < forgeitems[i].GetComponent<Item>().forgemaxtemp)
+            if (forgeitems[i].GetComponent<Item>().forgemintemp < temp && temp < forgeitems[i].GetComponent<Item>().forgemaxtemp && forgeitems[i].GetComponent<Item>().forgedone == false)
             {
                 forgeitems[i].GetComponent<Item>().forgeprogress++;
-                Debug.Log("Smelting!");
+                smelting = true;
             }
             i++;
+        }
+        if (smelting)
+        {
+            smoke.enableEmission = true;
+            smoke.Emit(5);
+        }
+        else
+        {
+            smoke.enableEmission = false;
         }
     }
     public void GetTemperature()
@@ -164,7 +187,7 @@ public class Forge : MonoBehaviour {
             displayitems[i].SetActive(true);
             SpriteRenderer spriterenderer = displayitems[i].GetComponent<SpriteRenderer>();
             Sprite newsprite = displayitems[i].GetComponent<DragForce>().item.GetComponent<Item>().image;
-            if (displayitems[i].GetComponent<DragForce>().item.GetComponent<Item>().forgedone)
+            if (displayitems[i].GetComponent<DragForce>().item.GetComponent<Item>().forgedone && displayitems[i].GetComponent<DragForce>().item.GetComponent<Item>().anvildone == false)
             {
                 newsprite = displayitems[i].GetComponent<DragForce>().item.GetComponent<Item>().hotimage;
             }

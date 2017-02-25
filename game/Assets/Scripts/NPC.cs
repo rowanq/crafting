@@ -7,6 +7,8 @@ public class NPC : MonoBehaviour {
     public float yMovement;
     public SpriteRenderer spriteRenderer;
     public List<Sprite> Anim;
+    public Collider2D deleteZone;
+    public string order;
     bool facingRight;
     bool moving;
     int curSprite;
@@ -16,6 +18,9 @@ public class NPC : MonoBehaviour {
     int timesincelastdecision;
     int xdirection = 0;
     int ydirection = 0;
+    bool stop = false;
+    bool leave = false;
+    Color choice;
     // Use this for initialization
     void Start () {
         facingRight = true;
@@ -24,13 +29,36 @@ public class NPC : MonoBehaviour {
         speed = 1.0f;
         timesincelastmove = 10;
         timesincelastdecision = 12;
+        int h = Random.Range(0, 6);
+        choice = Color.blue;
+        if (h == 1)
+        {
+            choice = Color.green;
+        }
+        if (h == 2)
+        {
+            choice = Color.cyan;
+        }
+        if (h == 3)
+        {
+            choice = Color.yellow;
+        }
+        if (h == 4)
+        {
+            choice = Color.red;
+        }
+        if (h == 5)
+        {
+            choice = Color.magenta;
+        }
     }
 	
 	// Update is called once per frame
 	void Update () {
         position = new Vector2(transform.position.x, transform.position.y);
         DealWithMovement();
-        spriteRenderer.color = Color.Lerp(Color.white,Color.blue, (float)timesincelastdecision/360f);
+        spriteRenderer.color = Color.Lerp(Color.white,choice, (float)timesincelastdecision/360f);
+        DealWithLeaving();
     }
     void FixedUpdate()
     {
@@ -39,7 +67,22 @@ public class NPC : MonoBehaviour {
     }
     void DealWithMovement()
     {
-        if (timesincelastdecision >= 360)
+        if (leave)
+        {
+            if (position.y > deleteZone.transform.position.y)
+            {
+                ydirection = -1;
+            }
+            else { ydirection = 0; }
+            if (position.x < deleteZone.transform.position.x)
+            {
+                xdirection = 1;
+                facingRight = true;
+            }
+            else { xdirection = 0; }
+            timesincelastdecision = 0;
+        }
+            if (timesincelastdecision >= 360 && stop == false)
         {
             moving = true;
             timesincelastdecision = 0;
@@ -50,6 +93,7 @@ public class NPC : MonoBehaviour {
                 facingRight = true;
             }
             else if (a == 0) { xdirection = 0; }
+            else
             {
                 xdirection = -1;
                 facingRight = false;
@@ -73,26 +117,9 @@ public class NPC : MonoBehaviour {
         }
         else
         {
-            if (transform.localPosition.x <= -12)
+            if (leave == false)
             {
-                xdirection = 1;
-                facingRight = true;
-                moving = true;
-            }
-            else if(transform.localPosition.x >= 4)
-            {
-                xdirection = -1;
-                facingRight = false;
-                moving = true;
-            }
-            if(transform.localPosition.y <= -4)
-            {
-                ydirection = 1;
-                moving = true;
-            }else if(transform.localPosition.y >= 4)
-            {
-                ydirection = -1;
-                moving = true;
+                DealwithBounds();
             }
         }
         if (moving)
@@ -111,6 +138,31 @@ public class NPC : MonoBehaviour {
             spriteRenderer.flipX = true;
         }
         DealwithMovementAnimation();
+    }
+    void DealwithBounds()
+    {
+        if (transform.localPosition.x <= -12)
+        {
+            xdirection = 1;
+            facingRight = true;
+            moving = true;
+        }
+        else if (transform.localPosition.x >= 4)
+        {
+            xdirection = -1;
+            facingRight = false;
+            moving = true;
+        }
+        if (transform.localPosition.y <= -4)
+        {
+            ydirection = 1;
+            moving = true;
+        }
+        else if (transform.localPosition.y >= 4)
+        {
+            ydirection = -1;
+            moving = true;
+        }
     }
     void DealwithMovementAnimation()
     {
@@ -131,5 +183,34 @@ public class NPC : MonoBehaviour {
             curSprite = 0;
         }
         spriteRenderer.sprite = Anim[curSprite];
+    }
+    void DealWithLeaving()
+    {
+        if (leave)
+        {
+            if(deleteZone.OverlapPoint(transform.position))
+            {
+                DestroyObject(gameObject);
+            }
+        }
+    }
+    public void Stop()
+    {
+        moving = false;
+        stop = true;
+        timesincelastdecision = 150;
+    }
+    public void Go()
+    {
+        moving = true;
+        stop = false;
+        timesincelastdecision = 350;
+    }
+    public void Leave()
+    {
+        moving = true;
+        stop = false;
+        leave = true;
+        timesincelastdecision = 350;
     }
 }
