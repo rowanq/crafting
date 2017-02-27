@@ -32,6 +32,8 @@ public class Item : MonoBehaviour {
     public int anvilspriteplace;
     public int originalprice;
     public float temperature;
+    public bool upgrade = false;
+    public bool isplayeritem = false;
     float forgeprocessneeded;
     float typeOfItem;
     float itemID;
@@ -112,6 +114,18 @@ public class Item : MonoBehaviour {
             buyprice = 1;
             anvilsize = 300;
         }
+        else if(name == "Mitt")
+        {
+            upgrade = true;
+        }
+        else if(name == "Hot Forge")
+        {
+            upgrade = true;
+        }
+        else if(name == "Lawyer")
+        {
+            upgrade = true;
+        }
     }
     void FixedUpdate()
     {
@@ -119,7 +133,10 @@ public class Item : MonoBehaviour {
         {
             if (temperature > 0)
             {
-                temperature--;
+                if(player.ovenmitts == false || (player.ovenmitts == true && isplayeritem == false))
+                {
+                    temperature--;
+                }
             }
             else
             {
@@ -310,6 +327,11 @@ public class Item : MonoBehaviour {
         {
             pricemodifier = 4f;
         }
-        price = (int)Mathf.Round((pricemodifier*originalprice) * (totalscore / 100));
+        float blorp = totalscore;
+        if(totalscore > 90)
+        {
+            blorp = 100;
+        }
+        price = (int)Mathf.Round((pricemodifier*originalprice) * (blorp / 100));
     }
 }

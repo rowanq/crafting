@@ -47,6 +47,7 @@
   </ItemGroup>
   <ItemGroup>
      <Compile Include="Assets\Scripts\Anvil.cs" />
+     <Compile Include="Assets\Scripts\Bed.cs" />
      <Compile Include="Assets\Scripts\DayCycle.cs" />
      <Compile Include="Assets\Scripts\Desk.cs" />
      <Compile Include="Assets\Scripts\Detailing.cs" />
@@ -68,10 +69,10 @@
      <Compile Include="Assets\Scripts\StartMenu.cs" />
      <Compile Include="Assets\Scripts\Storage.cs" />
      <Compile Include="Assets\Scripts\Store.cs" />
+     <Compile Include="Assets\Scripts\Supplies.cs" />
      <Compile Include="Assets\Scripts\TempGauge.cs" />
      <Compile Include="Assets\Scripts\Trashcan.cs" />
      <Compile Include="Assets\Scripts\Tutorial.cs" />
-     <Compile Include="Assets\Supplies.cs" />
      <None Include="Assets\Sprites\Prototype\README.txt" />
  <Reference Include="UnityEngine.UI">
  <HintPath>C:/Program Files/Unity/Editor/Data/UnityExtensions/Unity/GUISystem/UnityEngine.UI.dll</HintPath>

@@ -19,9 +19,10 @@ public class DragForce : MonoBehaviour
     }
     void OnMouseDown()
     {
-        if (isplayeritem && not == false)//goes to forge
+        if (isplayeritem && not == false && forge.forgeinventorycount < 4)//goes to forge
         {
             //find gameobject item needs to go to
+            item.GetComponent<Item>().isplayeritem = false;
             forge.displayitems[forge.forgeinventorycount].GetComponent<DragForce>().item = item;
             //give this item to it
             player.playeritems.Remove(item);
@@ -60,6 +61,7 @@ public class DragForce : MonoBehaviour
         else if (player.playerinventorycount < 4 && not == false)//goes to player
         {
             //find gameobject item needs to go to
+            item.GetComponent<Item>().isplayeritem = true;
             player.forgedisplayitems[player.playerinventorycount].GetComponent<DragForce>().item = item;
             player.playeritems.Add(item);
             forge.forgeitems.Remove(item);

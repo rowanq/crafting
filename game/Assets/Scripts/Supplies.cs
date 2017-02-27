@@ -10,7 +10,7 @@ public class Supplies : MonoBehaviour {
     public Storage storage;
     public GameObject panel; //use children for supplies
     public GameObject endofdaypanel;
-    bool alreadyboughtthisnight = false;
+    public bool alreadyboughtthisnight = false;
     int bronzeprice = 1;
     int ironprice = 2;
     int steelprice = 3;
@@ -209,6 +209,7 @@ public class Supplies : MonoBehaviour {
         {
             GameObject item = (GameObject)Instantiate(Resources.Load("Item"));
             item.GetComponent<Item>().name = "Bronze";
+            item.GetComponent<Item>().product = "None";
             storage.storageinventorycount++;
             storage.storageitems.Add(item);
         }
@@ -233,6 +234,7 @@ public class Supplies : MonoBehaviour {
         {
             GameObject item = (GameObject)Instantiate(Resources.Load("Item"));
             item.GetComponent<Item>().name = "Iron";
+            item.GetComponent<Item>().product = "None";
             storage.storageinventorycount++;
             storage.storageitems.Add(item);
         }
@@ -257,6 +259,7 @@ public class Supplies : MonoBehaviour {
         {
             GameObject item = (GameObject)Instantiate(Resources.Load("Item"));
             item.GetComponent<Item>().name = "Steel";
+            item.GetComponent<Item>().product = "None";
             storage.storageinventorycount++;
             storage.storageitems.Add(item);
         }
@@ -281,6 +284,7 @@ public class Supplies : MonoBehaviour {
         {
             GameObject item = (GameObject)Instantiate(Resources.Load("Item"));
             item.GetComponent<Item>().name = "Titanium";
+            item.GetComponent<Item>().product = "None";
             storage.storageinventorycount++;
             storage.storageitems.Add(item);
         }
@@ -305,6 +309,7 @@ public class Supplies : MonoBehaviour {
         {
             GameObject item = (GameObject)Instantiate(Resources.Load("Item"));
             item.GetComponent<Item>().name = "Handle";
+            item.GetComponent<Item>().product = "None";
             storage.storageinventorycount++;
             storage.storageitems.Add(item);
         }
@@ -330,6 +335,7 @@ public class Supplies : MonoBehaviour {
             GameObject item = (GameObject)Instantiate(Resources.Load("Item"));
             item.GetComponent<Item>().name = "Long Hande";
             storage.storageinventorycount++;
+            item.GetComponent<Item>().product = "None";
             storage.storageitems.Add(item);
         }
         storage.longhandlecount++;
@@ -353,6 +359,7 @@ public class Supplies : MonoBehaviour {
         {
             GameObject item = (GameObject)Instantiate(Resources.Load("Item"));
             item.GetComponent<Item>().name = "Crest";
+            item.GetComponent<Item>().product = "None";
             storage.storageinventorycount++;
             storage.storageitems.Add(item);
         }

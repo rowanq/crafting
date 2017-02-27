@@ -29,8 +29,11 @@ public class Player : MonoBehaviour {
     public bool inback = false;
     public Collider2D supplies;
     public Supplies suppliesscript;
+    public Collider2D bed;
+    public Bed bedscript;
     public Collider2D frontdoor;
     public bool infront = false;
+    public DayCycle day;
     public SpriteRenderer spriteRenderer;
     public List<Sprite> Anim;
     public List<GameObject> forgedisplayitems;
@@ -44,6 +47,9 @@ public class Player : MonoBehaviour {
     bool facingRight;
     public bool canmove;
     public int level;
+    public bool ovenmitts = false;
+    public bool hotforge = false;
+    public bool lawyer = false;
     bool moving;
     bool running;
     int curSprite;
@@ -69,7 +75,7 @@ public class Player : MonoBehaviour {
 	void Update () {
         canmove = true;
         DealWithItems();
-        if (forgescript.isRunning || storagescript.isRunning || anvilscript.isRunning || libraryscript.isRunning || detailingscript.isRunning || storescript.isRunning || Global.me.tutorial.GetComponent<Tutorial>().finished == false)
+        if (forgescript.isRunning || storagescript.isRunning || anvilscript.isRunning || libraryscript.isRunning || detailingscript.isRunning || storescript.isRunning || (Global.me.tutorial.GetComponent<Tutorial>().finished == false && Global.me.tutorial.GetComponent<Tutorial>().curtutorial != 5))
         {
             canmove = false;
         }
@@ -159,6 +165,10 @@ public class Player : MonoBehaviour {
             {
                 suppliesscript.OpenSupplies();
             }
+            else if (bed.OverlapPoint(position))
+            {
+                bedscript.Run();
+            }
         }
         if (Input.GetKeyDown(KeyCode.Escape))
         {
@@ -207,6 +217,16 @@ public class Player : MonoBehaviour {
     {
         PlayerPrefs.SetInt("Level", level);
         PlayerPrefs.SetInt("Money", money);
+        PlayerPrefs.SetInt("Day", day.day);
+        int mitt;
+        if (ovenmitts){mitt = 1;}else{mitt = 0;}
+        int hot;
+        if (hotforge) { hot = 1; } else { hot = 0; }
+        int law;
+        if (lawyer) { law = 1; } else { law = 0; }
+        PlayerPrefs.SetInt("Oven Mitts", mitt);
+        PlayerPrefs.SetInt("Hot Forge", hot);
+        PlayerPrefs.SetInt("Lawyer", law);
         PlayerPrefs.SetInt("Inventory Size", playerinventorycount);
         if (playerinventorycount > 0)
         {
@@ -230,6 +250,13 @@ public class Player : MonoBehaviour {
     {
         level = PlayerPrefs.GetInt("Level");
         money = PlayerPrefs.GetInt("Money");
+        day.day = PlayerPrefs.GetInt("Day");
+        int mitt = PlayerPrefs.GetInt("Oven Mitts");
+        int hot = PlayerPrefs.GetInt("Hot Forge");
+        int law = PlayerPrefs.GetInt("Lawyer");
+        if(mitt == 1){ovenmitts = true;}else{ovenmitts = false;}
+        if (hot == 1) { hotforge = true; } else { hotforge = false; }
+        if (law == 1) { lawyer = true; } else { lawyer = false; }
         playerinventorycount = PlayerPrefs.GetInt("Inventory Size");
         if (playerinventorycount > 0)
         {

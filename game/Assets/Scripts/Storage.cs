@@ -102,43 +102,47 @@ public class Storage : MonoBehaviour {
             displayitems[i].SetActive(true);
             SpriteRenderer spriterenderer = displayitems[i].GetComponent<SpriteRenderer>();
             Sprite newsprite = displayitems[i].GetComponent<DragStorage>().item.GetComponent<Item>().image;
-            if (displayitems[i].GetComponent<DragStorage>().item.GetComponent<Item>().forgedone)
+            if (displayitems[i].GetComponent<DragStorage>().item.GetComponent<Item>().forgedone && displayitems[i].GetComponent<DragStorage>().item.GetComponent<Item>().anvildone == false)
             {
                 newsprite = displayitems[i].GetComponent<DragStorage>().item.GetComponent<Item>().hotimage;
             }
-            if(displayitems[i].GetComponent<DragStorage>().item.GetComponent<Item>().name == "Bronze")
+            if(displayitems[i].GetComponent<DragStorage>().item.GetComponent<Item>().product == "None")
             {
-                displayitems[i].transform.GetChild(0).gameObject.SetActive(true);
-                displayitems[i].transform.GetChild(0).GetComponent<Text>().text = bronzecount.ToString();
-            }else if (displayitems[i].GetComponent<DragStorage>().item.GetComponent<Item>().name == "Iron")
-            {
-                displayitems[i].transform.GetChild(0).gameObject.SetActive(true);
-                displayitems[i].transform.GetChild(0).GetComponent<Text>().text = ironcount.ToString();
-            }
-            else if (displayitems[i].GetComponent<DragStorage>().item.GetComponent<Item>().name == "Steel")
-            {
-                displayitems[i].transform.GetChild(0).gameObject.SetActive(true);
-                displayitems[i].transform.GetChild(0).GetComponent<Text>().text = steelcount.ToString();
-            }
-            else if (displayitems[i].GetComponent<DragStorage>().item.GetComponent<Item>().name == "Titanium")
-            {
-                displayitems[i].transform.GetChild(0).gameObject.SetActive(true);
-                displayitems[i].transform.GetChild(0).GetComponent<Text>().text = titaniumcount.ToString();
-            }
-            else if (displayitems[i].GetComponent<DragStorage>().item.GetComponent<Item>().name == "Handle")
-            {
-                displayitems[i].transform.GetChild(0).gameObject.SetActive(true);
-                displayitems[i].transform.GetChild(0).GetComponent<Text>().text = handlecount.ToString();
-            }
-            else if (displayitems[i].GetComponent<DragStorage>().item.GetComponent<Item>().name == "Long Handle")
-            {
-                displayitems[i].transform.GetChild(0).gameObject.SetActive(true);
-                displayitems[i].transform.GetChild(0).GetComponent<Text>().text = longhandlecount.ToString();
-            }
-            else if (displayitems[i].GetComponent<DragStorage>().item.GetComponent<Item>().name == "Crest")
-            {
-                displayitems[i].transform.GetChild(0).gameObject.SetActive(true);
-                displayitems[i].transform.GetChild(0).GetComponent<Text>().text = crestcount.ToString();
+                if (displayitems[i].GetComponent<DragStorage>().item.GetComponent<Item>().name == "Bronze")
+                {
+                    displayitems[i].transform.GetChild(0).gameObject.SetActive(true);
+                    displayitems[i].transform.GetChild(0).GetComponent<Text>().text = bronzecount.ToString();
+                }
+                else if (displayitems[i].GetComponent<DragStorage>().item.GetComponent<Item>().name == "Iron")
+                {
+                    displayitems[i].transform.GetChild(0).gameObject.SetActive(true);
+                    displayitems[i].transform.GetChild(0).GetComponent<Text>().text = ironcount.ToString();
+                }
+                else if (displayitems[i].GetComponent<DragStorage>().item.GetComponent<Item>().name == "Steel")
+                {
+                    displayitems[i].transform.GetChild(0).gameObject.SetActive(true);
+                    displayitems[i].transform.GetChild(0).GetComponent<Text>().text = steelcount.ToString();
+                }
+                else if (displayitems[i].GetComponent<DragStorage>().item.GetComponent<Item>().name == "Titanium")
+                {
+                    displayitems[i].transform.GetChild(0).gameObject.SetActive(true);
+                    displayitems[i].transform.GetChild(0).GetComponent<Text>().text = titaniumcount.ToString();
+                }
+                else if (displayitems[i].GetComponent<DragStorage>().item.GetComponent<Item>().name == "Handle")
+                {
+                    displayitems[i].transform.GetChild(0).gameObject.SetActive(true);
+                    displayitems[i].transform.GetChild(0).GetComponent<Text>().text = handlecount.ToString();
+                }
+                else if (displayitems[i].GetComponent<DragStorage>().item.GetComponent<Item>().name == "Long Handle")
+                {
+                    displayitems[i].transform.GetChild(0).gameObject.SetActive(true);
+                    displayitems[i].transform.GetChild(0).GetComponent<Text>().text = longhandlecount.ToString();
+                }
+                else if (displayitems[i].GetComponent<DragStorage>().item.GetComponent<Item>().name == "Crest")
+                {
+                    displayitems[i].transform.GetChild(0).gameObject.SetActive(true);
+                    displayitems[i].transform.GetChild(0).GetComponent<Text>().text = crestcount.ToString();
+                }
             }
             spriterenderer.sprite = newsprite;
             i++;

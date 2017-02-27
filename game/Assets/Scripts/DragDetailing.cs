@@ -25,7 +25,6 @@ public class DragDetailing : MonoBehaviour
         {
             if (ready && Input.GetKey(KeyCode.LeftShift))
             {
-                Debug.Log("u");
                 Vector2 mouseposition = new Vector2(Input.mousePosition.x, Input.mousePosition.y);
                 Vector2 objposition = Camera.main.ScreenToWorldPoint(mouseposition);
                 transform.position = objposition;
@@ -44,9 +43,10 @@ public class DragDetailing : MonoBehaviour
     }
     void OnMouseDown()
     {
-        if (isplayeritem)//goes to detailing
+        if (isplayeritem && detailing.state == false && detailing.detailinginventorycount < 4)//goes to detailing
         {
             //find gameobject item needs to go to
+            item.GetComponent<Item>().isplayeritem = false;
             detailing.displayitems[detailing.detailinginventorycount].GetComponent<DragDetailing>().item = item;
             //give this item to it
             player.playeritems.Remove(item);
@@ -82,9 +82,10 @@ public class DragDetailing : MonoBehaviour
             player.playerinventorycount--;
             detailing.detailinginventorycount++;
         }
-        else if (player.playerinventorycount < 4 && ready == false)//goes to player
+        else if (player.playerinventorycount < 4 && ready == false && detailing.state == false)//goes to player
         {
             //find gameobject item needs to go to
+            item.GetComponent<Item>().isplayeritem = true;
             player.detailingdisplayitems[player.playerinventorycount].GetComponent<DragDetailing>().item = item;
             player.playeritems.Add(item);
             detailing.detailingitems.Remove(item);

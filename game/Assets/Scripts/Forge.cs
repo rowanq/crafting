@@ -124,6 +124,10 @@ public class Forge : MonoBehaviour {
             if (forgeitems[i].GetComponent<Item>().forgemintemp < temp && temp < forgeitems[i].GetComponent<Item>().forgemaxtemp && forgeitems[i].GetComponent<Item>().forgedone == false)
             {
                 forgeitems[i].GetComponent<Item>().forgeprogress++;
+                if (player.hotforge)
+                {
+                    forgeitems[i].GetComponent<Item>().forgeprogress++;
+                }
                 smelting = true;
             }
             i++;

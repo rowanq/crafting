@@ -18,7 +18,7 @@ public class Detailing : MonoBehaviour
     public List<bool> connectionmade;
     bool notrotatedproperly = false;
     bool rotationsame; //if true, rotations need to be the same, if not the opposite
-    bool state = false; //ready displays when false, unready when true
+    public bool state = false; //ready displays when false, unready when true
     // Use this for initialization
     void Start()
     {
@@ -64,30 +64,55 @@ public class Detailing : MonoBehaviour
     public void ReadyDetailing()
     {
         int i = 0;
+        bool alreadydone = false;
         while (i < displayitems.Count)
         {
             displayitems[i].GetComponent<DragDetailing>().ready = true;
             if (displayitems[i].active)
             {
-                if (displayitems[i].GetComponent<DragDetailing>().rotated % 2 == 1) //odd and therefore rotated
+                if(displayitems[i].GetComponent<DragDetailing>().item.GetComponent<Item>().detailingdone == false)
                 {
-                    rotated = true;
-                }
-                else //even and therefore not rotated
+                    if (displayitems[i].GetComponent<DragDetailing>().rotated % 2 == 1) //odd and therefore rotated
+                    {
+                        rotated = true;
+                    }
+                    else //even and therefore not rotated
+                    {
+                        rotated = false;
+                    }
+                    if (displayitems[i].GetComponent<DragDetailing>().item.GetComponent<Item>().product != "None")
+                    {
+                        product = displayitems[i].GetComponent<DragDetailing>().item.GetComponent<Item>().product;
+                        product_i = i;
+                        state = true;
+                    }
+                }else
                 {
-                    rotated = false;
-                }
-                if (displayitems[i].GetComponent<DragDetailing>().item.GetComponent<Item>().product != "None")
-                {
-                    product = displayitems[i].GetComponent<DragDetailing>().item.GetComponent<Item>().product;
-                    product_i = i;
-                    state = true;
+                    alreadydone = true;
                 }
 
             }
             i++;
         }
-        CheckProduct();
+        if (alreadydone)
+        {
+            i = 0;
+            while (i < displayitems.Count)
+            {
+                displayitems[i].GetComponent<DragDetailing>().ready = false;
+                displayitems[i].transform.position = displayitems[i].GetComponent<DragDetailing>().startposition;
+                i++;
+            }
+            product_i = -1;
+            product = "None";
+            state = false;
+            UnReadyDetailing();
+            Global.me.sendmessage = true;
+            Global.me.message = "You've already made this!";
+        }else
+        {
+            CheckProduct();
+        }
     }
     public void UnReadyDetailing()
     {
@@ -121,12 +146,10 @@ public class Detailing : MonoBehaviour
             state = false;
             if (notrotatedproperly == false)
             {
-                Debug.Log("yay");
                 CheckPlacement();
             }
             else
             {
-                Debug.Log("boo");
                 Global.me.message = "Your pieces weren't properly aligned!";
                 Global.me.sendmessage = true;
             }
@@ -139,7 +162,6 @@ public class Detailing : MonoBehaviour
                 while (w < displayitems[i].transform.childCount)
                 {
                     displayitems[i].transform.GetChild(w).gameObject.SetActive(false);
-                    Debug.Log("a");
                     w++;
                 }
                 i++;

@@ -91,7 +91,6 @@ public class Library : MonoBehaviour {
         }
         else
         {
-            Debug.Log(books[bookopen].transform.GetChild(1).gameObject.name);
             books[bookopen].transform.GetChild(3).gameObject.SetActive(true);
         }
         if (pagenumber >= curmaxpage)

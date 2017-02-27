@@ -19,7 +19,7 @@ public class DayCycle : MonoBehaviour {
     int lasttimedisplayed;
 	// Use this for initialization
 	void Start () {
-        time = 400;
+        time = 160;
         lasttimedisplayed = -100;
         day = 1;
 	}
@@ -30,11 +30,11 @@ public class DayCycle : MonoBehaviour {
         {
             TimeSpan result = TimeSpan.FromMinutes(time * 3);
             TimeSpan regularclock = TimeSpan.FromHours(12);
-            string addition = " AM";
+            string addition = " AM - Day "+day;
             if(result.Hours > 12)
             {
                 result = result.Subtract(regularclock);
-                addition = " PM";
+                addition = " PM - Day " + day;
             }
             if(time >= 400 && endofday == false)
             {
@@ -64,17 +64,24 @@ public class DayCycle : MonoBehaviour {
     {
         if (Global.me.gameon)
         {
-            int i = 0;
-            while (i < 10)
-            {
-                faketime++;
-                i++;
-            }
+            faketime++;
             if (faketime >= 60)
             {
                 time++;
                 faketime = 0;
             }
         }
+    }
+    public void NextDay()
+    {
+        time = 160;
+        faketime = 0;
+        day++;
+        ordersmadethisday = new List<string>();
+        totalscores = new List<float>();
+        averagescore = 0;
+        moneymade = 0;
+        endofday = false;
+        lasttimedisplayed = -100;
     }
 }

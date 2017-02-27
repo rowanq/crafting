@@ -9,6 +9,9 @@ public class NPC : MonoBehaviour {
     public List<Sprite> Anim;
     public Collider2D deleteZone;
     public string order;
+    public int timesinceorderbegan = 0;
+    public int giveuptime = 5400;
+    public float tip = 0.25f;
     bool facingRight;
     bool moving;
     int curSprite;
@@ -20,6 +23,9 @@ public class NPC : MonoBehaviour {
     int ydirection = 0;
     bool stop = false;
     bool leave = false;
+    public bool inshop = false;
+    public bool ordersaid = false;
+    public bool mad = false;
     Color choice;
     // Use this for initialization
     void Start () {
@@ -45,7 +51,7 @@ public class NPC : MonoBehaviour {
         }
         if (h == 4)
         {
-            choice = Color.red;
+            choice = Color.white;
         }
         if (h == 5)
         {
@@ -57,13 +63,29 @@ public class NPC : MonoBehaviour {
 	void Update () {
         position = new Vector2(transform.position.x, transform.position.y);
         DealWithMovement();
-        spriteRenderer.color = Color.Lerp(Color.white,choice, (float)timesincelastdecision/360f);
+        //spriteRenderer.color = Color.Lerp(Color.white,choice, (float)timesincelastdecision/360f);
+        spriteRenderer.color = Color.Lerp(choice, Color.red, (float)timesinceorderbegan / giveuptime);
         DealWithLeaving();
+        if(transform.localPosition.x <= 4)
+        {
+            inshop = true;
+        }
+        if (timesinceorderbegan >= giveuptime && leave == false)
+        {
+            Leave();
+            mad = true;
+            Global.me.sendmessage = true;
+            Global.me.message = "You've taken too long! The customer is taking their business elsewhere!";
+        }
     }
     void FixedUpdate()
     {
         timesincelastmove++;
         timesincelastdecision++;
+        if (inshop && stop == false)
+        {
+            timesinceorderbegan++;
+        }
     }
     void DealWithMovement()
     {
@@ -141,6 +163,16 @@ public class NPC : MonoBehaviour {
     }
     void DealwithBounds()
     {
+        if (transform.localPosition.y <= -4)
+        {
+            ydirection = 1;
+            moving = true;
+        }
+        else if (transform.localPosition.y >= 4)
+        {
+            ydirection = -1;
+            moving = true;
+        }
         if (transform.localPosition.x <= -12)
         {
             xdirection = 1;
@@ -152,16 +184,18 @@ public class NPC : MonoBehaviour {
             xdirection = -1;
             facingRight = false;
             moving = true;
-        }
-        if (transform.localPosition.y <= -4)
-        {
-            ydirection = 1;
-            moving = true;
-        }
-        else if (transform.localPosition.y >= 4)
-        {
-            ydirection = -1;
-            moving = true;
+            if (transform.localPosition.y > -3)
+            {
+                ydirection = -1;
+            }
+            else if(transform.localPosition.y < -3)
+            {
+                ydirection = 1;
+            }
+            else
+            {
+                ydirection = 0;
+            }
         }
     }
     void DealwithMovementAnimation()

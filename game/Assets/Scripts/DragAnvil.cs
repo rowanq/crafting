@@ -24,7 +24,6 @@ public class DragAnvil : MonoBehaviour {
         {
             if (ready == false && Input.GetKey(KeyCode.LeftShift))
             {
-                Debug.Log("u");
                 Vector2 mouseposition = new Vector2(Input.mousePosition.x, Input.mousePosition.y);
                 Vector2 objposition = Camera.main.ScreenToWorldPoint(mouseposition);
                 transform.position = objposition;
@@ -43,9 +42,10 @@ public class DragAnvil : MonoBehaviour {
     }
     void OnMouseDown()
     {
-        if (isplayeritem)//goes to anvil
+        if (isplayeritem && anvil.product == "None" && anvil.anvilinventorycount < 4)//goes to anvil
         {
             //find gameobject item needs to go to
+            item.GetComponent<Item>().isplayeritem = false;
             anvil.displayitems[anvil.anvilinventorycount].GetComponent<DragAnvil>().item = item;
             //give this item to it
             player.playeritems.Remove(item);
@@ -81,9 +81,10 @@ public class DragAnvil : MonoBehaviour {
             player.playerinventorycount--;
             anvil.anvilinventorycount++;
         }
-        else if (player.playerinventorycount < 4 && ready == false && Input.GetKey(KeyCode.LeftShift) == false)//goes to player
+        else if (player.playerinventorycount < 4 && ready == false && Input.GetKey(KeyCode.LeftShift) == false && anvil.product == "None")//goes to player
         {
             //find gameobject item needs to go to
+            item.GetComponent<Item>().isplayeritem = true;
             player.anvildisplayitems[player.playerinventorycount].GetComponent<DragAnvil>().item = item;
             player.playeritems.Add(item);
             anvil.anvilitems.Remove(item);

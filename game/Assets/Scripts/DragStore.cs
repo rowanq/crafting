@@ -41,6 +41,7 @@ public class DragStore : MonoBehaviour
             {
                 //give this item to it
                 player.playeritems.Remove(item);
+                item.GetComponent<DragStore>().item.GetComponent<Item>().isplayeritem = false;
                 //check if GAMEOBJECT SELf is last in list
                 int i = 0;
                 int placeinline = -1;
@@ -71,7 +72,49 @@ public class DragStore : MonoBehaviour
                 }
                 player.playerinventorycount--;
             }
-            else
+            else if(player.lawyer)
+            {
+                if (item.GetComponent<Item>().detailingdone)
+                {
+                    //give this item to it
+                    player.money += (int)(item.GetComponent<Item>().price * 0.5f);
+                    player.playeritems.Remove(item);
+                    item.GetComponent<DragStore>().item.GetComponent<Item>().isplayeritem = false;
+                    //check if GAMEOBJECT SELf is last in list
+                    int i = 0;
+                    int placeinline = -1;
+                    while (i < player.playerinventorycount)
+                    {
+                        if (self == player.storedisplayitems[i])//i now equals the place in order
+                        {
+                            if (i != (player.playerinventorycount - 1))//it is not last in the order
+                            {
+                                placeinline = i;
+                            }
+                            else //is last
+                            {
+                                self.SetActive(false);
+                            }
+                        }
+                        i++;
+                    }
+                    if (placeinline != -1)//its not last and you need to do something
+                    {
+                        while ((placeinline + 1) < player.playerinventorycount)
+                        {
+                            GameObject curplace = player.storedisplayitems[placeinline];
+                            GameObject nextplace = player.storedisplayitems[placeinline + 1];
+                            curplace.GetComponent<DragStore>().item = nextplace.GetComponent<DragStore>().item;
+                            placeinline++;
+                        }
+                    }
+                    player.playerinventorycount--;
+                }
+                else
+                {
+                    Debug.Log("You can't sell this.");
+                }
+            }else
             {
                 Debug.Log("You can't sell this");
             }
@@ -81,11 +124,55 @@ public class DragStore : MonoBehaviour
             //find gameobject item needs to go to
             if(player.money > item.GetComponent<Item>().buyprice)
             {
-                GameObject newitem = Instantiate(item);
-                player.storedisplayitems[player.playerinventorycount].GetComponent<DragStore>().item = newitem;
-                player.playeritems.Add(newitem);
-                player.playerinventorycount++;
-                player.money -= newitem.GetComponent<Item>().buyprice;
+                if(item.GetComponent<Item>().upgrade == false)
+                {
+                    GameObject newitem = Instantiate(item);
+                    player.storedisplayitems[player.playerinventorycount].GetComponent<DragStore>().item = newitem;
+                    newitem.GetComponent<DragStore>().item.GetComponent<Item>().isplayeritem = true;
+                    newitem.GetComponent<Item>().player = player;
+                    player.playeritems.Add(newitem);
+                    player.playerinventorycount++;
+                }else
+                {
+                    if(item.GetComponent<Item>().name == "Mitt")
+                    {
+                        player.ovenmitts = true;
+                    }
+                    if(item.GetComponent<Item>().name == "Hot Forge")
+                    {
+                        player.hotforge = true;
+                    }
+                    //check if GAMEOBJECT SELf is last in list
+                    int i = 0;
+                    int placeinline = -1;
+                    while (i < store.storeinventorycount)
+                    {
+                        if (self == store.displayitems[i])//i now equals the place in order
+                        {
+                            if (i != (store.storeinventorycount - 1))//it is not last in the order
+                            {
+                                placeinline = i;
+                            }
+                            else //is last
+                            {
+                                self.SetActive(false);
+                            }
+                        }
+                        i++;
+                    }
+                    if (placeinline != -1)//its not last and you need to do something
+                    {
+                        while ((placeinline + 1) < store.storeinventorycount)
+                        {
+                            GameObject curplace = store.displayitems[placeinline];
+                            GameObject nextplace = store.displayitems[placeinline + 1];
+                            curplace.GetComponent<DragStore>().item = nextplace.GetComponent<DragStore>().item;
+                            placeinline++;
+                        }
+                    }
+                    store.storeinventorycount--;
+                }
+                player.money -= item.GetComponent<Item>().buyprice;
             }else
             {
                 Global.me.sendmessage = true;

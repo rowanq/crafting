@@ -21,9 +21,11 @@ public class Anvil : MonoBehaviour {
     int numberofbarsused;
     List<bool> rotated = new List<bool>();
     int numberrotated = 0;
-    string product;
+    public string product;
     public List<Collider2D> placestohit;
     public List<bool> placeshit;
+    public List<Collider2D> bars;
+    int numberofmisses = 0;
     public List<Collider2D> placestoweld;
     public List<Collider2D> placestoweldto;
     public List<bool> placeswelt;
@@ -117,36 +119,44 @@ public class Anvil : MonoBehaviour {
     }
     public void ReadyAnvil()
     {
-        Debug.Log(numberofbarsused);
         if(numberofbarsused == 0)
         {
-            Debug.Log("food");
             int i = 0;
             bool nothot = false;
+            bool alreadydone = false;
             while (i < anvilinventorycount && nothot == false)
             {
                 if (displayitems[i].GetComponent<DragAnvil>().item.GetComponent<Item>().forgedone)
                 {
-                    displayitems[i].GetComponent<DragAnvil>().ready = true;
-                    if (displayitems[i].active)
+                    if(displayitems[i].GetComponent<DragAnvil>().item.GetComponent<Item>().anvildone == false)
                     {
-                        numberofbarsused++;
-                        if (displayitems[i].GetComponent<DragAnvil>().rotated % 2 != 0) //odd and therefore rotated
+                        displayitems[i].GetComponent<DragAnvil>().ready = true;
+                        if (displayitems[i].active)
                         {
-                            rotated.Add(true);
-                            numberrotated++;
+                            numberofbarsused++;
+                            bars.Add(displayitems[i].GetComponent<Collider2D>());
+                            if (displayitems[i].GetComponent<DragAnvil>().rotated % 2 != 0) //odd and therefore rotated
+                            {
+                                string a = i.ToString();
+                                rotated.Add(true);
+                                numberrotated++;
+                            }
+                            else //even and therefore not rotated
+                            {
+                                rotated.Add(false);
+                                string a = i.ToString();
+                            }
+                            //turn on hitareas
+                            int w = 0;
+                            while (w < displayitems[i].transform.childCount)
+                            {
+                                displayitems[i].transform.GetChild(w).gameObject.SetActive(true);
+                                w++;
+                            }
                         }
-                        else //even and therefore not rotated
-                        {
-                            rotated.Add(false);
-                        }
-                        //turn on hitareas
-                        int w = 0;
-                        while (w < displayitems[i].transform.childCount)
-                        {
-                            displayitems[i].transform.GetChild(w).gameObject.SetActive(true);
-                            w++;
-                        }
+                    }else
+                    {
+                        alreadydone = true;
                     }
                 }
                 else //item isn't hot enough, FUCK YOU!!
@@ -167,6 +177,18 @@ public class Anvil : MonoBehaviour {
                 UnReadyAnvil();
                 Global.me.sendmessage = true;
                 Global.me.message = "You can't do anything if your bars aren't hot!";
+            }else if (alreadydone)
+            {
+                i = 0;
+                while (i < displayitems.Count)
+                {
+                    displayitems[i].GetComponent<DragAnvil>().ready = false;
+                    numberofbarsused = 0;
+                    i++;
+                }
+                UnReadyAnvil();
+                Global.me.sendmessage = true;
+                Global.me.message = "This is already done";
             }
             else
             {
@@ -204,9 +226,9 @@ public class Anvil : MonoBehaviour {
                 i++;
             }
             i = 0;
-            int w = 0;
             while(i < displayitems.Count)
             {
+                int w = 0;
                 displayitems[i].GetComponent<DragAnvil>().rotated = 0;
                 displayitems[i].transform.rotation = new Quaternion(0, 0, 0, 0);
                 while (w < displayitems[i].transform.childCount)
@@ -225,6 +247,8 @@ public class Anvil : MonoBehaviour {
                 i++;
             }
             checks = new List<GameObject>();
+            bars = new List<Collider2D>();
+            numberofmisses = 0;
         }
        
     }
@@ -255,7 +279,6 @@ public class Anvil : MonoBehaviour {
     }
     void CheckProduct()
     {
-        Debug.Log("CHECKING!");
         if (numberofbarsused == 1)
         {
             if (rotated[0] == false)
@@ -306,11 +329,21 @@ public class Anvil : MonoBehaviour {
         {
             if (numberrotated == 0)
             {
-                product = "Sword";
                 int j = 0;
+                int top_j = 0;
+                int bot_j = 0;
                 while (j < numberofbarsused)
                 {
-                    int addedaweld = 0;
+                    if (displayitems[j].transform.position.y > displayitems[top_j].transform.position.y)
+                    {
+                        top_j = j;
+                    }
+                    j++;
+                }
+                product = "Sword";
+                j = 0;
+                while (j < numberofbarsused)
+                {
                     int i = 0;
                     while (i < displayitems[j].transform.childCount)
                     {
@@ -324,16 +357,14 @@ public class Anvil : MonoBehaviour {
                             placestohit.Add(displayitems[j].transform.GetChild(i).gameObject.GetComponent<Collider2D>());
                             placeshit.Add(false);
                         }
-                        if (displayitems[j].transform.GetChild(i).name == "Bottom" && addedaweld < 4)
+                        if (displayitems[j].transform.GetChild(i).name == "Bottom" && j == top_j)
                         {
                             placestoweld.Add(displayitems[j].transform.GetChild(i).gameObject.GetComponent<Collider2D>());
                             placeswelt.Add(false);
-                            addedaweld++;
                         }
-                        if (displayitems[j].transform.GetChild(i).name == "Top" && addedaweld < 4)
+                        if (displayitems[j].transform.GetChild(i).name == "Top" && j != top_j)
                         {
                             placestoweldto.Add(displayitems[j].transform.GetChild(i).gameObject.GetComponent<Collider2D>());
-                            addedaweld++;
                         }
                         i++;
                     }
@@ -362,7 +393,6 @@ public class Anvil : MonoBehaviour {
                 int j = 0;
                 while (j < numberofbarsused)
                 {
-                    int addedaweld = 0;
                     int i = 0;
                     while (i < displayitems[j].transform.childCount)
                     {
@@ -396,16 +426,23 @@ public class Anvil : MonoBehaviour {
                             placestohit.Add(displayitems[j].transform.GetChild(i).gameObject.GetComponent<Collider2D>());
                             placeshit.Add(false);
                         }
-                        if (displayitems[j].transform.GetChild(i).name == "MidTop" && addedaweld < 4 && rotated[j] == true)
+                        if (displayitems[j].transform.GetChild(i).name == "MidTop"&& rotated[j] == true && displayitems[j].transform.rotation.z < 0)
                         {
                             placestoweld.Add(displayitems[j].transform.GetChild(i).gameObject.GetComponent<Collider2D>());
                             placeswelt.Add(false);
-                            addedaweld++;
                         }
-                        if (displayitems[j].transform.GetChild(i).name == "3/4LeftX" && addedaweld < 4 && rotated[j] == false)
+                        if (displayitems[j].transform.GetChild(i).name == "MidBottom" && rotated[j] == true && displayitems[j].transform.rotation.z > 0)
+                        {
+                            placestoweld.Add(displayitems[j].transform.GetChild(i).gameObject.GetComponent<Collider2D>());
+                            placeswelt.Add(false);
+                        }
+                        if (displayitems[j].transform.GetChild(i).name == "3/4LeftX"&& rotated[j] == false && displayitems[j].transform.rotation.z >= 0)
                         {
                             placestoweldto.Add(displayitems[j].transform.GetChild(i).gameObject.GetComponent<Collider2D>());
-                            addedaweld++;
+                        }
+                        if (displayitems[j].transform.GetChild(i).name == "1/4RightX" && rotated[j] == false && displayitems[j].transform.rotation.z < 0)
+                        {
+                            placestoweldto.Add(displayitems[j].transform.GetChild(i).gameObject.GetComponent<Collider2D>());
                         }
                         i++;
                     }
@@ -447,27 +484,52 @@ public class Anvil : MonoBehaviour {
                     int i = 0;
                     while (i < displayitems[j].transform.childCount)
                     {
-                        if (displayitems[j].transform.GetChild(i).name == "MidLeftX" && j != left_j)
+                        if (displayitems[j].transform.GetChild(i).name == "MidLeftX" && j != left_j && displayitems[j].transform.rotation.z < 0)
                         {
                             placestohit.Add(displayitems[j].transform.GetChild(i).gameObject.GetComponent<Collider2D>());
                             placeshit.Add(false);
                         }
-                        if (displayitems[j].transform.GetChild(i).name == "MidTop" && j != left_j)
+                        if (displayitems[j].transform.GetChild(i).name == "MidRightX" && j != left_j && displayitems[j].transform.rotation.z > 0)
                         {
                             placestohit.Add(displayitems[j].transform.GetChild(i).gameObject.GetComponent<Collider2D>());
                             placeshit.Add(false);
                         }
-                        if (displayitems[j].transform.GetChild(i).name == "MidBottom" && j == left_j)
+                        if (displayitems[j].transform.GetChild(i).name == "MidTop" && j != left_j && displayitems[j].transform.rotation.z < 0)
                         {
                             placestohit.Add(displayitems[j].transform.GetChild(i).gameObject.GetComponent<Collider2D>());
                             placeshit.Add(false);
                         }
-                        if (displayitems[j].transform.GetChild(i).name == "RightTop" && j == left_j)
+                        if (displayitems[j].transform.GetChild(i).name == "MidBottom" && j != left_j && displayitems[j].transform.rotation.z > 0)
                         {
                             placestohit.Add(displayitems[j].transform.GetChild(i).gameObject.GetComponent<Collider2D>());
                             placeshit.Add(false);
                         }
-                        if (displayitems[j].transform.GetChild(i).name == "LeftTop" && j == left_j)
+                        if (displayitems[j].transform.GetChild(i).name == "MidBottom" && j == left_j && displayitems[j].transform.rotation.z < 0)
+                        {
+                            placestohit.Add(displayitems[j].transform.GetChild(i).gameObject.GetComponent<Collider2D>());
+                            placeshit.Add(false);
+                        }
+                        if (displayitems[j].transform.GetChild(i).name == "MidTop" && j == left_j && displayitems[j].transform.rotation.z > 0)
+                        {
+                            placestohit.Add(displayitems[j].transform.GetChild(i).gameObject.GetComponent<Collider2D>());
+                            placeshit.Add(false);
+                        }
+                        if (displayitems[j].transform.GetChild(i).name == "RightTop" && displayitems[j].transform.rotation.z < 0)
+                        {
+                            placestohit.Add(displayitems[j].transform.GetChild(i).gameObject.GetComponent<Collider2D>());
+                            placeshit.Add(false);
+                        }
+                        if (displayitems[j].transform.GetChild(i).name == "LeftBottom" && displayitems[j].transform.rotation.z > 0)
+                        {
+                            placestohit.Add(displayitems[j].transform.GetChild(i).gameObject.GetComponent<Collider2D>());
+                            placeshit.Add(false);
+                        }
+                        if (displayitems[j].transform.GetChild(i).name == "LeftTop" && j == left_j && displayitems[j].transform.rotation.z < 0)
+                        {
+                            placestohit.Add(displayitems[j].transform.GetChild(i).gameObject.GetComponent<Collider2D>());
+                            placeshit.Add(false);
+                        }
+                        if (displayitems[j].transform.GetChild(i).name == "RightBottom" && j == left_j && displayitems[j].transform.rotation.z > 0)
                         {
                             placestohit.Add(displayitems[j].transform.GetChild(i).gameObject.GetComponent<Collider2D>());
                             placeshit.Add(false);
@@ -599,17 +661,27 @@ public class Anvil : MonoBehaviour {
                         int i = 0;
                         while (i < displayitems[j].transform.childCount)
                         {
-                            if (displayitems[j].transform.GetChild(i).name == "MidLeftX" && j == left_a)
+                            if (displayitems[j].transform.GetChild(i).name == "MidLeftX" && j == left_a && displayitems[i].transform.rotation.z >= 0)
                             {
                                 placestohit.Add(displayitems[j].transform.GetChild(i).gameObject.GetComponent<Collider2D>());
                                 placeshit.Add(false);
                             }
-                            if (displayitems[j].transform.GetChild(i).name == "RightBottom" && j != bot_j)
+                            if (displayitems[j].transform.GetChild(i).name == "MidRightX" && j == left_a && displayitems[i].transform.rotation.z < 0)
                             {
                                 placestohit.Add(displayitems[j].transform.GetChild(i).gameObject.GetComponent<Collider2D>());
                                 placeshit.Add(false);
                             }
-                            if (displayitems[j].transform.GetChild(i).name == "RightTop" && j == left_a)
+                            if (displayitems[j].transform.GetChild(i).name == "RightBottom" && j == top_j && displayitems[i].transform.rotation.z >= 0)
+                            {
+                                placestohit.Add(displayitems[j].transform.GetChild(i).gameObject.GetComponent<Collider2D>());
+                                placeshit.Add(false);
+                            }
+                            if (displayitems[j].transform.GetChild(i).name == "LeftTop" && j == top_j && displayitems[i].transform.rotation.z < 0)
+                            {
+                                placestohit.Add(displayitems[j].transform.GetChild(i).gameObject.GetComponent<Collider2D>());
+                                placeshit.Add(false);
+                            }
+                            if (displayitems[j].transform.GetChild(i).name == "MidLeftX" && j != left_a)
                             {
                                 placestohit.Add(displayitems[j].transform.GetChild(i).gameObject.GetComponent<Collider2D>());
                                 placeshit.Add(false);
@@ -619,18 +691,34 @@ public class Anvil : MonoBehaviour {
                                 placestohit.Add(displayitems[j].transform.GetChild(i).gameObject.GetComponent<Collider2D>());
                                 placeshit.Add(false);
                             }
-                            if (displayitems[j].transform.GetChild(i).name == "MidTop" && j == top_j)
+                            if (displayitems[j].transform.GetChild(i).name == "MidTop" && j == top_j && displayitems[i].transform.rotation.z >= 0)
                             {
                                 placestohit.Add(displayitems[j].transform.GetChild(i).gameObject.GetComponent<Collider2D>());
                                 placeshit.Add(false);
                             }
-                            if (displayitems[j].transform.GetChild(i).name == "LeftTop" && j == bot_j)
+                            if (displayitems[j].transform.GetChild(i).name == "MidBottom" && j == top_j && displayitems[i].transform.rotation.z < 0)
+                            {
+                                placestohit.Add(displayitems[j].transform.GetChild(i).gameObject.GetComponent<Collider2D>());
+                                placeshit.Add(false);
+                            }
+                            if (displayitems[j].transform.GetChild(i).name == "LeftTop" && j == bot_j && displayitems[i].transform.rotation.z >= 0)
                             {
                                 placestoweld.Add(displayitems[j].transform.GetChild(i).gameObject.GetComponent<Collider2D>());
                                 placeswelt.Add(false);
                                 addedaweld++;
                             }
-                            if (displayitems[j].transform.GetChild(i).name == "LeftBottom" && j == top_j)
+                            if (displayitems[j].transform.GetChild(i).name == "RightBottom" && j == bot_j && displayitems[i].transform.rotation.z < 0)
+                            {
+                                placestoweld.Add(displayitems[j].transform.GetChild(i).gameObject.GetComponent<Collider2D>());
+                                placeswelt.Add(false);
+                                addedaweld++;
+                            }
+                            if (displayitems[j].transform.GetChild(i).name == "LeftBottom" && j == top_j && displayitems[i].transform.rotation.z >= 0)
+                            {
+                                placestoweldto.Add(displayitems[j].transform.GetChild(i).gameObject.GetComponent<Collider2D>());
+                                addedaweld++;
+                            }
+                            if (displayitems[j].transform.GetChild(i).name == "RightTop" && j == top_j && displayitems[i].transform.rotation.z < 0)
                             {
                                 placestoweldto.Add(displayitems[j].transform.GetChild(i).gameObject.GetComponent<Collider2D>());
                                 addedaweld++;
@@ -705,24 +793,48 @@ public class Anvil : MonoBehaviour {
                                 placestohit.Add(displayitems[j].transform.GetChild(i).gameObject.GetComponent<Collider2D>());
                                 placeshit.Add(false);
                             }
-                            if (displayitems[j].transform.GetChild(i).name == "RightBottom" && j == top_j)
+                            if (displayitems[j].transform.GetChild(i).name == "RightBottom" && j == top_j && displayitems[j].transform.rotation.z < 0)
                             {
                                 placestoweld[0] = displayitems[j].transform.GetChild(i).gameObject.GetComponent<Collider2D>();
                                 placeswelt.Add(false);
                                 addedaweld++;
                             }
-                            if (displayitems[j].transform.GetChild(i).name == "LeftBottom" && j == top_j)
+                            if (displayitems[j].transform.GetChild(i).name == "LeftTop" && j == top_j && displayitems[j].transform.rotation.z > 0)
+                            {
+                                placestoweld[0] = displayitems[j].transform.GetChild(i).gameObject.GetComponent<Collider2D>();
+                                placeswelt.Add(false);
+                                addedaweld++;
+                            }
+                            if (displayitems[j].transform.GetChild(i).name == "LeftBottom" && j == top_j && displayitems[j].transform.rotation.z < 0)
                             {
                                 placestoweld[1] = displayitems[j].transform.GetChild(i).gameObject.GetComponent<Collider2D>();
                                 placeswelt.Add(false);
                                 addedaweld++;
                             }
-                            if (displayitems[j].transform.GetChild(i).name == "MidTop" && j != top_j)
+                            if (displayitems[j].transform.GetChild(i).name == "RightTop" && j == top_j && displayitems[j].transform.rotation.z > 0)
+                            {
+                                placestoweld[1] = displayitems[j].transform.GetChild(i).gameObject.GetComponent<Collider2D>();
+                                placeswelt.Add(false);
+                                addedaweld++;
+                            }
+                            if (displayitems[j].transform.GetChild(i).name == "MidTop" && j != top_j && displayitems[j].transform.rotation.z >= 0)
                             {
                                 if(j == left_a)
                                 {
                                     placestoweldto[1] = displayitems[j].transform.GetChild(i).gameObject.GetComponent<Collider2D>();
                                 }else
+                                {
+                                    placestoweldto[0] = displayitems[j].transform.GetChild(i).gameObject.GetComponent<Collider2D>();
+                                }
+                                addedaweld++;
+                            }
+                            if (displayitems[j].transform.GetChild(i).name == "MidBottom" && j != top_j && displayitems[j].transform.rotation.z < 0)
+                            {
+                                if (j == left_a)
+                                {
+                                    placestoweldto[1] = displayitems[j].transform.GetChild(i).gameObject.GetComponent<Collider2D>();
+                                }
+                                else
                                 {
                                     placestoweldto[0] = displayitems[j].transform.GetChild(i).gameObject.GetComponent<Collider2D>();
                                 }
@@ -801,7 +913,12 @@ public class Anvil : MonoBehaviour {
                                 placeswelt.Add(false);
                                 addedaweld++;
                             }
-                            if (displayitems[j].transform.GetChild(i).name == "MidLeftX" && j == bot_j)
+                            if (displayitems[j].transform.GetChild(i).name == "MidLeftX" && j == bot_j && displayitems[j].transform.rotation.z < 0)
+                            {
+                                placestoweld[1] = displayitems[j].transform.GetChild(i).gameObject.GetComponent<Collider2D>();
+                                addedaweld++;
+                            }
+                            if (displayitems[j].transform.GetChild(i).name == "MidRightX" && j == bot_j && displayitems[j].transform.rotation.z > 0)
                             {
                                 placestoweld[1] = displayitems[j].transform.GetChild(i).gameObject.GetComponent<Collider2D>();
                                 addedaweld++;
@@ -861,13 +978,24 @@ public class Anvil : MonoBehaviour {
                             placestohit.Add(displayitems[j].transform.GetChild(i).gameObject.GetComponent<Collider2D>());
                             placeshit.Add(false);
                         }
-                        if (displayitems[j].transform.GetChild(i).name == "RightTop" && j == left_a)
+                        if (displayitems[j].transform.GetChild(i).name == "RightTop" && j == left_a && displayitems[j].transform.rotation.z < 0)
                         {
                             placestoweld.Add(displayitems[j].transform.GetChild(i).gameObject.GetComponent<Collider2D>());
                             placeswelt.Add(false);
                             addedaweld++;
                         }
-                        if (displayitems[j].transform.GetChild(i).name == "LeftBottom" && j == bot_j)
+                        if (displayitems[j].transform.GetChild(i).name == "LeftBottom" && j == left_a && displayitems[j].transform.rotation.z > 0)
+                        {
+                            placestoweld.Add(displayitems[j].transform.GetChild(i).gameObject.GetComponent<Collider2D>());
+                            placeswelt.Add(false);
+                            addedaweld++;
+                        }
+                        if (displayitems[j].transform.GetChild(i).name == "LeftBottom" && j == bot_j && displayitems[j].transform.rotation.z < 0)
+                        {
+                            placestoweldto.Add(displayitems[j].transform.GetChild(i).gameObject.GetComponent<Collider2D>());
+                            addedaweld++;
+                        }
+                        if (displayitems[j].transform.GetChild(i).name == "RightTop" && j == bot_j && displayitems[j].transform.rotation.z > 0)
                         {
                             placestoweldto.Add(displayitems[j].transform.GetChild(i).gameObject.GetComponent<Collider2D>());
                             addedaweld++;
@@ -895,84 +1023,76 @@ public class Anvil : MonoBehaviour {
         }
         if(numberofbarsused == 4)
         {
-            int a = 0;
-            int left_a = 0;
-            int same_x = 0;
-            while (a < numberofbarsused)
-            {
-                if (displayitems[a].transform.position.x < displayitems[left_a].transform.position.x && displayitems[a].transform.position.x + 1.5f > displayitems[left_a].transform.position.x)
-                {
-                    left_a = a;
-                }
-                else if ((displayitems[left_a].transform.position.x - 0.4f < displayitems[a].transform.position.x) && displayitems[a].transform.position.x < displayitems[left_a].transform.position.x + 0.4f)
-                {
-                    same_x++;
-                }
-                a++;
-            }
             int j = 0;
-            int topleft = left_a;
+            int topleft = -1;
             int botleft = -1;
+            int topright = -1;
             int botright = -1;
-            //topright is the assumed unknown one
-            j = 0;
-            int newleft_a = 0;
             while (j < numberofbarsused)
             {
-                if(newleft_a == left_a || j == left_a)
+                int leftof = 0;//how many its left of
+                int above = 0;//how many its above
+                int i = 0;
+                while (i < numberofbarsused)
                 {
-                    newleft_a++;
-                }else if (displayitems[j].transform.position.x < displayitems[newleft_a].transform.position.x && displayitems[j].transform.position.x + 1.5f > displayitems[newleft_a].transform.position.x && j != left_a)
+                    if (displayitems[j].transform.position.x < displayitems[i].transform.position.x)
+                    {
+                        leftof++;
+                    }
+                    if(displayitems[j].transform.position.y> displayitems[i].transform.position.y)
+                    {
+                        above++;
+                    }
+                    i++;
+                }
+                if (leftof >= 2 && above >= 2)
+                {
+                    topleft = j;
+                }
+                if(leftof <= 1 && above >= 2)
+                {
+                    topright = j;
+                }
+                if (leftof >= 2 && above <= 1)
                 {
                     botleft = j;
                 }
-                j++;
-            }
-            j = 0;
-            while(j < numberofbarsused)
-            {
-                if ((displayitems[botleft].transform.position.y - 5f < displayitems[j].transform.position.y) && displayitems[j].transform.position.y < displayitems[botleft].transform.position.y + 5f)
+                if (leftof <= 1 && above <= 1)
                 {
-                    if(j != botleft)
-                    {
-                        j = botright;
-                    }
+                    botright = j;
                 }
                 j++;
             }
             Debug.Log(topleft);
             Debug.Log(botleft);
+            Debug.Log(topright);
             Debug.Log(botright);
-            botleft = -5;
             bool close = false;
-            if(botleft != -1 && botright != -1 && topleft != -1)
+            if(botleft == -1 && botright == -1 && topleft == -1 && topright == -1)
             {
                 close = true;
                 UnReadyAnvil();
             }
-            close = false;
-            if (numberrotated == 0 && close)
+            if (numberrotated == 0 && close == false)
             {
                 product = "Shield";
-                j = 0;
                 Collider2D h = new Collider2D();
-                Debug.Log(placestoweld.Count);
                 placestoweld.Add(h);
                 placestoweld.Add(h);
                 placestoweld.Add(h);
                 placestoweld.Add(h);
-                Bounds ooo = h.bounds;
                 placestoweldto.Add(h);
                 placestoweldto.Add(h);
                 placestoweldto.Add(h);
                 placestoweldto.Add(h);
+                j = 0;
                 while (j < numberofbarsused)
                 {
                     int addedaweld = 0;
                     int i = 0;
                     while (i < displayitems[j].transform.childCount)
                     {
-                        if (displayitems[j].transform.GetChild(i).name == "RightTop" && j != topleft && j != botleft && j != botright)
+                        if (displayitems[j].transform.GetChild(i).name == "RightTop" && j ==topright)
                         {
                             placestohit.Add(displayitems[j].transform.GetChild(i).gameObject.GetComponent<Collider2D>());
                             placeshit.Add(false);
@@ -999,7 +1119,7 @@ public class Anvil : MonoBehaviour {
                                 placestoweld[0] = displayitems[j].transform.GetChild(i).gameObject.GetComponent<Collider2D>();
                                 placeswelt.Add(false);
                             }
-                            else if (j != botleft && j != botright)
+                            else if (j == topright)
                             {
                                 placestoweld[1] = displayitems[j].transform.GetChild(i).gameObject.GetComponent<Collider2D>();
                                 placeswelt.Add(false);
@@ -1038,7 +1158,7 @@ public class Anvil : MonoBehaviour {
                             {
                                 placestoweldto[3] = displayitems[j].transform.GetChild(i).gameObject.GetComponent<Collider2D>();
                             }
-                            else if (j != botleft && j != topleft)
+                            else if (j == topright)
                             {
                                 placestoweldto[2] = displayitems[j].transform.GetChild(i).gameObject.GetComponent<Collider2D>();
                             }
@@ -1066,7 +1186,7 @@ public class Anvil : MonoBehaviour {
                 }
 
             }
-            else if(numberrotated == 2 && close)
+            else if(numberrotated == 2 && close == false)
             {
                 product = "Armor";
                 j = 0;
@@ -1084,7 +1204,12 @@ public class Anvil : MonoBehaviour {
                     int i = 0;
                     while (i < displayitems[j].transform.childCount)
                     {
-                        if (displayitems[j].transform.GetChild(i).name == "RightTop" && j != topleft && j != botleft && j != botright)
+                        if (displayitems[j].transform.GetChild(i).name == "RightTop" && j == topright && displayitems[j].transform.rotation.z < 0)
+                        {
+                            placestohit.Add(displayitems[j].transform.GetChild(i).gameObject.GetComponent<Collider2D>());
+                            placeshit.Add(false);
+                        }
+                        if (displayitems[j].transform.GetChild(i).name == "LeftBottom" && j == topright && displayitems[j].transform.rotation.z > 0)
                         {
                             placestohit.Add(displayitems[j].transform.GetChild(i).gameObject.GetComponent<Collider2D>());
                             placeshit.Add(false);
@@ -1094,17 +1219,32 @@ public class Anvil : MonoBehaviour {
                             placestohit.Add(displayitems[j].transform.GetChild(i).gameObject.GetComponent<Collider2D>());
                             placeshit.Add(false);
                         }
-                        if (displayitems[j].transform.GetChild(i).name == "MidLeftX" && j != botleft && j != botright)
+                        if (displayitems[j].transform.GetChild(i).name == "MidLeftX" && j != botleft && j != botright && displayitems[j].transform.rotation.z < 0)
                         {
                             placestohit.Add(displayitems[j].transform.GetChild(i).gameObject.GetComponent<Collider2D>());
                             placeshit.Add(false);
                         }
-                        if (displayitems[j].transform.GetChild(i).name == "MidTop" && j == topleft)
+                        if (displayitems[j].transform.GetChild(i).name == "MidRightX" && j != botleft && j != botright && displayitems[j].transform.rotation.z > 0)
                         {
                             placestohit.Add(displayitems[j].transform.GetChild(i).gameObject.GetComponent<Collider2D>());
                             placeshit.Add(false);
                         }
-                        if (displayitems[j].transform.GetChild(i).name == "RightBottom" && (j == botright || j == topleft))
+                        if (displayitems[j].transform.GetChild(i).name == "MidTop" && j == topleft && displayitems[j].transform.rotation.z < 0)
+                        {
+                            placestohit.Add(displayitems[j].transform.GetChild(i).gameObject.GetComponent<Collider2D>());
+                            placeshit.Add(false);
+                        }
+                        if (displayitems[j].transform.GetChild(i).name == "MidBottom" && j == topleft && displayitems[j].transform.rotation.z > 0)
+                        {
+                            placestohit.Add(displayitems[j].transform.GetChild(i).gameObject.GetComponent<Collider2D>());
+                            placeshit.Add(false);
+                        }
+                        if (displayitems[j].transform.GetChild(i).name == "RightBottom" && (j == botright || j == topleft && displayitems[j].transform.rotation.z < 0))
+                        {
+                            placestohit.Add(displayitems[j].transform.GetChild(i).gameObject.GetComponent<Collider2D>());
+                            placeshit.Add(false);
+                        }
+                        if (displayitems[j].transform.GetChild(i).name == "LeftTop" && (j == botright || j == topleft && displayitems[j].transform.rotation.z > 0))
                         {
                             placestohit.Add(displayitems[j].transform.GetChild(i).gameObject.GetComponent<Collider2D>());
                             placeshit.Add(false);
@@ -1114,49 +1254,70 @@ public class Anvil : MonoBehaviour {
                             placestohit.Add(displayitems[j].transform.GetChild(i).gameObject.GetComponent<Collider2D>());
                             placeshit.Add(false);
                         }
-                        if (displayitems[j].transform.GetChild(i).name == "MidTop" && j == topleft)
+                        if (displayitems[j].transform.GetChild(i).name == "MidTop" && j == topleft && displayitems[j].transform.rotation.z < 0)
                         {
                             placestoweld[0] = displayitems[j].transform.GetChild(i).gameObject.GetComponent<Collider2D>();
                             placeswelt.Add(false);
                             addedaweld++;
                         }
-                        if (displayitems[j].transform.GetChild(i).name == "RightTop" && j == topleft)
+                        if (displayitems[j].transform.GetChild(i).name == "MidBottom" && j == topleft && displayitems[j].transform.rotation.z > 0)
+                        {
+                            placestoweld[0] = displayitems[j].transform.GetChild(i).gameObject.GetComponent<Collider2D>();
+                            placeswelt.Add(false);
+                            addedaweld++;
+                        }
+                        if (displayitems[j].transform.GetChild(i).name == "RightTop" && j == topleft && displayitems[j].transform.rotation.z < 0)
                         {
                             placestoweld[1] = displayitems[j].transform.GetChild(i).gameObject.GetComponent<Collider2D>();
                             placeswelt.Add(false);
                             addedaweld++;
                         }
-                        if (displayitems[j].transform.GetChild(i).name == "MidRightX" && j == botleft)
+                        if (displayitems[j].transform.GetChild(i).name == "LeftBottom" && j == topleft && displayitems[j].transform.rotation.z > 0)
+                        {
+                            placestoweld[1] = displayitems[j].transform.GetChild(i).gameObject.GetComponent<Collider2D>();
+                            placeswelt.Add(false);
+                            addedaweld++;
+                        }
+                        if (displayitems[j].transform.GetChild(i).name == "MidRightX" && j == botleft && displayitems[j].transform.rotation.z >= 0)
                         {
                             placestoweld[2] = displayitems[j].transform.GetChild(i).gameObject.GetComponent<Collider2D>();
                             placeswelt.Add(false);
                             addedaweld++;
                         }
-                        if (displayitems[j].transform.GetChild(i).name == "MidLeftX" && j == botright)
+                        if (displayitems[j].transform.GetChild(i).name == "MidLeftX" && j == botleft && displayitems[j].transform.rotation.z < 0)
+                        {
+                            placestoweld[2] = displayitems[j].transform.GetChild(i).gameObject.GetComponent<Collider2D>();
+                            placeswelt.Add(false);
+                            addedaweld++;
+                        }
+                        if (displayitems[j].transform.GetChild(i).name == "MidLeftX" && j == botright && displayitems[j].transform.rotation.z >= 0)
                         {
                             placestoweldto[2] = displayitems[j].transform.GetChild(i).gameObject.GetComponent<Collider2D>();
                             addedaweld++;
                         }
-                        if (displayitems[j].transform.GetChild(i).name == "RightBottom" && j != botleft && j != botright && j != topleft)
+                        if (displayitems[j].transform.GetChild(i).name == "MidRightX" && j == botright && displayitems[j].transform.rotation.z < 0)
+                        {
+                            placestoweldto[2] = displayitems[j].transform.GetChild(i).gameObject.GetComponent<Collider2D>();
+                            addedaweld++;
+                        }
+                        if (displayitems[j].transform.GetChild(i).name == "RightBottom" && j == topright && displayitems[j].transform.rotation.z < 0)
                         {
                             placestoweldto[1] = displayitems[j].transform.GetChild(i).gameObject.GetComponent<Collider2D>();
                             addedaweld++;
                         }
-                        if (displayitems[j].transform.GetChild(i).name == "MidBottom" && j != botleft && j != botright && j != topleft)
+                        if (displayitems[j].transform.GetChild(i).name == "LeftTop" && j == topright && displayitems[j].transform.rotation.z > 0)
+                        {
+                            placestoweldto[1] = displayitems[j].transform.GetChild(i).gameObject.GetComponent<Collider2D>();
+                            addedaweld++;
+                        }
+                        if (displayitems[j].transform.GetChild(i).name == "MidBottom" && j == topright && displayitems[j].transform.rotation.z < 0)
                         {
                             placestoweldto[0] = displayitems[j].transform.GetChild(i).gameObject.GetComponent<Collider2D>();
                             addedaweld++;
                         }
-                        if (displayitems[j].transform.GetChild(i).name == "MidLeftX")
+                        if (displayitems[j].transform.GetChild(i).name == "MidTop" && j == topright && displayitems[j].transform.rotation.z > 0)
                         {
-                            if (j == botright)
-                            {
-                                placestoweldto[3] = displayitems[j].transform.GetChild(i).gameObject.GetComponent<Collider2D>();
-                            }
-                            else if (j != botleft && j != topleft)
-                            {
-                                placestoweldto[2] = displayitems[j].transform.GetChild(i).gameObject.GetComponent<Collider2D>();
-                            }
+                            placestoweldto[0] = displayitems[j].transform.GetChild(i).gameObject.GetComponent<Collider2D>();
                             addedaweld++;
                         }
                         i++;
@@ -1194,13 +1355,15 @@ public class Anvil : MonoBehaviour {
         Vector2 mouseposition = new Vector2(Input.mousePosition.x, Input.mousePosition.y);
         Vector2 mouse = Camera.main.ScreenToWorldPoint(mouseposition);
         Vector2 mouses = mouse - new Vector2(0.65f, 0);
-        if (product != "None")
+        if (product != "None" && (numberofbarsused == 1 || displayitems[0].GetComponent<DragAnvil>().item.GetComponent<Item>().welddone))
         {
             int i = 0;
+            bool hit = false;
             while (i < placestohit.Count)
             {
-                if (placestohit[i].OverlapPoint(mouses))
+                if (placestohit[i].OverlapPoint(mouses) && placeshit[i] == false)
                 {
+                    hit = true;
                     placeshit[i] = true;
                     //Debug.Log("hit "+placestohit[i].transform.name);
                     Vector2 goal = placestohit[i].transform.position;
@@ -1220,6 +1383,24 @@ public class Anvil : MonoBehaviour {
                     checks.Add(newcheck);
                 }
                 i++;
+            }
+            if(hit == false)
+            {
+                i = 0;
+                bool hitthebar = false;
+                while (i < bars.Count)
+                {
+                    if (bars[i].OverlapPoint(mouses))
+                    {
+                        hitthebar = true;
+                    }
+                    i++;
+                }
+                if (hitthebar)
+                {
+                    Debug.Log("You hit the bar, decrease your fucking score.");
+                    numberofmisses++;
+                }
             }
             int j = 0;
             bool done = true;
@@ -1241,6 +1422,7 @@ public class Anvil : MonoBehaviour {
                     i++;
                 }
                 totalscore = totalscore / scores.Count;
+                totalscore += (-numberofmisses);
                 anvilitems[0].GetComponent<Item>().anvildone = true;
                 anvilitems[0].GetComponent<Item>().anvilscore = totalscore;
                 //Debug.Log(totalscore);
@@ -1257,10 +1439,8 @@ public class Anvil : MonoBehaviour {
                         p++;
                     }
                 }
-                if (product == "Axe" || product == "Scythe" || product == "Legs" || product == "Halberd")
-                {
-                    displayitems[0].transform.Rotate(0, 0, 90);
-                }
+                displayitems[0].GetComponent<DragAnvil>().rotated = 0;
+                displayitems[0].transform.rotation = new Quaternion(0, 0, 0, 0);
             }
         }
     }
@@ -1273,7 +1453,7 @@ public class Anvil : MonoBehaviour {
             int i = 0;
             while (i < placestoweld.Count)
             {
-                if (placestoweldto[i].OverlapPoint(mouse) || placestoweld[i].OverlapPoint(mouse))
+                if ((placestoweldto[i].OverlapPoint(mouse) || placestoweld[i].OverlapPoint(mouse)) && placeswelt[i] == false)
                 {
                     placeswelt[i] = true;
                     GameObject newcheck = Instantiate(check, new Vector3(mouse.x, mouse.y, 0), new Quaternion(0, 0, 0, 0), panel.transform);
@@ -1292,11 +1472,10 @@ public class Anvil : MonoBehaviour {
                 }
                 j++;
             }
-            /*if (done)
+            if (done)
             {
-                displayitems[1].transform.position = new Vector2(displayitems[0].transform.position.x, displayitems[0].transform.position.y - 2.1f);
-                Debug.Log("wtf");
-            }*/
+                displayitems[0].GetComponent<DragAnvil>().item.GetComponent<Item>().welddone = true;
+            }
         }
     }
     void DisplayItems()

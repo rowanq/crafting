@@ -12,33 +12,35 @@ public class Tutorial : MonoBehaviour {
     public bool anvilfinished = false;
     public bool detailfinished = false;
     public bool libraryfinished = false;
+    public bool bedroomfinished = false;
     List<string> tutorial;
     List<string> forgetutorial;
     List<string> anviltutorial;
     List<string> detailtutorial;
     List<string> librarytutorial;
+    List<string> bedroomtutorial;
     List<List<string>> tutorials;
     // Use this for initialization
     void Start()
     {
         tutorial = new List<string>();
         tutorial.Add("Welcome to < Blacksmithing: The Game >, where you play a blacksmith, in a game.The following instructions will help you get acquainted to becoming an expert blacksmith.");
-        tutorial.Add("The controls are WASD to move, and E to interact with the various stations. Click on items in menus to move them and to interact with items in the anvil and detailing stations.");
-        tutorial.Add("There are seven different stations in the game, each one vital to your blacksmithing operations.");
-        tutorial.Add("First, there is the store. Here is where you will buy the supplies you’ll need to craft things. The more experienced you become, the more goods that the store will offer.");
-        tutorial.Add("Conveniently located near the store is your storage pile, where you are able to store supplies. This can be useful since you are only capable of carrying four items at a time.");
+        tutorial.Add("The controls are WASD to move, hold shift to run, and E to interact with the various stations. Click on items in menus to move them and to interact with items in the anvil and detailing stations. Escape to Pause!");
+        tutorial.Add("There are three places: Your workshop, your bedroom, and outside. You are currently in your workshop. Your bedroom is where you can advance to the next day. Outside is where customers come from and you can buy certain items.");
+        tutorial.Add("There are six different stations in your workshop, each one vital to your blacksmithing operations.");
+        tutorial.Add("First there is your storage pile, where you are able to store supplies. This can be useful since you are only capable of carrying four items at a time.");
         tutorial.Add("Next is the Forge, where you heat metal up. It is crucial to do this before you take the metal to the Anvil, otherwise you cannot work it. You will receive more info when you enter the forge.");
         tutorial.Add("Then there is the Library, where you have handy reference books for how to craft the various weapons and tools you will learn to create. You can also take notes here.");
         tutorial.Add("The Anvil is the most complex part of being a blacksmith, where you take metal bars and shape them into useful items. You will receive more info when you enter the Anvil.");
         tutorial.Add("The Detailing Station is where you complete the item you made in the anvil by applying the finishing touches. You will receive more info when you enter there.");
-        tutorial.Add("Finally, the Desk is where you will finally be able to sell your crafted item and see how well you made it.");
+        tutorial.Add("Finally, your assistant will give you hints on how to play. They will also let in customers who you order things that you can sell items to.");
         tutorial.Add("That’s all the general information we have for you, if you ever get stuck go to the Library for help or you can always redo the tutorial from the options menu. Good luck!");
         forgetutorial = new List<string>();
         forgetutorial.Add("Welcome to the Forge! Before continuing on to the next step of this tutorial, please make sure you have at least one metal bar in your inventory.");
         forgetutorial.Add("Alright, now place your metal bar into the forge.");
         forgetutorial.Add("To heat it up, you are going to need to operate the blower. To do this, you must alternately press the W and S keys or the up and down arrows.");
         forgetutorial.Add("Just like that! And as you can see at the bottom, the temperature goes up when you use the blower. You can also see that is slowly goes down, so you’ll have to keep blowing to keep an even temperature.");
-        forgetutorial.Add("To heat up a metal properly, you need to keep it at a certain heat. Since you’re using bronze, you need to keep the temperature at just when the gauge turns color to red-orange.");
+        forgetutorial.Add("To heat up a metal properly, you need to keep it at a certain heat. Since you’re using bronze, you need to keep the temperature at just when the gauge turns color to red-orange. If you are doing it properly, smoke should appear.");
         forgetutorial.Add("Good job! You now have heated metal that you can use in the anvil. Don’t forget to put the metal bar back in your inventory before you leave!");
         anviltutorial = new List<string>();
         anviltutorial.Add("Welcome to the Anvil! Before continuing on to the next step of this tutorial, please make sure you have at least one heated metal bar in your inventory.");
@@ -59,7 +61,7 @@ public class Tutorial : MonoBehaviour {
         detailtutorial.Add("Alright, now please place both into the detailing station.");
         detailtutorial.Add("Note that unlike the Anvil, you cannot move the items at this current stage, all you can do is take them in and out of your inventory. Click Ready when you are.");
         detailtutorial.Add("Now you are capable of moving the items by shift-clicking like in the Anvil station, as well as rotating using A or D. Your goal is to align the two items as closely as possible. Once you are satisfied with your alignment, click Unready");
-        detailtutorial.Add("Awesome! You now have a finished dagger and have completed the tutorial! To sell this first creation, go to the desk. Remember you can always go to the library for references on the design of items and general help, and you can redo the tutorial from the options menu.");
+        detailtutorial.Add("Awesome! You now have a finished dagger and have completed the tutorial! To sell this first creation, go to the customer who wants it. Remember you can always go to the library for references on the design of items and general help, and you can redo the tutorial from the options menu.");
         detailtutorial.Add("Good luck!");
         librarytutorial = new List<string>();
         librarytutorial.Add("Welcome to the Library! This is where you can get all the information you need to be a successful blacksmith.");
@@ -71,12 +73,20 @@ public class Tutorial : MonoBehaviour {
         librarytutorial.Add("As you can see, two check marks appear on the bar. This is where you need to hammer in the anvil station. Later, red checks will appear on more complex designs. These red checks are where you weld.");
         librarytutorial.Add("On the right hand side you can see an image of the final product which shows you what you have to do in detailing to finish the item. Finally, the price is in the bottom right corner.");
         librarytutorial.Add("That’s all for the Library. Good luck!");
+        bedroomtutorial = new List<string>();
+        bedroomtutorial.Add("Welcome to your bedroom! This is where you can review your day, purchase supplies and then sleep. It might look shabby now, but soon you’ll have enough money as a blacksmith to upgrade it to great heights!");
+        bedroomtutorial.Add("Go to your Desk in the top right corner to see your score.");
+        bedroomtutorial.Add("Then you can purchase supplies. The number on the left is how many you have in your storage, while the right number is the price of the item. Buy and sell them until you have all the items you want.");
+        bedroomtutorial.Add("Remember, even if you run out of supplies for the day, you are still able to run outside to the stall across the street and buy more, but at a higher price.");
+        bedroomtutorial.Add("Once you are done getting supplies for the next day, head over to your bed and sleep.");
+        bedroomtutorial.Add("That’s all for the bedroom, good luck!");
         tutorials = new List<List<string>>();
         tutorials.Add(tutorial);
         tutorials.Add(forgetutorial);
         tutorials.Add(anviltutorial);
         tutorials.Add(detailtutorial);
         tutorials.Add(librarytutorial);
+        tutorials.Add(bedroomtutorial);
 
     }
 	
@@ -117,6 +127,11 @@ public class Tutorial : MonoBehaviour {
                 {
                     libraryfinished = true;
                 }
+                else if (curtutorial == 5)
+                {
+                    bedroomfinished = true;
+                }
+
                 curtutorial = -1;
             }
         }
@@ -139,6 +154,7 @@ public class Tutorial : MonoBehaviour {
             anvilfinished = true;
             detailfinished = true;
             libraryfinished = true;
+            bedroomfinished = true;
         }else if(curtutorial == 1)
         {
             forgefinished = true;
@@ -151,6 +167,10 @@ public class Tutorial : MonoBehaviour {
         }else if(curtutorial == 4)
         {
             libraryfinished = true;
+        }
+        else if (curtutorial == 5)
+        {
+            bedroomfinished = true;
         }
         finished = true;
         tutorialdisplays[curtutorial].SetActive(false);

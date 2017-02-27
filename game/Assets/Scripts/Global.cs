@@ -10,6 +10,7 @@ public class Global : MonoBehaviourSingleton<Global> {
     public GameObject canvas;
     public GameObject openpanel;
     public GameObject tutorial;
+    public Camera camera;
     public bool gameon;
     public bool gamestarted;
     public string message;
@@ -44,7 +45,7 @@ public class Global : MonoBehaviourSingleton<Global> {
             if (openpanel != null)
             {
                 openpanel.SetActive(true);
-                if(openpanel.name == "forge_panel" && tutorial.GetComponent<Tutorial>().forgefinished == false && tutorial.GetComponent<Tutorial>().curtutorial != 1)
+                if (openpanel.name == "forge_panel" && tutorial.GetComponent<Tutorial>().forgefinished == false && tutorial.GetComponent<Tutorial>().curtutorial != 1)
                 {
                     tutorial.GetComponent<Tutorial>().curtutorial = 1;
                     tutorial.GetComponent<Tutorial>().place = 0;
@@ -64,6 +65,11 @@ public class Global : MonoBehaviourSingleton<Global> {
                     tutorial.GetComponent<Tutorial>().curtutorial = 4;
                     tutorial.GetComponent<Tutorial>().place = 0;
                 }
+            }
+            if (camera.transform.position == new Vector3(0, 10, -10) && tutorial.GetComponent<Tutorial>().bedroomfinished == false && tutorial.GetComponent<Tutorial>().curtutorial != 5)
+            {
+                tutorial.GetComponent<Tutorial>().curtutorial = 5;
+                tutorial.GetComponent<Tutorial>().place = 0;
             }
             int i = 0;
             while(i < canvas.transform.childCount)
