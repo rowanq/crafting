@@ -92,7 +92,7 @@ public class DragStorage : MonoBehaviour
             }
             if (benormal)
             {
-                item.GetComponent<DragStorage>().item.GetComponent<Item>().isplayeritem = false;
+                item.GetComponent<Item>().isplayeritem = false;
                 storage.displayitems[storage.storageinventorycount].GetComponent<DragStorage>().item = item;
                 if (trashon == false)
                 {

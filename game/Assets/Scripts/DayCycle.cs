@@ -5,32 +5,39 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class DayCycle : MonoBehaviour {
-    public int day;
+    public int day = 1;
     public float timemod;
-    public int time;
+    public int time = 160;
     public Text timedisplay;
     public List<string> ordersmadethisday;
     public List<float> totalscores;
     public int moneymade;
     public float averagescore;
-    public int nearclosingtime; //the time of the day in which the computer decides to stop giving orders
+    public int nearclosingtime = 380; //the time of the day in which the computer decides to stop giving orders
     public bool endofday = false;
+    public bool justloaded = false;
+    public Supplies supplies;
+    public Desk desk;
     int faketime; //time in frames
     int lasttimedisplayed;
 	// Use this for initialization
 	void Start () {
-        time = 160;
         lasttimedisplayed = -100;
-        day = 1;
 	}
 	
 	// Update is called once per frame
 	void Update () {
-		if(time > lasttimedisplayed + 4)
+		if(time > lasttimedisplayed + 4 || justloaded)
         {
+            justloaded = false;
             TimeSpan result = TimeSpan.FromMinutes(time * 3);
             TimeSpan regularclock = TimeSpan.FromHours(12);
             string addition = " AM - Day "+day;
+            if(result.Days > 0)
+            {
+                result -= TimeSpan.FromDays(result.Days);
+            }
+            if(result.Hours == 12) { addition = " PM - Day " + day; }
             if(result.Hours > 12)
             {
                 result = result.Subtract(regularclock);
@@ -58,11 +65,15 @@ public class DayCycle : MonoBehaviour {
                 i++;
             }
             averagescore = (int)Mathf.Round(averagescore / totalscores.Count);
+            if(totalscores.Count == 0)
+            {
+                averagescore = 0;
+            }
         }
 	}
     void FixedUpdate()
     {
-        if (Global.me.gameon)
+        if (Global.me.gameon && Global.me.tutorial.GetComponent<Tutorial>().finished)
         {
             faketime++;
             if (faketime >= 60)
@@ -83,5 +94,13 @@ public class DayCycle : MonoBehaviour {
         moneymade = 0;
         endofday = false;
         lasttimedisplayed = -100;
+        supplies.alreadyboughtthisnight = false;
+        int i = 0;
+        while(i < desk.customers.Count)
+        {
+            desk.customers[i].GetComponent<NPC>().Leave();
+            i++;
+        }
+        desk.customers = new List<GameObject>();
     }
 }

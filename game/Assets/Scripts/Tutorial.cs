@@ -50,7 +50,7 @@ public class Tutorial : MonoBehaviour {
         anviltutorial.Add("Good! Being able to manipulate the bars on the anvil is important, as the configuration of the bars on the screen are how you are able to craft so many items.");
         anviltutorial.Add("While all of the designs for the different products are available in the library, right now you are going to make a dagger, which is a single vertical bar. When you have this configuration, please hit Ready.");
         anviltutorial.Add("Awesome! By hitting Ready, the bars are locked into place and you are now able to craft whatever item you have initiated the design for. It is important to note that once you hit ready, the design is not set into stone, simply by hitting UnReady you are able to move the bars around again and start over.");
-        anviltutorial.Add("Now, more complex designs feature a welding step, but since this is a simple dagger all there is the hammer step. Please pick up the hammer now.");
+        anviltutorial.Add("Now, more complex designs feature a welding step, where you have to weld the bars together before you can hit anything, but since this is a simple dagger all there is the hammer step. Please pick up the hammer now.");
         anviltutorial.Add("To use the hammer, you simply click. Note that the hammer hits where the head lands, not where your mouse is. Please hit where indicated.");
         anviltutorial.Add("Awesome! The color of the checks that you have seen are indications of how close to where you were supposed to hit you actually did. You want to be as close as possible to get the highest score.");
         anviltutorial.Add("Now that you’re finished, put the hammer away and hit UnReady.");

@@ -29,7 +29,7 @@ public class Desk : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-        if (player.orders.Count == 0 && timetillnextorder != 0 && customers.Count == 0)
+        if (player.orders.Count == 0 && timetillnextorder != 0 && customers.Count == 0 && day.time < day.nearclosingtime)
         {
             go = true;
             WhenIsNextOrder();
@@ -37,7 +37,7 @@ public class Desk : MonoBehaviour {
         if (timeitsbeenup <= 0 && Global.me.tutorial.GetComponent<Tutorial>().finished)
         {
             speaking.SetActive(false);
-            if ((timetillnextorder <= 0 || go) && player.orders.Count < maxplayerorders && day.time > day.nearclosingtime)
+            if ((timetillnextorder <= 0 || go) && player.orders.Count < maxplayerorders && day.time < day.nearclosingtime)
             {
                 GenerateOrder();
                 WhenIsNextOrder();
@@ -55,6 +55,13 @@ public class Desk : MonoBehaviour {
         i = 0;
         while (i < customers.Count)
         {
+            if (player.yarn)
+            {
+                customers[i].GetComponent<NPC>().yarn = true;
+            }else
+            {
+                customers[i].GetComponent<NPC>().yarn = false;
+            }
             if (customers[i].GetComponent<NPC>().mad)
             {
                 player.orders.Remove(player.orders[i]);
@@ -107,7 +114,7 @@ public class Desk : MonoBehaviour {
         int random = Random.Range((30), (60));
         if(go == false) //time between actual orders
         {
-            timetillnextorder = 60 + (player.orders.Count * (60)) - (player.level * (2));
+            timetillnextorder = random + (player.orders.Count * (60)) - (player.level * (2));
             timetillnextorder = 60 * timetillnextorder;
             Debug.Log(timetillnextorder / 60);
         }

@@ -50,6 +50,7 @@ public class Player : MonoBehaviour {
     public bool ovenmitts = false;
     public bool hotforge = false;
     public bool lawyer = false;
+    public bool yarn = false;
     bool moving;
     bool running;
     int curSprite;
@@ -75,7 +76,7 @@ public class Player : MonoBehaviour {
 	void Update () {
         canmove = true;
         DealWithItems();
-        if (forgescript.isRunning || storagescript.isRunning || anvilscript.isRunning || libraryscript.isRunning || detailingscript.isRunning || storescript.isRunning || (Global.me.tutorial.GetComponent<Tutorial>().finished == false && Global.me.tutorial.GetComponent<Tutorial>().curtutorial != 5))
+        if (forgescript.isRunning || storagescript.isRunning || anvilscript.isRunning || libraryscript.isRunning || detailingscript.isRunning || storescript.isRunning || (Global.me.tutorial.GetComponent<Tutorial>().finished == false && Global.me.tutorial.GetComponent<Tutorial>().curtutorial == 0))
         {
             canmove = false;
         }
@@ -218,15 +219,19 @@ public class Player : MonoBehaviour {
         PlayerPrefs.SetInt("Level", level);
         PlayerPrefs.SetInt("Money", money);
         PlayerPrefs.SetInt("Day", day.day);
+        PlayerPrefs.SetInt("Time", day.time);
         int mitt;
         if (ovenmitts){mitt = 1;}else{mitt = 0;}
         int hot;
         if (hotforge) { hot = 1; } else { hot = 0; }
         int law;
         if (lawyer) { law = 1; } else { law = 0; }
+        int ya;
+        if (yarn) { ya = 1; } else { ya = 0; }
         PlayerPrefs.SetInt("Oven Mitts", mitt);
         PlayerPrefs.SetInt("Hot Forge", hot);
         PlayerPrefs.SetInt("Lawyer", law);
+        PlayerPrefs.SetInt("Yarn", ya);
         PlayerPrefs.SetInt("Inventory Size", playerinventorycount);
         if (playerinventorycount > 0)
         {
@@ -251,12 +256,16 @@ public class Player : MonoBehaviour {
         level = PlayerPrefs.GetInt("Level");
         money = PlayerPrefs.GetInt("Money");
         day.day = PlayerPrefs.GetInt("Day");
+        day.time = PlayerPrefs.GetInt("Time");
+        day.justloaded = true;
         int mitt = PlayerPrefs.GetInt("Oven Mitts");
         int hot = PlayerPrefs.GetInt("Hot Forge");
         int law = PlayerPrefs.GetInt("Lawyer");
+        int ya = PlayerPrefs.GetInt("Yarn");
         if(mitt == 1){ovenmitts = true;}else{ovenmitts = false;}
         if (hot == 1) { hotforge = true; } else { hotforge = false; }
         if (law == 1) { lawyer = true; } else { lawyer = false; }
+        if (ya == 1) { yarn = true; } else { yarn = false; }
         playerinventorycount = PlayerPrefs.GetInt("Inventory Size");
         if (playerinventorycount > 0)
         {
@@ -506,6 +515,7 @@ public class Player : MonoBehaviour {
         {
             deskscript.potentialproducts.Add("Scythe");
             libraryscript.pagesunlocked[2]++;
+            storescript.storeinventorycount++;
             LevelUp();
         }
         if (thingssold > 23 && level < 6)
@@ -548,6 +558,7 @@ public class Player : MonoBehaviour {
         {
             deskscript.potentialproducts.Add("Legs");
             libraryscript.booksunlocked++;
+            storescript.storeinventorycount++;
             LevelUp();
         }
         if (thingssold > 78 && level < 13)

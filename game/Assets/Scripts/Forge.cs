@@ -7,7 +7,7 @@ public class Forge : MonoBehaviour {
     public bool isRunning;
     public GameObject panel;
     public float tempdecay;
-    public float blowerincrease;
+    public float blowerincrease = 10;
     public Text displayTemp;
     public Slider display;
     public Player player;
@@ -32,25 +32,24 @@ public class Forge : MonoBehaviour {
 	
 	// Update is called once per frame
 	void FixedUpdate () {
-		if (isRunning)
-        {
-            RunBlower();
-            SetUpBlower();
-            if (Input.GetKeyDown(KeyCode.J))
-            {
-                Debug.Log(temp);
-            }
-            displayTemp.text = temp.ToString();
-            display.value = temp;
-            DisplayItems();
-            CheckBar();
-        }
         temp -= tempdecay;
         if (temp <= 0)
         {
             temp = 0;
         }
 
+    }
+    void Update()
+    {
+        if (isRunning)
+        {
+            RunBlower();
+            SetUpBlower();
+            displayTemp.text = temp.ToString();
+            display.value = temp;
+            DisplayItems();
+            CheckBar();
+        }
     }
     void RunBlower()
     {

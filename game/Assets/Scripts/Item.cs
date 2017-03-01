@@ -54,7 +54,7 @@ public class Item : MonoBehaviour {
             forgemintemp = 40;
             forgemaxtemp = 60;
             forgeprocessneeded = 80;
-            buyprice = 1;
+            buyprice = 2;
         }
         else if (name == "Iron")
         {
@@ -64,7 +64,7 @@ public class Item : MonoBehaviour {
             forgemintemp = 100;
             forgemaxtemp = 120;
             forgeprocessneeded = 160;
-            buyprice = 2;
+            buyprice = 5;
         }
         else if (name == "Steel")
         {
@@ -74,7 +74,7 @@ public class Item : MonoBehaviour {
             forgemintemp = 160;
             forgemaxtemp = 180;
             forgeprocessneeded = 240;
-            buyprice = 3;
+            buyprice = 8;
         }
         else if (name == "Titanium")
         {
@@ -84,7 +84,7 @@ public class Item : MonoBehaviour {
             forgemintemp = 200;
             forgemaxtemp = 220;
             forgeprocessneeded = 320;
-            buyprice = 4;
+            buyprice = 11;
         }
         else if (name == "Handle")
         {
@@ -102,7 +102,7 @@ public class Item : MonoBehaviour {
             forgemintemp = 10;
             forgemaxtemp = 500;
             forgeprocessneeded = 10;
-            buyprice = 1;
+            buyprice = 2;
         }
         else if (name == "Crest")
         {
@@ -111,20 +111,27 @@ public class Item : MonoBehaviour {
             forgemintemp = 1000;
             forgemaxtemp = 1010;
             forgeprocessneeded = 100;
-            buyprice = 1;
+            buyprice = 3;
             anvilsize = 300;
         }
         else if(name == "Mitt")
         {
             upgrade = true;
+            buyprice = 20;
         }
         else if(name == "Hot Forge")
         {
             upgrade = true;
+            buyprice = 30;
         }
         else if(name == "Lawyer")
         {
             upgrade = true;
+            buyprice = 40;
+        }else if(name == "Yarn")
+        {
+            upgrade = true;
+            buyprice = 15;
         }
     }
     void FixedUpdate()
@@ -185,7 +192,7 @@ public class Item : MonoBehaviour {
                 int i = 4;
                 menuspriteplace += i;
                 anvilspriteplace += i;
-                originalprice = 7;
+                originalprice = 8;
                 expworth = 1;
             }
             else if (product == "Sword")
@@ -217,7 +224,7 @@ public class Item : MonoBehaviour {
                 int i = 12;
                 menuspriteplace += i;
                 anvilspriteplace += i;
-                originalprice = 15;
+                originalprice = 14;
                 expworth = 3;
             }
             else if (product == "Cutlass")
@@ -234,7 +241,7 @@ public class Item : MonoBehaviour {
                 menuspriteplace += i;
                 anvilspriteplace += i;
                 anvilsize = 50;
-                originalprice = 18;
+                originalprice = 17;
                 expworth = 3;
             }
             else if (product == "Halberd")
@@ -252,7 +259,7 @@ public class Item : MonoBehaviour {
                 menuspriteplace += i;
                 anvilspriteplace += i;
                 anvilsize = 300;
-                originalprice = 20;
+                originalprice = 18;
                 expworth = 3;
             }
 
@@ -262,7 +269,7 @@ public class Item : MonoBehaviour {
                 menuspriteplace += i;
                 anvilspriteplace += i;
                 anvilsize = 300;
-                originalprice = 22;
+                originalprice = 24;
                 expworth = 4;
             }
             else if (product == "Shield")
@@ -271,7 +278,7 @@ public class Item : MonoBehaviour {
                 menuspriteplace += i;
                 anvilspriteplace += i;
                 anvilsize = 300;
-                originalprice = 20;
+                originalprice = 22;
                 expworth = 4;
             }
         }

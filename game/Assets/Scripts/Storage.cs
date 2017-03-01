@@ -106,7 +106,7 @@ public class Storage : MonoBehaviour {
             {
                 newsprite = displayitems[i].GetComponent<DragStorage>().item.GetComponent<Item>().hotimage;
             }
-            if(displayitems[i].GetComponent<DragStorage>().item.GetComponent<Item>().product == "None")
+            if (displayitems[i].GetComponent<DragStorage>().item.GetComponent<Item>().product == "None")
             {
                 if (displayitems[i].GetComponent<DragStorage>().item.GetComponent<Item>().name == "Bronze")
                 {

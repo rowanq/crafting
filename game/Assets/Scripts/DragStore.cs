@@ -122,13 +122,13 @@ public class DragStore : MonoBehaviour
         else if (player.playerinventorycount < 4)//goes to player
         {
             //find gameobject item needs to go to
-            if(player.money > item.GetComponent<Item>().buyprice)
+            if(player.money > (Mathf.Round(item.GetComponent<Item>().buyprice*1.5f)))
             {
                 if(item.GetComponent<Item>().upgrade == false)
                 {
                     GameObject newitem = Instantiate(item);
                     player.storedisplayitems[player.playerinventorycount].GetComponent<DragStore>().item = newitem;
-                    newitem.GetComponent<DragStore>().item.GetComponent<Item>().isplayeritem = true;
+                    newitem.GetComponent<Item>().isplayeritem = true;
                     newitem.GetComponent<Item>().player = player;
                     player.playeritems.Add(newitem);
                     player.playerinventorycount++;
@@ -172,7 +172,7 @@ public class DragStore : MonoBehaviour
                     }
                     store.storeinventorycount--;
                 }
-                player.money -= item.GetComponent<Item>().buyprice;
+                player.money -= (int)Mathf.Round(item.GetComponent<Item>().buyprice*1.5f);
             }else
             {
                 Global.me.sendmessage = true;

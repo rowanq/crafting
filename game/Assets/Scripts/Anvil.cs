@@ -72,8 +72,10 @@ public class Anvil : MonoBehaviour {
             }
             if (weld)
             {
+                AnimateWeld();
                 if (Input.GetMouseButtonDown(0))
                 {
+                    clicked = true;
                     if (anvilinventorycount > 0)
                     {
                         CheckWeld();
@@ -82,6 +84,29 @@ public class Anvil : MonoBehaviour {
             }
         }
 	}
+    void AnimateWeld()
+    {
+        Vector2 mouseposition = new Vector2(Input.mousePosition.x, Input.mousePosition.y);
+        Vector2 objposition = Camera.main.ScreenToWorldPoint(mouseposition);
+        realweld.transform.position = objposition;
+        if (clicked)
+        {
+            framesclicked++;
+            if (framesclicked < 6)
+            {
+                realweld.transform.Rotate(0, 0, 18);
+            }
+            else if (framesclicked < 11)
+            {
+                realweld.transform.Rotate(0, 0, -18);
+            }
+            else
+            {
+                clicked = false;
+                framesclicked = 0;
+            }
+        }
+    }
     void AnimateHammer()
     {
         Vector2 mouseposition = new Vector2(Input.mousePosition.x, Input.mousePosition.y);
@@ -254,11 +279,14 @@ public class Anvil : MonoBehaviour {
     }
     public void GetHammer()
     {
-        if (product != "None")
+        if (product != "None" && weld == false)
         {
             if (hammer)
             {
                 hammer = false;
+                clicked = false;
+                framesclicked = 0;
+                realhammer.transform.rotation = new Quaternion(0, 0, 0, 0);
             }
             else
             {
@@ -269,12 +297,19 @@ public class Anvil : MonoBehaviour {
     }
     public void GetWeld()
     {
-        if (weld)
+        if(product != "None" && hammer == false)
         {
-            weld = false;
-        }else
-        {
-            weld = true;
+            if (weld)
+            {
+                weld = false;
+                clicked = false;
+                framesclicked = 0;
+                realweld.transform.rotation = new Quaternion(0, 0, 0, 0);
+            }
+            else
+            {
+                weld = true;
+            }
         }
     }
     void CheckProduct()
@@ -1448,6 +1483,7 @@ public class Anvil : MonoBehaviour {
     {
         Vector2 mouseposition = new Vector2(Input.mousePosition.x, Input.mousePosition.y);
         Vector2 mouse = Camera.main.ScreenToWorldPoint(mouseposition);
+        mouse = mouse - new Vector2(0.65f, 0);
         if (product != "Dagger" || product != "Hammer")
         {
             int i = 0;

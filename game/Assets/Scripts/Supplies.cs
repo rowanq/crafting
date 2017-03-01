@@ -65,31 +65,20 @@ public class Supplies : MonoBehaviour {
         metal.GetChild(1).gameObject.SetActive(true);
         metal.GetChild(2).gameObject.SetActive(true);
         metal.GetChild(2).transform.GetChild(1).gameObject.SetActive(true);
-        metal.GetChild(2).transform.GetChild(4).gameObject.GetComponent<Text>().text = bronzeprice.ToString();
-        metal.GetChild(2).transform.GetChild(5).gameObject.GetComponent<Text>().text = bronzeprice.ToString();
-        if (storage.bronzecount == 0)
-        {
-            metal.GetChild(2).transform.GetChild(1).gameObject.SetActive(false);
-        }
+        metal.GetChild(2).transform.GetChild(3).gameObject.GetComponent<Text>().text = bronzeprice.ToString()+"g";
         if(player.money < bronzeprice)
         {
-            metal.GetChild(2).transform.GetChild(2).gameObject.SetActive(false);
+            metal.GetChild(2).transform.GetChild(1).gameObject.SetActive(false);
         }
         metal.GetChild(2).transform.GetChild(0).GetComponent<Text>().text = storage.bronzecount.ToString();
         if (player.level >= 3)
         {
             metal.GetChild(3).gameObject.SetActive(true);
             metal.GetChild(3).transform.GetChild(1).gameObject.SetActive(true);
-            metal.GetChild(3).transform.GetChild(4).gameObject.GetComponent<Text>().text = ironprice.ToString();
-            metal.GetChild(3).transform.GetChild(5).gameObject.GetComponent<Text>().text = ironprice.ToString();
-            if (storage.ironcount == 0)
-            {
-                metal.GetChild(3).transform.GetChild(1).gameObject.SetActive(false);
-                metal.GetChild(3).transform.GetChild(4).gameObject.SetActive(false);
-            }
+            metal.GetChild(3).transform.GetChild(3).gameObject.GetComponent<Text>().text = ironprice.ToString() + "g";
             if (player.money < ironprice)
             {
-                metal.GetChild(3).transform.GetChild(2).gameObject.SetActive(false);
+                metal.GetChild(3).transform.GetChild(1).gameObject.SetActive(false);
             }
             metal.GetChild(3).transform.GetChild(0).GetComponent<Text>().text = storage.ironcount.ToString();
         }
@@ -97,15 +86,10 @@ public class Supplies : MonoBehaviour {
         {
             metal.GetChild(4).gameObject.SetActive(true);
             metal.GetChild(4).transform.GetChild(1).gameObject.SetActive(true);
-            metal.GetChild(4).transform.GetChild(4).gameObject.GetComponent<Text>().text = steelprice.ToString();
-            metal.GetChild(4).transform.GetChild(5).gameObject.GetComponent<Text>().text = steelprice.ToString();
-            if (storage.steelcount == 0)
-            {
-                metal.GetChild(4).transform.GetChild(1).gameObject.SetActive(false);
-            }
+            metal.GetChild(4).transform.GetChild(3).gameObject.GetComponent<Text>().text = steelprice.ToString() + "g";
             if (player.money < steelprice)
             {
-                metal.GetChild(4).transform.GetChild(2).gameObject.SetActive(false);
+                metal.GetChild(4).transform.GetChild(1).gameObject.SetActive(false);
             }
             metal.GetChild(4).transform.GetChild(0).GetComponent<Text>().text = storage.steelcount.ToString();
         }
@@ -113,15 +97,10 @@ public class Supplies : MonoBehaviour {
         {
             metal.GetChild(5).gameObject.SetActive(true);
             metal.GetChild(5).transform.GetChild(1).gameObject.SetActive(true);
-            metal.GetChild(5).transform.GetChild(4).gameObject.GetComponent<Text>().text = titaniumprice.ToString();
-            metal.GetChild(5).transform.GetChild(5).gameObject.GetComponent<Text>().text = titaniumprice.ToString();
-            if (storage.titaniumcount == 0)
-            {
-                metal.GetChild(5).transform.GetChild(1).gameObject.SetActive(false);
-            }
+            metal.GetChild(5).transform.GetChild(3).gameObject.GetComponent<Text>().text = titaniumprice.ToString() + "g";
             if (player.money < titaniumprice)
             {
-                metal.GetChild(5).transform.GetChild(2).gameObject.SetActive(false);
+                metal.GetChild(5).transform.GetChild(1).gameObject.SetActive(false);
             }
             metal.GetChild(5).transform.GetChild(0).GetComponent<Text>().text = storage.titaniumcount.ToString();
         }
@@ -136,41 +115,26 @@ public class Supplies : MonoBehaviour {
         handle.GetChild(1).gameObject.SetActive(true);
         handle.GetChild(2).gameObject.SetActive(true);
         handle.GetChild(2).transform.GetChild(1).gameObject.SetActive(true);
-        handle.GetChild(2).transform.GetChild(4).gameObject.GetComponent<Text>().text = handleprice.ToString();
-        handle.GetChild(2).transform.GetChild(5).gameObject.GetComponent<Text>().text = handleprice.ToString();
-        if (storage.handlecount == 0)
+        handle.GetChild(2).transform.GetChild(3).gameObject.GetComponent<Text>().text = handleprice.ToString() + "g";
+        if (player.money < handleprice)
         {
             handle.GetChild(2).transform.GetChild(1).gameObject.SetActive(false);
         }
-        if (player.money < handleprice)
-        {
-            handle.GetChild(2).transform.GetChild(2).gameObject.SetActive(false);
-        }
         handle.GetChild(2).transform.GetChild(0).GetComponent<Text>().text = storage.handlecount.ToString();
         handle.GetChild(3).gameObject.SetActive(true);
-        handle.GetChild(3).transform.GetChild(4).gameObject.GetComponent<Text>().text = longhandleprice.ToString();
-        handle.GetChild(3).transform.GetChild(5).gameObject.GetComponent<Text>().text = longhandleprice.ToString();
-        if (storage.longhandlecount == 0)
-        {
-            handle.GetChild(3).transform.GetChild(1).gameObject.SetActive(false);
-        }
+        handle.GetChild(3).transform.GetChild(3).gameObject.GetComponent<Text>().text = longhandleprice.ToString() + "g";
         if (player.money < longhandleprice)
         {
-            handle.GetChild(3).transform.GetChild(2).gameObject.SetActive(false);
+            handle.GetChild(3).transform.GetChild(1).gameObject.SetActive(false);
         }
         handle.GetChild(3).transform.GetChild(0).GetComponent<Text>().text = storage.longhandlecount.ToString();
         if (player.level >= 12)
         {
             handle.GetChild(4).gameObject.SetActive(true);
-            handle.GetChild(4).transform.GetChild(4).gameObject.GetComponent<Text>().text = crestprice.ToString();
-            handle.GetChild(4).transform.GetChild(5).gameObject.GetComponent<Text>().text = crestprice.ToString();
-            if (storage.crestcount == 0)
-            {
-                handle.GetChild(4).transform.GetChild(1).gameObject.SetActive(false);
-            }
+            handle.GetChild(4).transform.GetChild(3).gameObject.GetComponent<Text>().text = crestprice.ToString() + "g";
             if (player.money < crestprice)
             {
-                handle.GetChild(4).transform.GetChild(2).gameObject.SetActive(false);
+                handle.GetChild(4).transform.GetChild(1).gameObject.SetActive(false);
             }
             handle.GetChild(4).transform.GetChild(0).GetComponent<Text>().text = storage.crestcount.ToString();
         }
@@ -210,8 +174,11 @@ public class Supplies : MonoBehaviour {
             GameObject item = (GameObject)Instantiate(Resources.Load("Item"));
             item.GetComponent<Item>().name = "Bronze";
             item.GetComponent<Item>().product = "None";
-            storage.storageinventorycount++;
+            item.GetComponent<Item>().player = player;
+            item.GetComponent<Item>().isplayeritem = false;
             storage.storageitems.Add(item);
+            storage.displayitems[storage.storageinventorycount].GetComponent<DragStorage>().item = item;
+            storage.storageinventorycount++;
         }
         storage.bronzecount++;
     }
@@ -219,6 +186,7 @@ public class Supplies : MonoBehaviour {
     {
         player.money += bronzeprice;
         storage.bronzecount--;
+        Debug.Log("A");
         if(storage.bronzecount == 0)
         {
             GameObject item = (GameObject)Instantiate(Resources.Load("Item"));
@@ -235,8 +203,11 @@ public class Supplies : MonoBehaviour {
             GameObject item = (GameObject)Instantiate(Resources.Load("Item"));
             item.GetComponent<Item>().name = "Iron";
             item.GetComponent<Item>().product = "None";
-            storage.storageinventorycount++;
+            item.GetComponent<Item>().player = player;
+            item.GetComponent<Item>().isplayeritem = false;
             storage.storageitems.Add(item);
+            storage.displayitems[storage.storageinventorycount].GetComponent<DragStorage>().item = item;
+            storage.storageinventorycount++;
         }
         storage.ironcount++;
     }
@@ -260,8 +231,11 @@ public class Supplies : MonoBehaviour {
             GameObject item = (GameObject)Instantiate(Resources.Load("Item"));
             item.GetComponent<Item>().name = "Steel";
             item.GetComponent<Item>().product = "None";
-            storage.storageinventorycount++;
+            item.GetComponent<Item>().player = player;
+            item.GetComponent<Item>().isplayeritem = false;
             storage.storageitems.Add(item);
+            storage.displayitems[storage.storageinventorycount].GetComponent<DragStorage>().item = item;
+            storage.storageinventorycount++;
         }
         storage.steelcount++;
     }
@@ -285,8 +259,11 @@ public class Supplies : MonoBehaviour {
             GameObject item = (GameObject)Instantiate(Resources.Load("Item"));
             item.GetComponent<Item>().name = "Titanium";
             item.GetComponent<Item>().product = "None";
-            storage.storageinventorycount++;
+            item.GetComponent<Item>().player = player;
+            item.GetComponent<Item>().isplayeritem = false;
             storage.storageitems.Add(item);
+            storage.displayitems[storage.storageinventorycount].GetComponent<DragStorage>().item = item;
+            storage.storageinventorycount++;
         }
         storage.titaniumcount++;
     }
@@ -310,8 +287,11 @@ public class Supplies : MonoBehaviour {
             GameObject item = (GameObject)Instantiate(Resources.Load("Item"));
             item.GetComponent<Item>().name = "Handle";
             item.GetComponent<Item>().product = "None";
-            storage.storageinventorycount++;
+            item.GetComponent<Item>().player = player;
+            item.GetComponent<Item>().isplayeritem = false;
             storage.storageitems.Add(item);
+            storage.displayitems[storage.storageinventorycount].GetComponent<DragStorage>().item = item;
+            storage.storageinventorycount++;
         }
         storage.handlecount++;
     }
@@ -334,9 +314,12 @@ public class Supplies : MonoBehaviour {
         {
             GameObject item = (GameObject)Instantiate(Resources.Load("Item"));
             item.GetComponent<Item>().name = "Long Hande";
-            storage.storageinventorycount++;
             item.GetComponent<Item>().product = "None";
+            item.GetComponent<Item>().player = player;
+            item.GetComponent<Item>().isplayeritem = false;
             storage.storageitems.Add(item);
+            storage.displayitems[storage.storageinventorycount].GetComponent<DragStorage>().item = item;
+            storage.storageinventorycount++;
         }
         storage.longhandlecount++;
     }
@@ -360,8 +343,11 @@ public class Supplies : MonoBehaviour {
             GameObject item = (GameObject)Instantiate(Resources.Load("Item"));
             item.GetComponent<Item>().name = "Crest";
             item.GetComponent<Item>().product = "None";
-            storage.storageinventorycount++;
+            item.GetComponent<Item>().player = player;
+            item.GetComponent<Item>().isplayeritem = false;
             storage.storageitems.Add(item);
+            storage.displayitems[storage.storageinventorycount].GetComponent<DragStorage>().item = item;
+            storage.storageinventorycount++;
         }
         storage.crestcount++;
     }

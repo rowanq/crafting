@@ -26,6 +26,8 @@ public class NPC : MonoBehaviour {
     public bool inshop = false;
     public bool ordersaid = false;
     public bool mad = false;
+    public bool yarn = false;
+    bool yarndone = false;
     Color choice;
     // Use this for initialization
     void Start () {
@@ -70,6 +72,11 @@ public class NPC : MonoBehaviour {
         {
             inshop = true;
         }
+        if(yarn && yarndone == false)
+        {
+            yarndone = false;
+            giveuptime += (int)(0.5f * giveuptime);
+        }
         if (timesinceorderbegan >= giveuptime && leave == false)
         {
             Leave();
@@ -82,7 +89,7 @@ public class NPC : MonoBehaviour {
     {
         timesincelastmove++;
         timesincelastdecision++;
-        if (inshop && stop == false)
+        if (inshop && stop == false && Global.me.tutorial.GetComponent<Tutorial>().finished)
         {
             timesinceorderbegan++;
         }
@@ -247,4 +254,5 @@ public class NPC : MonoBehaviour {
         leave = true;
         timesincelastdecision = 350;
     }
+
 }
