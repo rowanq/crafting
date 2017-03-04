@@ -94,11 +94,11 @@ public class Anvil : MonoBehaviour {
             framesclicked++;
             if (framesclicked < 6)
             {
-                realweld.transform.Rotate(0, 0, 18);
+                realweld.transform.Rotate(0, 0, 18*Time.deltaTime);
             }
             else if (framesclicked < 11)
             {
-                realweld.transform.Rotate(0, 0, -18);
+                realweld.transform.Rotate(0, 0, -18 * Time.deltaTime);
             }
             else
             {

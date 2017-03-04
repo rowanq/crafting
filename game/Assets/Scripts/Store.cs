@@ -17,6 +17,7 @@ public class Store : MonoBehaviour {
 	void Update () {
         if (isRunning)
         {
+            DealwithUpgrades();
             DisplayItems();
 
         }
@@ -32,6 +33,31 @@ public class Store : MonoBehaviour {
         isRunning = false;
         panel.SetActive(false);
         Global.me.openpanel = null;
+    }
+    void DealwithUpgrades()
+    {
+        int i = 0;
+        while (i < storeinventorycount)
+        {
+            string name = displayitems[i].GetComponent<DragStore>().item.GetComponent<Item>().name;
+            if ((name == "Yarn" && player.yarn) || (name == "Hot Forge" &&player.hotforge)|| (name == "Lawyer" && player.lawyer)||(name=="Mitt"&&player.ovenmitts))
+            {
+                int placeinline = i;
+                if (placeinline != displayitems.Count - 1)//its not last and you need to do something
+                {
+                    while ((placeinline + 1) < storeinventorycount)
+                    {
+                        GameObject curplace = displayitems[placeinline];
+                        GameObject nextplace = displayitems[placeinline + 1];
+                        curplace.GetComponent<DragStore>().item = nextplace.GetComponent<DragStore>().item;
+                        placeinline++;
+                    }
+                }
+                storeinventorycount--;
+                i = -1;
+            }
+            i++;
+        }
     }
     void DisplayItems()
     {
@@ -66,7 +92,7 @@ public class Store : MonoBehaviour {
             displayitems[i].SetActive(true);
             SpriteRenderer spriterenderer = displayitems[i].GetComponent<SpriteRenderer>();
             Sprite newsprite = displayitems[i].GetComponent<DragStore>().item.GetComponent<Item>().image;
-            if (displayitems[i].GetComponent<DragStore>().item.GetComponent<Item>().forgedone && displayitems[i].GetComponent<DragStore>().item.GetComponent<Item>().anvildone == false)
+            if (displayitems[i].GetComponent<DragStore>().item.GetComponent<Item>().forgedone && displayitems[i].GetComponent<DragStore>().item.GetComponent<Item>().anvildone == false && displayitems[i].GetComponent<DragStore>().item.GetComponent<Item>().upgrade == false)
             {
                 newsprite = displayitems[i].GetComponent<DragStore>().item.GetComponent<Item>().hotimage;
             }

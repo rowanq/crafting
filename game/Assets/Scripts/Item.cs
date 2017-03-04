@@ -118,20 +118,29 @@ public class Item : MonoBehaviour {
         {
             upgrade = true;
             buyprice = 20;
+            menuspriteplace = 216;
+            image = imagesprites[menuspriteplace];
         }
         else if(name == "Hot Forge")
         {
             upgrade = true;
             buyprice = 30;
+            menuspriteplace = 217;
+            image = imagesprites[menuspriteplace];
         }
         else if(name == "Lawyer")
         {
             upgrade = true;
             buyprice = 40;
-        }else if(name == "Yarn")
+            menuspriteplace = 218;
+            image = imagesprites[menuspriteplace];
+        }
+        else if(name == "Yarn")
         {
             upgrade = true;
             buyprice = 15;
+            menuspriteplace = 215;
+            image = imagesprites[menuspriteplace];
         }
     }
     void FixedUpdate()

@@ -67,7 +67,7 @@ public class Desk : MonoBehaviour {
                 player.orders.Remove(player.orders[i]);
                 customers.Remove(customers[i]);
             }
-            else if(customers[i].GetComponent<NPC>().inshop && customers[i].GetComponent<NPC>().ordersaid == false)
+            if(customers[i].GetComponent<NPC>().inshop && customers[i].GetComponent<NPC>().ordersaid == false)
             {
                 customers[i].GetComponent<NPC>().ordersaid = true;
                 string blorp = customers[i].GetComponent<NPC>().order;

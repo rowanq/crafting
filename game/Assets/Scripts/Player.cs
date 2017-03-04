@@ -503,6 +503,7 @@ public class Player : MonoBehaviour {
         {
             libraryscript.pagesunlocked[0]++;
             storescript.storeinventorycount++;
+            storescript.storeinventorycount++;
             LevelUp();
         }
         if (thingssold > 13 && level < 4)
@@ -528,6 +529,7 @@ public class Player : MonoBehaviour {
         {
             libraryscript.pagesunlocked[0]++;
             storescript.storeinventorycount++;
+            storescript.storeinventorycount++;
             LevelUp();
         }
         if (thingssold > 37 && level < 8)
@@ -540,6 +542,7 @@ public class Player : MonoBehaviour {
         {
             deskscript.potentialproducts.Add("Spear");
             libraryscript.booksunlocked++;
+            storescript.storeinventorycount++;
             LevelUp();
         }
         if (thingssold > 51 && level < 10)

@@ -142,6 +142,14 @@ public class DragStore : MonoBehaviour
                     {
                         player.hotforge = true;
                     }
+                    if(item.GetComponent<Item>().name == "Lawyer")
+                    {
+                        player.lawyer = true;
+                    }
+                    if(item.GetComponent<Item>().name == "Yarn")
+                    {
+                        player.yarn = true;
+                    }
                     //check if GAMEOBJECT SELf is last in list
                     int i = 0;
                     int placeinline = -1;
