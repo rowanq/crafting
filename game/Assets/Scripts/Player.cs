@@ -272,24 +272,36 @@ public class Player : MonoBehaviour {
             GameObject newitem = (GameObject)Instantiate(Resources.Load("Item"));
             playeritems.Add(newitem);
             playeritems[0].GetComponent<Item>().name = PlayerPrefs.GetString("Item 0");
+            playeritems[0].GetComponent<Item>().product = "None";
+            playeritems[0].GetComponent<Item>().player = this;
+            playeritems[0].GetComponent<Item>().isplayeritem = true;
         }
         if (playerinventorycount > 1)
         {
             GameObject newitem = (GameObject)Instantiate(Resources.Load("Item"));
             playeritems.Add(newitem);
             playeritems[1].GetComponent<Item>().name = PlayerPrefs.GetString("Item 1");
+            playeritems[1].GetComponent<Item>().product = "None";
+            playeritems[1].GetComponent<Item>().player = this;
+            playeritems[1].GetComponent<Item>().isplayeritem = true;
         }
         if (playerinventorycount > 2)
         {
             GameObject newitem = (GameObject)Instantiate(Resources.Load("Item"));
             playeritems.Add(newitem);
             playeritems[2].GetComponent<Item>().name = PlayerPrefs.GetString("Item 2");
+            playeritems[2].GetComponent<Item>().product = "None";
+            playeritems[2].GetComponent<Item>().player = this;
+            playeritems[2].GetComponent<Item>().isplayeritem = true;
         }
         if (playerinventorycount > 3)
         {
             GameObject newitem = (GameObject)Instantiate(Resources.Load("Item"));
             playeritems.Add(newitem);
             playeritems[3].GetComponent<Item>().name = PlayerPrefs.GetString("Item 3");
+            playeritems[3].GetComponent<Item>().product = "None";
+            playeritems[3].GetComponent<Item>().player = this;
+            playeritems[3].GetComponent<Item>().isplayeritem = true;
         }
     }
     void DealWithMovement()

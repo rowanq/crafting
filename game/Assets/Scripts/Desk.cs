@@ -66,8 +66,9 @@ public class Desk : MonoBehaviour {
             {
                 player.orders.Remove(player.orders[i]);
                 customers.Remove(customers[i]);
+                i = 0;
             }
-            if(customers[i].GetComponent<NPC>().inshop && customers[i].GetComponent<NPC>().ordersaid == false)
+            if (customers[i].GetComponent<NPC>().inshop && customers[i].GetComponent<NPC>().ordersaid == false)
             {
                 customers[i].GetComponent<NPC>().ordersaid = true;
                 string blorp = customers[i].GetComponent<NPC>().order;
@@ -195,7 +196,7 @@ public class Desk : MonoBehaviour {
         player.thingssold += player.playeritems[player_j_to_be_sold].GetComponent<Item>().expworth;
         player.DealWithProgression();
         player.money += totalmoney;
-        day.moneymade += player.playeritems[player_j_to_be_sold].GetComponent<Item>().price;
+        day.moneymade += totalmoney;
         day.ordersmadethisday.Add(player.orders[order_i]);
         day.totalscores.Add(player.playeritems[player_j_to_be_sold].GetComponent<Item>().totalscore);
         player.playeritems.Remove(player.playeritems[player_j_to_be_sold]);

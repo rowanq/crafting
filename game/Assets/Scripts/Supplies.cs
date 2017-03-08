@@ -11,13 +11,13 @@ public class Supplies : MonoBehaviour {
     public GameObject panel; //use children for supplies
     public GameObject endofdaypanel;
     public bool alreadyboughtthisnight = false;
-    int bronzeprice = 1;
-    int ironprice = 2;
-    int steelprice = 3;
-    int titaniumprice = 4;
+    int bronzeprice = 2;
+    int ironprice = 5;
+    int steelprice = 8;
+    int titaniumprice = 11;
     int handleprice = 1;
-    int longhandleprice = 1;
-    int crestprice = 1;
+    int longhandleprice = 2;
+    int crestprice = 3;
 	// Use this for initialization
 	void Start () {
 		

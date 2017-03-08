@@ -16,6 +16,7 @@ public class Global : MonoBehaviourSingleton<Global> {
     public string message;
     public bool sendmessage;
     public Desk desk;
+    public Bed bed;
     // Use this for initialization
     private void Awake()
     {
@@ -34,7 +35,7 @@ public class Global : MonoBehaviourSingleton<Global> {
             sendmessage = false;
             message = "";
         }
-        if (Input.GetKeyDown(KeyCode.P) && gamestarted)
+        if (Input.GetKeyDown(KeyCode.Escape) && gamestarted)
         {
            gameon = true;
         }
@@ -74,9 +75,13 @@ public class Global : MonoBehaviourSingleton<Global> {
             int i = 0;
             while(i < canvas.transform.childCount)
             {
-                if(canvas.transform.GetChild(i).name == "HUD")
+                if(canvas.transform.GetChild(i).name == "HUD" || (canvas.transform.GetChild(i).name == "Black" && bed.fade))
                 {
                     canvas.transform.GetChild(i).gameObject.SetActive(true);
+                }
+                if(canvas.transform.GetChild(i).name == "Black" && bed.fade == false)
+                {
+                    canvas.transform.GetChild(i).gameObject.SetActive(false);
                 }
                 i++;
             }
